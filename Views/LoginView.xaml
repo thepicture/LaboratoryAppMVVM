@@ -7,6 +7,35 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <TextBlock Text="Test"></TextBlock>
+        <Viewbox>
+            <StackPanel>
+            <TextBlock Text="Пожалуйста, авторизуйтесь в системе"
+                       HorizontalAlignment="Center"
+                       FontWeight="Bold"
+                       Style="{StaticResource CommonBlock}"></TextBlock>
+        <StackPanel HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Right">
+                <TextBlock Text="Логин: "
+                           Style="{StaticResource CommonBlock}"></TextBlock>
+                <TextBox Text="{Binding LoginText}"
+                         Width="200"></TextBox>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Right">
+                <TextBlock Text="Пароль: "
+                           Style="{StaticResource CommonBlock}"></TextBlock>
+                <PasswordBox Password="{Binding PasswordText}"
+                         Width="200"></PasswordBox>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Right">
+                <Button Content="Войти"></Button>
+                <Button Content="Выход"></Button>
+            </StackPanel>
+        </StackPanel>
+            </StackPanel>
+        </Viewbox>
     </Grid>
 </UserControl>
