@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:LaboratoryAppMVVM.Views" xmlns:viewmodels="clr-namespace:LaboratoryAppMVVM.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:LoginViewModel}"
+             xmlns:local="clr-namespace:LaboratoryAppMVVM.Views" xmlns:viewmodels="clr-namespace:LaboratoryAppMVVM.ViewModels" xmlns:models="clr-namespace:LaboratoryAppMVVM.Models" d:DataContext="{d:DesignInstance Type=viewmodels:LoginViewModel}"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
@@ -20,26 +20,77 @@
                         <TextBlock Text="Логин: "
                            Style="{StaticResource CommonBlock}"></TextBlock>
                         <TextBox Text="{Binding LoginText}"
+                         Name="UserLoginTextBlock"
                          Width="200"
                          MaxLength="100"
                          ToolTip="Введите логин, под которым вы зарегистрированы в системе"></TextBox>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal"
-                        HorizontalAlignment="Right">
+                        HorizontalAlignment="Right"
+                                FocusManager.IsFocusScope="True">
                         <TextBlock Text="Пароль: "
                            Style="{StaticResource CommonBlock}"></TextBlock>
-                        <PasswordBox Width="200"
-                             Name="UserPasswordBox"
+                        <Grid>
+                            <TextBox Width="200"
+                             Name="UserShownPasswordBox"
                              MaxLength="100"
+                             Text="{Binding PasswordText, UpdateSourceTrigger=PropertyChanged}"
                              ToolTip="Введите пароль, под которым вы зарегистрированы в системе">
-                        </PasswordBox>
+                            </TextBox>
+                            <models:MaskTextBox Width="200"
+                             x:Name="UserHiddenPasswordBox"
+                             Margin="5"
+                             MaxLength="100"
+                             IsHitTestVisible="False"
+                             Text="{Binding ElementName=UserShownPasswordBox, Path=Text}"
+                             ToolTip="Введите пароль, под которым вы зарегистрированы в системе">
+                                <models:MaskTextBox.Style>
+                                    <Style TargetType="models:MaskTextBox">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ElementName=ShowPasswordCheckBox, Path=IsChecked}" 
+                                                         Value="True">
+                                                <Setter Property="Visibility"
+                                                        Value="Hidden"></Setter>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding ElementName=UserShownPasswordBox, Path=IsMouseOver}" 
+                                                         Value="True">
+                                                <Setter Property="BorderBrush" 
+                                                        Value="LightBlue"></Setter>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </models:MaskTextBox.Style>
+                            </models:MaskTextBox>
+                        </Grid>
                     </StackPanel>
+                    <CheckBox Content="Показать пароль"
+                                  HorizontalAlignment="Right"
+                                  Width="200"
+                                  Name="ShowPasswordCheckBox"></CheckBox>
                     <StackPanel Orientation="Horizontal"
                         HorizontalAlignment="Right">
                         <Button Content="Войти"
-                        CommandParameter="{Binding ElementName=UserPasswordBox, Path=Password}"
+                        CommandParameter="{Binding ElementName=UserShownPasswordBox, Path=Text}"
                         Command="{Binding AuthorizeCommand}"
-                        ToolTip="Авторизоваться в системе под введёнными логином и паролем"></Button>
+                        ToolTip="Авторизоваться в системе под введёнными логином и паролем">
+                            <Button.Style>
+                                <Style TargetType="Button"
+                                       BasedOn="{StaticResource {x:Type Button}}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ElementName=UserLoginTextBlock, Path=Text.Length}" 
+                                                     Value="0">
+                                            <Setter Property="IsEnabled" Value="False"></Setter>
+                                            <Setter Property="ToolTip" Value="Чтобы авторизоваться, заполните все поля"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding ElementName=UserShownPasswordBox, Path=Text.Length}" 
+                                                     Value="0">
+                                            <Setter Property="IsEnabled" Value="False"></Setter>
+                                            <Setter Property="ToolTip" Value="Чтобы авторизоваться, заполните все поля"></Setter>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
                         <Button Content="Выход"
                                 ToolTip="Выйти из приложения"
                                 Command="{Binding ExitAppCommand}"></Button>

@@ -1,19 +1,24 @@
 ﻿using LaboratoryAppMVVM.Commands;
+using LaboratoryAppMVVM.Models.Entities;
 using LaboratoryAppMVVM.Stores;
 using System;
+using System.Linq;
 using System.Security;
+using System.Threading.Tasks;
 
 namespace LaboratoryAppMVVM.ViewModels
 {
     public class LoginViewModel : ViewModelBase
     {
         private readonly ViewModelNavigationStore _navigationStore;
-        private string _loginText;
-        private string _passwordText;
+        private string _loginText = string.Empty;
+        private string _passwordText = string.Empty;
         private RelayCommand _authorizeCommand;
         private RelayCommand _exitAppCommand;
+        private LaboratoryDatabaseEntities _context;
 
-        public LoginViewModel(ViewModelNavigationStore navigationStore, Models.MessageBoxService messageBoxService)
+        public LoginViewModel(ViewModelNavigationStore navigationStore,
+                              Models.MessageBoxService messageBoxService)
         {
             MessageBoxService = messageBoxService;
             _navigationStore = navigationStore;
@@ -43,7 +48,7 @@ namespace LaboratoryAppMVVM.ViewModels
             {
                 if (_authorizeCommand == null)
                 {
-                    _authorizeCommand = new RelayCommand(param => TryToAuthorize(param as SecureString));
+                    _authorizeCommand = new RelayCommand(param => TryToAuthorize());
                 }
                 return _authorizeCommand;
             }
@@ -61,17 +66,45 @@ namespace LaboratoryAppMVVM.ViewModels
             }
         }
 
+        public LaboratoryDatabaseEntities Context
+        {
+            get
+            {
+                if (_context == null)
+                {
+                    _context = new LaboratoryDatabaseEntities();
+                }
+                return _context;
+            }
+            set => _context = value;
+        }
+
         private void TryToExitApp()
         {
-            if (MessageBoxService.ShowQuestion("Вы действительно хотите выйти из приложения?"))
+            if (MessageBoxService.ShowQuestion("Вы действительно хотите "
+                                               + "выйти из приложения?"))
             {
                 App.Current.Shutdown();
             }
         }
 
-        private void TryToAuthorize(SecureString password)
+        private async void TryToAuthorize()
         {
-            throw new NotImplementedException();
+            User currentUser = await Task.Run(() => Context.User.ToList()
+            .FirstOrDefault(user => user.Login.ToLower()
+                                              .Equals(LoginText.ToLower()) &&
+                                    user.Password.Equals(PasswordText)));
+            if (currentUser != null)
+            {
+                MessageBoxService.ShowInformation($"Авторизация успешна. " +
+                    $"Добро пожаловать, {currentUser.Name}!");
+            }
+            else
+            {
+                MessageBoxService.ShowError("Неверный логин и/или пароль. " +
+                    "Пожалуйста, проверьте введённые данные " +
+                    "и попробуйте авторизоваться ещё раз");
+            }
         }
     }
 }

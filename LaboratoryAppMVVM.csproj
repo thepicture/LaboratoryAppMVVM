@@ -35,9 +35,18 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -86,7 +95,59 @@
     </Compile>
     <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Commands\NavigateCommand.cs" />
+    <Compile Include="Models\Entities\Analyzer.cs">
+      <DependentUpon>LaboratoryBaseModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Entities\AppliedService.cs">
+      <DependentUpon>LaboratoryBaseModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Entities\BarcodeOfPatient.cs">
+      <DependentUpon>LaboratoryBaseModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Entities\HistoryOfLogin.cs">
+      <DependentUpon>LaboratoryBaseModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Entities\InsuranceCompany.cs">
+      <DependentUpon>LaboratoryBaseModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Entities\LaboratoryBaseModel.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>LaboratoryBaseModel.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Entities\LaboratoryBaseModel.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>LaboratoryBaseModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Entities\LaboratoryBaseModel.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>LaboratoryBaseModel.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Entities\Patient.cs">
+      <DependentUpon>LaboratoryBaseModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Entities\Service.cs">
+      <DependentUpon>LaboratoryBaseModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Entities\ServiceOfUser.cs">
+      <DependentUpon>LaboratoryBaseModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Entities\StatusOfAppliedService.cs">
+      <DependentUpon>LaboratoryBaseModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Entities\TypeOfInsurancePolicy.cs">
+      <DependentUpon>LaboratoryBaseModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Entities\TypeOfUser.cs">
+      <DependentUpon>LaboratoryBaseModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Entities\User.cs">
+      <DependentUpon>LaboratoryBaseModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\IMessageBoxService.cs" />
+    <Compile Include="Models\MaskTextBox.cs" />
     <Compile Include="Models\MessageBoxService.cs" />
     <Compile Include="Stores\ViewModelNavigationStore.cs" />
     <Compile Include="ViewModels\AccountantViewModel.cs" />
@@ -134,6 +195,14 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EntityDeploy Include="Models\Entities\LaboratoryBaseModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>LaboratoryBaseModel.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="Models\Entities\LaboratoryBaseModel.edmx.diagram">
+      <DependentUpon>LaboratoryBaseModel.edmx</DependentUpon>
+    </None>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -142,9 +211,23 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Models\Entities\LaboratoryBaseModel.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>LaboratoryBaseModel.Context.cs</LastGenOutput>
+      <DependentUpon>LaboratoryBaseModel.edmx</DependentUpon>
+    </Content>
+    <Content Include="Models\Entities\LaboratoryBaseModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>LaboratoryBaseModel.edmx</DependentUpon>
+      <LastGenOutput>LaboratoryBaseModel.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
