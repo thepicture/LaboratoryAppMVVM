@@ -1,4 +1,5 @@
-﻿using LaboratoryAppMVVM.Stores;
+﻿using LaboratoryAppMVVM.Models;
+using LaboratoryAppMVVM.Stores;
 
 namespace LaboratoryAppMVVM.ViewModels
 {
@@ -6,8 +7,9 @@ namespace LaboratoryAppMVVM.ViewModels
     {
         private readonly ViewModelNavigationStore _viewModelNavigationStore;
 
-        public MainViewModel(ViewModelNavigationStore viewModelNavigationStore)
+        public MainViewModel(ViewModelNavigationStore viewModelNavigationStore, IMessageBoxService messageBoxService)
         {
+            MessageBoxService = messageBoxService;
             _viewModelNavigationStore = viewModelNavigationStore;
             viewModelNavigationStore.CurrentViewModelChanged += OnCurrentViewModelChanged;
         }
@@ -18,6 +20,5 @@ namespace LaboratoryAppMVVM.ViewModels
         }
 
         public ViewModelBase CurrentViewModel => _viewModelNavigationStore.CurrentViewModel;
-
     }
 }

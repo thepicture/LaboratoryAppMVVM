@@ -5,14 +5,18 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LaboratoryAppMVVM" xmlns:views="clr-namespace:LaboratoryAppMVVM.Views" xmlns:viewmodels="clr-namespace:LaboratoryAppMVVM.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:MainViewModel}"
         mc:Ignorable="d"
-        Height="450" 
-        Width="800"
+        Height="850" 
+        Width="1200"
         MinHeight="450"
         MinWidth="800"
         Icon="/Resources/logo.png"
         Style="{StaticResource GlobalFontFamilyStyle}"
-        Title="{Binding CurrentViewModel.Title}">
+        Title="{Binding CurrentViewModel.Title}"
+        WindowStartupLocation="CenterScreen">
     <Grid>
+        <Grid.Resources>
+            <MessageBox x:Key="MessageBox"></MessageBox>
+        </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"></RowDefinition>
             <RowDefinition Height="5*"></RowDefinition>

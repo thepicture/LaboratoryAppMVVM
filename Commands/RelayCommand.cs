@@ -24,15 +24,12 @@ namespace LaboratoryAppMVVM.Commands
 
         public bool CanExecute(object parameter)
         {
-            return _canExecute();
+            return _canExecute == null || _canExecute();
         }
 
         public void Execute(object parameter = null)
         {
-            if (_canExecute == null || _canExecute())
-            {
-                _execute(parameter);
-            }
+            _execute(parameter);
         }
     }
 }

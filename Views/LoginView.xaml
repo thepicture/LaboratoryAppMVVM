@@ -3,38 +3,48 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:LaboratoryAppMVVM.Views"
+             xmlns:local="clr-namespace:LaboratoryAppMVVM.Views" xmlns:viewmodels="clr-namespace:LaboratoryAppMVVM.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:LoginViewModel}"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <Viewbox>
             <StackPanel>
-            <TextBlock Text="Пожалуйста, авторизуйтесь в системе"
+                <TextBlock Text="Пожалуйста, авторизуйтесь в системе"
                        HorizontalAlignment="Center"
                        FontWeight="Bold"
                        Style="{StaticResource CommonBlock}"></TextBlock>
-        <StackPanel HorizontalAlignment="Center"
+                <StackPanel HorizontalAlignment="Center"
                     VerticalAlignment="Center">
-            <StackPanel Orientation="Horizontal"
+                    <StackPanel Orientation="Horizontal"
                         HorizontalAlignment="Right">
-                <TextBlock Text="Логин: "
+                        <TextBlock Text="Логин: "
                            Style="{StaticResource CommonBlock}"></TextBlock>
-                <TextBox Text="{Binding LoginText}"
-                         Width="200"></TextBox>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal"
+                        <TextBox Text="{Binding LoginText}"
+                         Width="200"
+                         MaxLength="100"
+                         ToolTip="Введите логин, под которым вы зарегистрированы в системе"></TextBox>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal"
                         HorizontalAlignment="Right">
-                <TextBlock Text="Пароль: "
+                        <TextBlock Text="Пароль: "
                            Style="{StaticResource CommonBlock}"></TextBlock>
-                <PasswordBox Password="{Binding PasswordText}"
-                         Width="200"></PasswordBox>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal"
+                        <PasswordBox Width="200"
+                             Name="UserPasswordBox"
+                             MaxLength="100"
+                             ToolTip="Введите пароль, под которым вы зарегистрированы в системе">
+                        </PasswordBox>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal"
                         HorizontalAlignment="Right">
-                <Button Content="Войти"></Button>
-                <Button Content="Выход"></Button>
-            </StackPanel>
-        </StackPanel>
+                        <Button Content="Войти"
+                        CommandParameter="{Binding ElementName=UserPasswordBox, Path=Password}"
+                        Command="{Binding AuthorizeCommand}"
+                        ToolTip="Авторизоваться в системе под введёнными логином и паролем"></Button>
+                        <Button Content="Выход"
+                                ToolTip="Выйти из приложения"
+                                Command="{Binding ExitAppCommand}"></Button>
+                    </StackPanel>
+                </StackPanel>
             </StackPanel>
         </Viewbox>
     </Grid>
