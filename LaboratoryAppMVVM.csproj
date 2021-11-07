@@ -72,6 +72,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\LoginView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\MainView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -80,10 +84,16 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Commands\RelayCommand.cs" />
+    <Compile Include="Commands\NavigateCommand.cs" />
+    <Compile Include="Stores\ViewModelNavigationStore.cs" />
     <Compile Include="ViewModels\AccountantViewModel.cs" />
     <Compile Include="ViewModels\AdminViewModel.cs" />
+    <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="ViewModels\LaboratoryAssistantViewModel.cs" />
     <Compile Include="ViewModels\LaboratoryResearcherViewModel.cs" />
+    <Compile Include="ViewModels\LoginViewModel.cs" />
+    <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="Views\AccountantView.xaml.cs">
       <DependentUpon>AccountantView.xaml</DependentUpon>
     </Compile>
@@ -95,6 +105,9 @@
     </Compile>
     <Compile Include="Views\LaboratoryResearcherView.xaml.cs">
       <DependentUpon>LaboratoryResearcherView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\LoginView.xaml.cs">
+      <DependentUpon>LoginView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MainView.xaml.cs">
       <DependentUpon>MainView.xaml</DependentUpon>
@@ -131,7 +144,7 @@
     <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\logo.png" />
+    <Resource Include="Resources\logo.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using LaboratoryAppMVVM.Stores;
+using LaboratoryAppMVVM.ViewModels;
 using System.Windows;
 
 namespace LaboratoryAppMVVM
@@ -13,5 +9,17 @@ namespace LaboratoryAppMVVM
     /// </summary>
     public partial class App : Application
     {
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            ViewModelNavigationStore navigationStore = new ViewModelNavigationStore();
+            navigationStore.CurrentViewModel = new LoginViewModel(navigationStore);
+            MainView mainView = new MainView
+            {
+                DataContext = new MainViewModel(navigationStore)
+            };
+            mainView.Show();
+
+            base.OnStartup(e);
+        }
     }
 }
