@@ -23,6 +23,7 @@
                             <RowDefinition Height="auto" />
                             <RowDefinition Height="auto" />
                             <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
                         </Grid.RowDefinitions>
                         <Viewbox>
                         <Image Stretch="Uniform">
@@ -51,6 +52,9 @@
                         <Viewbox Grid.Row="3">
                         <Button Content="Сформировать отчёты"
                                 Width="150"></Button>
+                        </Viewbox>
+                        <Viewbox Grid.Row="4">
+                            <TextBlock Text="{Binding CurrentTimeOfSession, StringFormat=hh\\:mm\\:ss}"></TextBlock>
                         </Viewbox>
                     </Grid>
                 </Grid>

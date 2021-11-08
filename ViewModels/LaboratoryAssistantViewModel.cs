@@ -1,21 +1,64 @@
 ﻿
+using LaboratoryAppMVVM.Commands;
 using LaboratoryAppMVVM.Models.Entities;
+using LaboratoryAppMVVM.Services;
 using LaboratoryAppMVVM.Stores;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
 
 namespace LaboratoryAppMVVM.ViewModels
 {
     public class LaboratoryAssistantViewModel : ViewModelBase
     {
-        private ViewModelNavigationStore _navigationStore;
+        private readonly ViewModelNavigationStore _navigationStore;
         private List<AppliedService> _bioContent;
         private LaboratoryDatabaseEntities _context;
+        private readonly LaboratoryHaveTimeService _sessionTimer;
+        private RelayCommand _navigateToLoginCommand;
+        public TimeSpan CurrentTimeOfSession => _sessionTimer.TotalTimeLeft;
 
         public LaboratoryAssistantViewModel(ViewModelNavigationStore navigationStore, User user)
         {
             _navigationStore = navigationStore;
             User = user;
             Title = "Окно лаборанта";
+            MessageBoxService = new MessageBoxService();
+            _sessionTimer = new LaboratoryHaveTimeService(TimeSpan.FromMinutes(1));
+            _sessionTimer.TickChanged += OnSessionTimerTickChanged;
+            _sessionTimer.Start();
+        }
+
+        private void OnSessionTimerTickChanged()
+        {
+            OnPropertyChanged(nameof(CurrentTimeOfSession));
+            if (CurrentTimeOfSession == new TimeSpan(0, 0, 30))
+            {
+                Task.Run(ShowSessionExitSoonMessage);
+            }
+            if (CurrentTimeOfSession == TimeSpan.Zero)
+            {
+                Task.Run(ShowSessionIsDoneMessage);
+                _sessionTimer.Stop();
+                NavigateToLoginCommand.Execute();
+            }
+        }
+
+        private void ShowSessionExitSoonMessage()
+        {
+            MessageBoxService.ShowInformation($"Через {CurrentTimeOfSession.TotalMinutes} минут " +
+                "сессия завершится");
+        }
+
+        private void ShowSessionIsDoneMessage()
+        {
+            MessageBoxService.ShowInformation("Необходимо выполнить " +
+                "кварцевание помещений. " +
+                $"Сессия завершена. " +
+                $"Вы сможете зайти через " +
+                $"{TimeSpan.FromMinutes(30).TotalMinutes} " +
+                $"минут.");
         }
 
         public User User { get; }
@@ -52,6 +95,20 @@ namespace LaboratoryAppMVVM.ViewModels
             {
                 _context = value;
                 OnPropertyChanged();
+            }
+        }
+
+        public RelayCommand NavigateToLoginCommand
+        {
+            get
+            {
+                if (_navigateToLoginCommand == null)
+                {
+                    _navigateToLoginCommand = new RelayCommand(param => _navigationStore.CurrentViewModel = new LoginViewModel(_navigationStore,
+                                                                                                                               MessageBoxService as MessageBoxService,
+                                                                                                                               new LaboratoryLoginService()));
+                }
+                return _navigateToLoginCommand;
             }
         }
     }

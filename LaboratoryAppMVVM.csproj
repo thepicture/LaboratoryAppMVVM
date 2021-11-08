@@ -143,8 +143,11 @@
     <Compile Include="Models\Entities\User.cs">
       <DependentUpon>LaboratoryBaseEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Exceptions\SessionIsAlreadyEnabledException.cs" />
+    <Compile Include="Services\IHaveTimeService.cs" />
     <Compile Include="Services\IMessageBoxService.cs" />
     <Compile Include="Models\MaskTextBox.cs" />
+    <Compile Include="Services\LaboratoryHaveTimeService.cs" />
     <Compile Include="Services\LaboratoryLoginService.cs" />
     <Compile Include="Services\MessageBoxService.cs" />
     <Compile Include="Services\ILoginService.cs" />
