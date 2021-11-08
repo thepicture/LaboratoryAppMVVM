@@ -1,6 +1,15 @@
-﻿namespace LaboratoryAppMVVM.ViewModels
+﻿
+using LaboratoryAppMVVM.Stores;
+
+namespace LaboratoryAppMVVM.ViewModels
 {
-    class LaboratoryAssistantViewModel
+    public class LaboratoryAssistantViewModel : ViewModelBase
     {
+        private ViewModelNavigationStore navigationStore;
+
+        public LaboratoryAssistantViewModel(ViewModelNavigationStore navigationStore)
+        {
+            this.navigationStore = navigationStore;
+        }
     }
 }

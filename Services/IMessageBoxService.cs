@@ -1,4 +1,4 @@
-﻿namespace LaboratoryAppMVVM.Models
+﻿namespace LaboratoryAppMVVM.Services
 {
     public interface IMessageBoxService
     {

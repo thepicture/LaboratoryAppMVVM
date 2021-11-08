@@ -321,7 +321,7 @@
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" />
           <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="AppliedServices" Relationship="Self.FK_AppliedService_Analyzer" FromRole="Analyzer" ToRole="AppliedService" />
+          <NavigationProperty Name="AppliedService" Relationship="Self.FK_AppliedService_Analyzer" FromRole="Analyzer" ToRole="AppliedService" />
         </EntityType>
         <EntityType Name="AppliedService">
           <Key>
@@ -370,7 +370,7 @@
           <Property Name="INN" Type="String" MaxLength="7" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="CheckingAccount" Type="String" MaxLength="9" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="BIK" Type="String" MaxLength="9" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="Patients" Relationship="Self.FK_Patient_InsuranceCompany" FromRole="InsuranceCompany" ToRole="Patient" />
+          <NavigationProperty Name="Patient" Relationship="Self.FK_Patient_InsuranceCompany" FromRole="InsuranceCompany" ToRole="Patient" />
         </EntityType>
         <EntityType Name="Patient">
           <Key>
@@ -387,7 +387,7 @@
           <Property Name="Email" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="TypeOfInsurancePolicyId" Type="Int32" Nullable="false" />
           <Property Name="InsuranceCompanyId" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="BarcodeOfPatients" Relationship="Self.FK_BarcodeOfPatient_Patient" FromRole="Patient" ToRole="BarcodeOfPatient" />
+          <NavigationProperty Name="BarcodeOfPatient" Relationship="Self.FK_BarcodeOfPatient_Patient" FromRole="Patient" ToRole="BarcodeOfPatient" />
           <NavigationProperty Name="InsuranceCompany" Relationship="Self.FK_Patient_InsuranceCompany" FromRole="Patient" ToRole="InsuranceCompany" />
           <NavigationProperty Name="TypeOfInsurancePolicy" Relationship="Self.FK_Patient_TypeOfInsurancePolicy" FromRole="Patient" ToRole="TypeOfInsurancePolicy" />
         </EntityType>
@@ -400,8 +400,8 @@
           <Property Name="Price" Type="Decimal" Precision="20" Scale="2" Nullable="false" />
           <Property Name="Deadline" Type="DateTime" Precision="3" />
           <Property Name="MeanDeviation" Type="Decimal" Precision="20" Scale="2" />
-          <NavigationProperty Name="AppliedServices" Relationship="Self.FK_AppliedService_Service" FromRole="Service" ToRole="AppliedService" />
-          <NavigationProperty Name="Users" Relationship="Self.ServiceOfUser" FromRole="Service" ToRole="User" />
+          <NavigationProperty Name="AppliedService" Relationship="Self.FK_AppliedService_Service" FromRole="Service" ToRole="AppliedService" />
+          <NavigationProperty Name="User" Relationship="Self.ServiceOfUser" FromRole="Service" ToRole="User" />
         </EntityType>
         <EntityType Name="StatusOfAppliedService">
           <Key>
@@ -409,7 +409,7 @@
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" />
           <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="AppliedServices" Relationship="Self.FK_AppliedService_StatusOfAppliedService" FromRole="StatusOfAppliedService" ToRole="AppliedService" />
+          <NavigationProperty Name="AppliedService" Relationship="Self.FK_AppliedService_StatusOfAppliedService" FromRole="StatusOfAppliedService" ToRole="AppliedService" />
         </EntityType>
         <EntityType Name="TypeOfInsurancePolicy">
           <Key>
@@ -417,7 +417,7 @@
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" />
           <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="Patients" Relationship="Self.FK_Patient_TypeOfInsurancePolicy" FromRole="TypeOfInsurancePolicy" ToRole="Patient" />
+          <NavigationProperty Name="Patient" Relationship="Self.FK_Patient_TypeOfInsurancePolicy" FromRole="TypeOfInsurancePolicy" ToRole="Patient" />
         </EntityType>
         <EntityType Name="TypeOfUser">
           <Key>
@@ -425,7 +425,7 @@
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="Users" Relationship="Self.FK_User_TypeOfUser" FromRole="TypeOfUser" ToRole="User" />
+          <NavigationProperty Name="User" Relationship="Self.FK_User_TypeOfUser" FromRole="TypeOfUser" ToRole="User" />
         </EntityType>
         <EntityType Name="User">
           <Key>
@@ -437,10 +437,10 @@
           <Property Name="Password" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="InternetProtocol" Type="String" MaxLength="15" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="TypeOfUserId" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="AppliedServices" Relationship="Self.FK_AppliedService_User" FromRole="User" ToRole="AppliedService" />
-          <NavigationProperty Name="HistoryOfLogins" Relationship="Self.FK_HistoryOfLogin_User" FromRole="User" ToRole="HistoryOfLogin" />
+          <NavigationProperty Name="AppliedService" Relationship="Self.FK_AppliedService_User" FromRole="User" ToRole="AppliedService" />
+          <NavigationProperty Name="HistoryOfLogin" Relationship="Self.FK_HistoryOfLogin_User" FromRole="User" ToRole="HistoryOfLogin" />
           <NavigationProperty Name="TypeOfUser" Relationship="Self.FK_User_TypeOfUser" FromRole="User" ToRole="TypeOfUser" />
-          <NavigationProperty Name="Services" Relationship="Self.ServiceOfUser" FromRole="User" ToRole="Service" />
+          <NavigationProperty Name="Service" Relationship="Self.ServiceOfUser" FromRole="User" ToRole="Service" />
         </EntityType>
         <Association Name="FK_AppliedService_Analyzer">
           <End Role="Analyzer" Type="Self.Analyzer" Multiplicity="1" />
@@ -555,56 +555,56 @@
           <End Role="User" Type="Self.User" Multiplicity="*" />
         </Association>
         <EntityContainer Name="LaboratoryDatabaseEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="Analyzers" EntityType="Self.Analyzer" />
-          <EntitySet Name="AppliedServices" EntityType="Self.AppliedService" />
-          <EntitySet Name="BarcodeOfPatients" EntityType="Self.BarcodeOfPatient" />
-          <EntitySet Name="HistoryOfLogins" EntityType="Self.HistoryOfLogin" />
-          <EntitySet Name="InsuranceCompanies" EntityType="Self.InsuranceCompany" />
-          <EntitySet Name="Patients" EntityType="Self.Patient" />
-          <EntitySet Name="Services" EntityType="Self.Service" />
-          <EntitySet Name="StatusOfAppliedServices" EntityType="Self.StatusOfAppliedService" />
-          <EntitySet Name="TypeOfInsurancePolicies" EntityType="Self.TypeOfInsurancePolicy" />
-          <EntitySet Name="TypeOfUsers" EntityType="Self.TypeOfUser" />
-          <EntitySet Name="Users" EntityType="Self.User" />
+          <EntitySet Name="Analyzer" EntityType="Self.Analyzer" />
+          <EntitySet Name="AppliedService" EntityType="Self.AppliedService" />
+          <EntitySet Name="BarcodeOfPatient" EntityType="Self.BarcodeOfPatient" />
+          <EntitySet Name="HistoryOfLogin" EntityType="Self.HistoryOfLogin" />
+          <EntitySet Name="InsuranceCompany" EntityType="Self.InsuranceCompany" />
+          <EntitySet Name="Patient" EntityType="Self.Patient" />
+          <EntitySet Name="Service" EntityType="Self.Service" />
+          <EntitySet Name="StatusOfAppliedService" EntityType="Self.StatusOfAppliedService" />
+          <EntitySet Name="TypeOfInsurancePolicy" EntityType="Self.TypeOfInsurancePolicy" />
+          <EntitySet Name="TypeOfUser" EntityType="Self.TypeOfUser" />
+          <EntitySet Name="User" EntityType="Self.User" />
           <AssociationSet Name="FK_AppliedService_Analyzer" Association="Self.FK_AppliedService_Analyzer">
-            <End Role="Analyzer" EntitySet="Analyzers" />
-            <End Role="AppliedService" EntitySet="AppliedServices" />
+            <End Role="Analyzer" EntitySet="Analyzer" />
+            <End Role="AppliedService" EntitySet="AppliedService" />
           </AssociationSet>
           <AssociationSet Name="FK_AppliedService_Service" Association="Self.FK_AppliedService_Service">
-            <End Role="Service" EntitySet="Services" />
-            <End Role="AppliedService" EntitySet="AppliedServices" />
+            <End Role="Service" EntitySet="Service" />
+            <End Role="AppliedService" EntitySet="AppliedService" />
           </AssociationSet>
           <AssociationSet Name="FK_AppliedService_StatusOfAppliedService" Association="Self.FK_AppliedService_StatusOfAppliedService">
-            <End Role="StatusOfAppliedService" EntitySet="StatusOfAppliedServices" />
-            <End Role="AppliedService" EntitySet="AppliedServices" />
+            <End Role="StatusOfAppliedService" EntitySet="StatusOfAppliedService" />
+            <End Role="AppliedService" EntitySet="AppliedService" />
           </AssociationSet>
           <AssociationSet Name="FK_AppliedService_User" Association="Self.FK_AppliedService_User">
-            <End Role="User" EntitySet="Users" />
-            <End Role="AppliedService" EntitySet="AppliedServices" />
+            <End Role="User" EntitySet="User" />
+            <End Role="AppliedService" EntitySet="AppliedService" />
           </AssociationSet>
           <AssociationSet Name="FK_BarcodeOfPatient_Patient" Association="Self.FK_BarcodeOfPatient_Patient">
-            <End Role="Patient" EntitySet="Patients" />
-            <End Role="BarcodeOfPatient" EntitySet="BarcodeOfPatients" />
+            <End Role="Patient" EntitySet="Patient" />
+            <End Role="BarcodeOfPatient" EntitySet="BarcodeOfPatient" />
           </AssociationSet>
           <AssociationSet Name="FK_HistoryOfLogin_User" Association="Self.FK_HistoryOfLogin_User">
-            <End Role="User" EntitySet="Users" />
-            <End Role="HistoryOfLogin" EntitySet="HistoryOfLogins" />
+            <End Role="User" EntitySet="User" />
+            <End Role="HistoryOfLogin" EntitySet="HistoryOfLogin" />
           </AssociationSet>
           <AssociationSet Name="FK_Patient_InsuranceCompany" Association="Self.FK_Patient_InsuranceCompany">
-            <End Role="InsuranceCompany" EntitySet="InsuranceCompanies" />
-            <End Role="Patient" EntitySet="Patients" />
+            <End Role="InsuranceCompany" EntitySet="InsuranceCompany" />
+            <End Role="Patient" EntitySet="Patient" />
           </AssociationSet>
           <AssociationSet Name="FK_Patient_TypeOfInsurancePolicy" Association="Self.FK_Patient_TypeOfInsurancePolicy">
-            <End Role="TypeOfInsurancePolicy" EntitySet="TypeOfInsurancePolicies" />
-            <End Role="Patient" EntitySet="Patients" />
+            <End Role="TypeOfInsurancePolicy" EntitySet="TypeOfInsurancePolicy" />
+            <End Role="Patient" EntitySet="Patient" />
           </AssociationSet>
           <AssociationSet Name="FK_User_TypeOfUser" Association="Self.FK_User_TypeOfUser">
-            <End Role="TypeOfUser" EntitySet="TypeOfUsers" />
-            <End Role="User" EntitySet="Users" />
+            <End Role="TypeOfUser" EntitySet="TypeOfUser" />
+            <End Role="User" EntitySet="User" />
           </AssociationSet>
           <AssociationSet Name="ServiceOfUser" Association="Self.ServiceOfUser">
-            <End Role="Service" EntitySet="Services" />
-            <End Role="User" EntitySet="Users" />
+            <End Role="Service" EntitySet="Service" />
+            <End Role="User" EntitySet="User" />
           </AssociationSet>
         </EntityContainer>
       </Schema>
@@ -613,7 +613,7 @@
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="LaboratoryDatabaseModelStoreContainer" CdmEntityContainer="LaboratoryDatabaseEntities">
-          <EntitySetMapping Name="Analyzers">
+          <EntitySetMapping Name="Analyzer">
             <EntityTypeMapping TypeName="LaboratoryDatabaseModel.Analyzer">
               <MappingFragment StoreEntitySet="Analyzer">
                 <ScalarProperty Name="Id" ColumnName="Id" />
@@ -621,7 +621,7 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="AppliedServices">
+          <EntitySetMapping Name="AppliedService">
             <EntityTypeMapping TypeName="LaboratoryDatabaseModel.AppliedService">
               <MappingFragment StoreEntitySet="AppliedService">
                 <ScalarProperty Name="Id" ColumnName="Id" />
@@ -635,7 +635,7 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="BarcodeOfPatients">
+          <EntitySetMapping Name="BarcodeOfPatient">
             <EntityTypeMapping TypeName="LaboratoryDatabaseModel.BarcodeOfPatient">
               <MappingFragment StoreEntitySet="BarcodeOfPatient">
                 <ScalarProperty Name="Id" ColumnName="Id" />
@@ -645,7 +645,7 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="HistoryOfLogins">
+          <EntitySetMapping Name="HistoryOfLogin">
             <EntityTypeMapping TypeName="LaboratoryDatabaseModel.HistoryOfLogin">
               <MappingFragment StoreEntitySet="HistoryOfLogin">
                 <ScalarProperty Name="Id" ColumnName="Id" />
@@ -655,7 +655,7 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="InsuranceCompanies">
+          <EntitySetMapping Name="InsuranceCompany">
             <EntityTypeMapping TypeName="LaboratoryDatabaseModel.InsuranceCompany">
               <MappingFragment StoreEntitySet="InsuranceCompany">
                 <ScalarProperty Name="Id" ColumnName="Id" />
@@ -667,7 +667,7 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Patients">
+          <EntitySetMapping Name="Patient">
             <EntityTypeMapping TypeName="LaboratoryDatabaseModel.Patient">
               <MappingFragment StoreEntitySet="Patient">
                 <ScalarProperty Name="Id" ColumnName="Id" />
@@ -684,7 +684,7 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Services">
+          <EntitySetMapping Name="Service">
             <EntityTypeMapping TypeName="LaboratoryDatabaseModel.Service">
               <MappingFragment StoreEntitySet="Service">
                 <ScalarProperty Name="Id" ColumnName="Id" />
@@ -695,7 +695,7 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="StatusOfAppliedServices">
+          <EntitySetMapping Name="StatusOfAppliedService">
             <EntityTypeMapping TypeName="LaboratoryDatabaseModel.StatusOfAppliedService">
               <MappingFragment StoreEntitySet="StatusOfAppliedService">
                 <ScalarProperty Name="Id" ColumnName="Id" />
@@ -703,7 +703,7 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="TypeOfInsurancePolicies">
+          <EntitySetMapping Name="TypeOfInsurancePolicy">
             <EntityTypeMapping TypeName="LaboratoryDatabaseModel.TypeOfInsurancePolicy">
               <MappingFragment StoreEntitySet="TypeOfInsurancePolicy">
                 <ScalarProperty Name="Id" ColumnName="Id" />
@@ -711,7 +711,7 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="TypeOfUsers">
+          <EntitySetMapping Name="TypeOfUser">
             <EntityTypeMapping TypeName="LaboratoryDatabaseModel.TypeOfUser">
               <MappingFragment StoreEntitySet="TypeOfUser">
                 <ScalarProperty Name="Id" ColumnName="Id" />
@@ -719,7 +719,7 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Users">
+          <EntitySetMapping Name="User">
             <EntityTypeMapping TypeName="LaboratoryDatabaseModel.User">
               <MappingFragment StoreEntitySet="User">
                 <ScalarProperty Name="Id" ColumnName="Id" />
@@ -753,7 +753,7 @@
     <Options>
       <DesignerInfoPropertySet>
         <DesignerProperty Name="ValidateOnBuild" Value="true" />
-        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
         <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
         <DesignerProperty Name="UseLegacyProvider" Value="false" />
         <DesignerProperty Name="CodeGenerationStrategy" Value="None" />

@@ -17,8 +17,8 @@ namespace LaboratoryAppMVVM.Models.Entities
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Service()
         {
-            this.AppliedServices = new HashSet<AppliedService>();
-            this.Users = new HashSet<User>();
+            this.AppliedService = new HashSet<AppliedService>();
+            this.User = new HashSet<User>();
         }
     
         public int Id { get; set; }
@@ -28,8 +28,8 @@ namespace LaboratoryAppMVVM.Models.Entities
         public Nullable<decimal> MeanDeviation { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<AppliedService> AppliedServices { get; set; }
+        public virtual ICollection<AppliedService> AppliedService { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<User> Users { get; set; }
+        public virtual ICollection<User> User { get; set; }
     }
 }

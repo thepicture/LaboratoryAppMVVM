@@ -1,4 +1,4 @@
-﻿using LaboratoryAppMVVM.Models;
+﻿using LaboratoryAppMVVM.Services;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 

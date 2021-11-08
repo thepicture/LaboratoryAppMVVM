@@ -8,7 +8,7 @@ namespace LaboratoryAppMVVM.Commands
     {
         public NavigateCommand(ViewModelNavigationStore navigationStore, Func<TViewModel> createViewModelFunc)
         {
-            new RelayCommand(param => navigationStore.CurrentViewModel = createViewModelFunc()).Execute();
+            navigationStore.CurrentViewModel = createViewModelFunc();
         }
     }
 }

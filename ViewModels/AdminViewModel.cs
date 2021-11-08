@@ -1,12 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
+using LaboratoryAppMVVM.Stores;
 
 namespace LaboratoryAppMVVM.ViewModels
 {
-    class AdminViewModel
+    public class AdminViewModel : ViewModelBase
     {
+        private ViewModelNavigationStore navigationStore;
+
+        public AdminViewModel(ViewModelNavigationStore navigationStore)
+        {
+            this.navigationStore = navigationStore;
+        }
     }
 }

@@ -17,7 +17,7 @@ namespace LaboratoryAppMVVM.Models.Entities
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public InsuranceCompany()
         {
-            this.Patients = new HashSet<Patient>();
+            this.Patient = new HashSet<Patient>();
         }
     
         public int Id { get; set; }
@@ -28,6 +28,6 @@ namespace LaboratoryAppMVVM.Models.Entities
         public string BIK { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Patient> Patients { get; set; }
+        public virtual ICollection<Patient> Patient { get; set; }
     }
 }

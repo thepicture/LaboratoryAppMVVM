@@ -17,9 +17,9 @@ namespace LaboratoryAppMVVM.Models.Entities
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public User()
         {
-            this.AppliedServices = new HashSet<AppliedService>();
-            this.HistoryOfLogins = new HashSet<HistoryOfLogin>();
-            this.Services = new HashSet<Service>();
+            this.AppliedService = new HashSet<AppliedService>();
+            this.HistoryOfLogin = new HashSet<HistoryOfLogin>();
+            this.Service = new HashSet<Service>();
         }
     
         public int Id { get; set; }
@@ -30,11 +30,11 @@ namespace LaboratoryAppMVVM.Models.Entities
         public int TypeOfUserId { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<AppliedService> AppliedServices { get; set; }
+        public virtual ICollection<AppliedService> AppliedService { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<HistoryOfLogin> HistoryOfLogins { get; set; }
+        public virtual ICollection<HistoryOfLogin> HistoryOfLogin { get; set; }
         public virtual TypeOfUser TypeOfUser { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Service> Services { get; set; }
+        public virtual ICollection<Service> Service { get; set; }
     }
 }

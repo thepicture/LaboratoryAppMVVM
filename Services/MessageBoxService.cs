@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace LaboratoryAppMVVM.Models
+namespace LaboratoryAppMVVM.Services
 {
     public class MessageBoxService : IMessageBoxService
     {

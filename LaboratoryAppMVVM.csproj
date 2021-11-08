@@ -96,56 +96,58 @@
     <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Commands\NavigateCommand.cs" />
     <Compile Include="Models\Entities\Analyzer.cs">
-      <DependentUpon>LaboratoryBaseModel.tt</DependentUpon>
+      <DependentUpon>LaboratoryBaseEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Entities\AppliedService.cs">
-      <DependentUpon>LaboratoryBaseModel.tt</DependentUpon>
+      <DependentUpon>LaboratoryBaseEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Entities\BarcodeOfPatient.cs">
-      <DependentUpon>LaboratoryBaseModel.tt</DependentUpon>
+      <DependentUpon>LaboratoryBaseEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Entities\HistoryOfLogin.cs">
-      <DependentUpon>LaboratoryBaseModel.tt</DependentUpon>
+      <DependentUpon>LaboratoryBaseEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Entities\InsuranceCompany.cs">
-      <DependentUpon>LaboratoryBaseModel.tt</DependentUpon>
+      <DependentUpon>LaboratoryBaseEntities.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Entities\LaboratoryBaseModel.Context.cs">
+    <Compile Include="Models\Entities\LaboratoryBaseEntities.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>LaboratoryBaseModel.Context.tt</DependentUpon>
+      <DependentUpon>LaboratoryBaseEntities.Context.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Entities\LaboratoryBaseModel.cs">
+    <Compile Include="Models\Entities\LaboratoryBaseEntities.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>LaboratoryBaseModel.tt</DependentUpon>
+      <DependentUpon>LaboratoryBaseEntities.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Entities\LaboratoryBaseModel.Designer.cs">
+    <Compile Include="Models\Entities\LaboratoryBaseEntities.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>LaboratoryBaseModel.edmx</DependentUpon>
+      <DependentUpon>LaboratoryBaseEntities.edmx</DependentUpon>
     </Compile>
     <Compile Include="Models\Entities\Patient.cs">
-      <DependentUpon>LaboratoryBaseModel.tt</DependentUpon>
+      <DependentUpon>LaboratoryBaseEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Entities\Service.cs">
-      <DependentUpon>LaboratoryBaseModel.tt</DependentUpon>
+      <DependentUpon>LaboratoryBaseEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Entities\StatusOfAppliedService.cs">
-      <DependentUpon>LaboratoryBaseModel.tt</DependentUpon>
+      <DependentUpon>LaboratoryBaseEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Entities\TypeOfInsurancePolicy.cs">
-      <DependentUpon>LaboratoryBaseModel.tt</DependentUpon>
+      <DependentUpon>LaboratoryBaseEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Entities\TypeOfUser.cs">
-      <DependentUpon>LaboratoryBaseModel.tt</DependentUpon>
+      <DependentUpon>LaboratoryBaseEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Entities\User.cs">
-      <DependentUpon>LaboratoryBaseModel.tt</DependentUpon>
+      <DependentUpon>LaboratoryBaseEntities.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\IMessageBoxService.cs" />
+    <Compile Include="Services\IMessageBoxService.cs" />
     <Compile Include="Models\MaskTextBox.cs" />
-    <Compile Include="Models\MessageBoxService.cs" />
+    <Compile Include="Services\LaboratoryLoginService.cs" />
+    <Compile Include="Services\MessageBoxService.cs" />
+    <Compile Include="Services\ILoginService.cs" />
     <Compile Include="Stores\ViewModelNavigationStore.cs" />
     <Compile Include="ViewModels\AccountantViewModel.cs" />
     <Compile Include="ViewModels\AdminViewModel.cs" />
@@ -192,12 +194,12 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EntityDeploy Include="Models\Entities\LaboratoryBaseModel.edmx">
+    <EntityDeploy Include="Models\Entities\LaboratoryBaseEntities.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>LaboratoryBaseModel.Designer.cs</LastGenOutput>
+      <LastGenOutput>LaboratoryBaseEntities.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <None Include="Models\Entities\LaboratoryBaseModel.edmx.diagram">
-      <DependentUpon>LaboratoryBaseModel.edmx</DependentUpon>
+    <None Include="Models\Entities\LaboratoryBaseEntities.edmx.diagram">
+      <DependentUpon>LaboratoryBaseEntities.edmx</DependentUpon>
     </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -214,17 +216,16 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
-    <Content Include="Models\Entities\LaboratoryBaseModel.Context.tt">
+    <Content Include="Models\Entities\LaboratoryBaseEntities.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>LaboratoryBaseModel.edmx</DependentUpon>
-      <LastGenOutput>LaboratoryBaseModel.Context.cs</LastGenOutput>
+      <DependentUpon>LaboratoryBaseEntities.edmx</DependentUpon>
+      <LastGenOutput>LaboratoryBaseEntities.Context.cs</LastGenOutput>
     </Content>
-    <Content Include="Models\Entities\LaboratoryBaseModel.tt">
+    <Content Include="Models\Entities\LaboratoryBaseEntities.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>LaboratoryBaseModel.edmx</DependentUpon>
-      <LastGenOutput>LaboratoryBaseModel.cs</LastGenOutput>
+      <DependentUpon>LaboratoryBaseEntities.edmx</DependentUpon>
+      <LastGenOutput>LaboratoryBaseEntities.cs</LastGenOutput>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

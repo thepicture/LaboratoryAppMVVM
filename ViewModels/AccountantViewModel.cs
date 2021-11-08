@@ -1,6 +1,15 @@
-﻿namespace LaboratoryAppMVVM.ViewModels
+﻿
+using LaboratoryAppMVVM.Stores;
+
+namespace LaboratoryAppMVVM.ViewModels
 {
-    class AccountantViewModel
+    public class AccountantViewModel : ViewModelBase
     {
+        private readonly ViewModelNavigationStore _viewModelNavigationStore;
+
+        public AccountantViewModel(ViewModelNavigationStore viewModelNavigationStore)
+        {
+            _viewModelNavigationStore = viewModelNavigationStore;
+        }
     }
 }

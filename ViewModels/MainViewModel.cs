@@ -1,4 +1,4 @@
-﻿using LaboratoryAppMVVM.Models;
+﻿using LaboratoryAppMVVM.Services;
 using LaboratoryAppMVVM.Stores;
 
 namespace LaboratoryAppMVVM.ViewModels
