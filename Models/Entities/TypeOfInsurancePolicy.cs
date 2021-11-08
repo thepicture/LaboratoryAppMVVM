@@ -14,7 +14,16 @@ namespace LaboratoryAppMVVM.Models.Entities
     
     public partial class TypeOfInsurancePolicy
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public TypeOfInsurancePolicy()
+        {
+            this.Patients = new HashSet<Patient>();
+        }
+    
         public int Id { get; set; }
         public string Name { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Patient> Patients { get; set; }
     }
 }

@@ -18,5 +18,7 @@ namespace LaboratoryAppMVVM.Models.Entities
         public int UserId { get; set; }
         public System.DateTime DateTime { get; set; }
         public bool IsSuccessful { get; set; }
+    
+        public virtual User User { get; set; }
     }
 }

@@ -131,9 +131,6 @@
     <Compile Include="Models\Entities\Service.cs">
       <DependentUpon>LaboratoryBaseModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Entities\ServiceOfUser.cs">
-      <DependentUpon>LaboratoryBaseModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\Entities\StatusOfAppliedService.cs">
       <DependentUpon>LaboratoryBaseModel.tt</DependentUpon>
     </Compile>
@@ -212,22 +209,23 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
     <Content Include="Models\Entities\LaboratoryBaseModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>LaboratoryBaseModel.Context.cs</LastGenOutput>
       <DependentUpon>LaboratoryBaseModel.edmx</DependentUpon>
+      <LastGenOutput>LaboratoryBaseModel.Context.cs</LastGenOutput>
     </Content>
     <Content Include="Models\Entities\LaboratoryBaseModel.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>LaboratoryBaseModel.edmx</DependentUpon>
       <LastGenOutput>LaboratoryBaseModel.cs</LastGenOutput>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\logo.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

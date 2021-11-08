@@ -14,11 +14,27 @@ namespace LaboratoryAppMVVM.Models.Entities
     
     public partial class User
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public User()
+        {
+            this.AppliedServices = new HashSet<AppliedService>();
+            this.HistoryOfLogins = new HashSet<HistoryOfLogin>();
+            this.Services = new HashSet<Service>();
+        }
+    
         public int Id { get; set; }
         public string Name { get; set; }
         public string Login { get; set; }
         public string Password { get; set; }
         public string InternetProtocol { get; set; }
         public int TypeOfUserId { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<AppliedService> AppliedServices { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<HistoryOfLogin> HistoryOfLogins { get; set; }
+        public virtual TypeOfUser TypeOfUser { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Service> Services { get; set; }
     }
 }

@@ -14,10 +14,22 @@ namespace LaboratoryAppMVVM.Models.Entities
     
     public partial class Service
     {
-        public int Code { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public Service()
+        {
+            this.AppliedServices = new HashSet<AppliedService>();
+            this.Users = new HashSet<User>();
+        }
+    
+        public int Id { get; set; }
         public string Name { get; set; }
         public decimal Price { get; set; }
         public Nullable<System.DateTime> Deadline { get; set; }
         public Nullable<decimal> MeanDeviation { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<AppliedService> AppliedServices { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<User> Users { get; set; }
     }
 }

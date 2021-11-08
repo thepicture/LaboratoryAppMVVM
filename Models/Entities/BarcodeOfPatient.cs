@@ -18,5 +18,7 @@ namespace LaboratoryAppMVVM.Models.Entities
         public int PatientId { get; set; }
         public string Barcode { get; set; }
         public System.DateTime DateTime { get; set; }
+    
+        public virtual Patient Patient { get; set; }
     }
 }

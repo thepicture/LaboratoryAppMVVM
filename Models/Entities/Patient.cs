@@ -14,6 +14,12 @@ namespace LaboratoryAppMVVM.Models.Entities
     
     public partial class Patient
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public Patient()
+        {
+            this.BarcodeOfPatients = new HashSet<BarcodeOfPatient>();
+        }
+    
         public int Id { get; set; }
         public string Login { get; set; }
         public string Password { get; set; }
@@ -25,5 +31,10 @@ namespace LaboratoryAppMVVM.Models.Entities
         public string Email { get; set; }
         public int TypeOfInsurancePolicyId { get; set; }
         public int InsuranceCompanyId { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<BarcodeOfPatient> BarcodeOfPatients { get; set; }
+        public virtual InsuranceCompany InsuranceCompany { get; set; }
+        public virtual TypeOfInsurancePolicy TypeOfInsurancePolicy { get; set; }
     }
 }
