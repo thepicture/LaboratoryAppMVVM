@@ -5,7 +5,6 @@ using LaboratoryAppMVVM.Services;
 using LaboratoryAppMVVM.Stores;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
 namespace LaboratoryAppMVVM.ViewModels
@@ -23,7 +22,7 @@ namespace LaboratoryAppMVVM.ViewModels
         {
             _navigationStore = navigationStore;
             User = user;
-            Title = "Окно лаборанта";
+            Title = "Страница лаборанта";
             MessageBoxService = new MessageBoxService();
             _sessionTimer = new LaboratoryHaveTimeService(TimeSpan.FromMinutes(1));
             _sessionTimer.TickChanged += OnSessionTimerTickChanged;

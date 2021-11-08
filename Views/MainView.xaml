@@ -39,13 +39,13 @@
                 <DataTemplate DataType="{x:Type viewmodels:LaboratoryAssistantViewModel}">
                     <views:LaboratoryAssistantView></views:LaboratoryAssistantView>
                 </DataTemplate>
-                <DataTemplate DataType="LaboratoryResearcherViewModel">
+                <DataTemplate DataType="{x:Type viewmodels:LaboratoryResearcherViewModel}">
                     <views:LaboratoryResearcherView></views:LaboratoryResearcherView>
                 </DataTemplate>
-                <DataTemplate DataType="AccountantViewModel">
+                <DataTemplate DataType="{x:Type viewmodels:AccountantViewModel}">
                     <views:AccountantView></views:AccountantView>
                 </DataTemplate>
-                <DataTemplate DataType="AdminViewModel">
+                <DataTemplate DataType="{x:Type viewmodels:AdminViewModel}">
                     <views:AdminView></views:AdminView>
                 </DataTemplate>
                 <DataTemplate DataType="{x:Type viewmodels:LoginViewModel}">
