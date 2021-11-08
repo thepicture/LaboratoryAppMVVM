@@ -15,7 +15,7 @@ namespace LaboratoryAppMVVM
         protected override void OnStartup(StartupEventArgs e)
         {
             ViewModelNavigationStore navigationStore = new ViewModelNavigationStore();
-            ILoginService<TypeOfUser, ViewModelNavigationStore> loginService = new LaboratoryLoginService();
+            ILoginService<User, ViewModelNavigationStore> loginService = new LaboratoryLoginService();
             MessageBoxService messageBoxService = new MessageBoxService();
             navigationStore.CurrentViewModel = new LoginViewModel(navigationStore, messageBoxService, loginService);
             MainView mainView = new MainView

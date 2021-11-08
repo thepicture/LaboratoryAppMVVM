@@ -10,15 +10,15 @@ namespace LaboratoryAppMVVM.ViewModels
     public class LoginViewModel : ViewModelBase
     {
         private readonly ViewModelNavigationStore _navigationStore;
-        private readonly ILoginService<TypeOfUser, ViewModelNavigationStore> _loginService;
-        private string _loginText = string.Empty;
-        private string _passwordText = string.Empty;
+        private readonly ILoginService<User, ViewModelNavigationStore> _loginService;
+        private string _loginText = "chacking0";
+        private string _passwordText = "4tzqHdkqzo4";
         private RelayCommand _authorizeCommand;
         private RelayCommand _exitAppCommand;
         private LaboratoryDatabaseEntities _context;
         public LoginViewModel(ViewModelNavigationStore navigationStore,
                               MessageBoxService messageBoxService,
-                              ILoginService<TypeOfUser, ViewModelNavigationStore> loginService)
+                              ILoginService<User, ViewModelNavigationStore> loginService)
         {
             MessageBoxService = messageBoxService;
             _navigationStore = navigationStore;
@@ -99,7 +99,7 @@ namespace LaboratoryAppMVVM.ViewModels
             {
                 MessageBoxService.ShowInformation($"Авторизация успешна. " +
                     $"Добро пожаловать, {currentUser.TypeOfUser.Name} {currentUser.Name}!");
-                _navigationStore.CurrentViewModel = _loginService.LoginInAndGetLoginType(currentUser.TypeOfUser, _navigationStore)();
+                _navigationStore.CurrentViewModel = _loginService.LoginInAndGetLoginType(currentUser, _navigationStore)();
             }
             else
             {

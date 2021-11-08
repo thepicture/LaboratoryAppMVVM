@@ -227,6 +227,7 @@
       <DependentUpon>LaboratoryBaseEntities.edmx</DependentUpon>
       <LastGenOutput>LaboratoryBaseEntities.cs</LastGenOutput>
     </Content>
+    <Resource Include="Resources\picture.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

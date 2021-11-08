@@ -28,6 +28,7 @@ namespace LaboratoryAppMVVM.Models.Entities
         public string Password { get; set; }
         public string InternetProtocol { get; set; }
         public int TypeOfUserId { get; set; }
+        public byte[] UserImage { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AppliedService> AppliedService { get; set; }

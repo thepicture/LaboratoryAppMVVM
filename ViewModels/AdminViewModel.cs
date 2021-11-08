@@ -7,7 +7,7 @@ namespace LaboratoryAppMVVM.ViewModels
     {
         private ViewModelNavigationStore navigationStore;
 
-        public AdminViewModel(ViewModelNavigationStore navigationStore)
+        public AdminViewModel(ViewModelNavigationStore navigationStore, Models.Entities.User user)
         {
             this.navigationStore = navigationStore;
         }

@@ -14,9 +14,6 @@
         Title="{Binding CurrentViewModel.Title}"
         WindowStartupLocation="CenterScreen">
     <Grid>
-        <Grid.Resources>
-            <MessageBox x:Key="MessageBox"></MessageBox>
-        </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"></RowDefinition>
             <RowDefinition Height="5*"></RowDefinition>
@@ -39,7 +36,7 @@
         <ContentControl Grid.Row="1"
                         Content="{Binding CurrentViewModel}">
             <ContentControl.Resources>
-                <DataTemplate DataType="LaboratoryAssistantViewModel">
+                <DataTemplate DataType="{x:Type viewmodels:LaboratoryAssistantViewModel}">
                     <views:LaboratoryAssistantView></views:LaboratoryAssistantView>
                 </DataTemplate>
                 <DataTemplate DataType="LaboratoryResearcherViewModel">

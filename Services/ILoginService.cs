@@ -4,7 +4,7 @@ using System;
 
 namespace LaboratoryAppMVVM.Services
 {
-    public interface ILoginService<TUserType, TNavigationStore>
+    public interface ILoginService<TUser, TNavigationStore>
         where TNavigationStore : ViewModelNavigationStore
     {
         /// <summary>
@@ -13,10 +13,10 @@ namespace LaboratoryAppMVVM.Services
         /// depending on the given user type 
         /// for further actions.
         /// </summary>
-        /// <param name="userType">The user type to identify a type to return.</param>
+        /// <param name="user">The user to identify the view model to return.</param>
         /// <param name="navigationStore">The navigation store of the returning login type.</param>
         /// <returns>The function to create a view model with the navigation.</returns>
-        Func<ViewModelBase> LoginInAndGetLoginType(TUserType userType,
+        Func<ViewModelBase> LoginInAndGetLoginType(TUser user,
                                                    TNavigationStore navigationStore);
     }
 }

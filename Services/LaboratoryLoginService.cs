@@ -5,21 +5,21 @@ using System;
 
 namespace LaboratoryAppMVVM.Services
 {
-    public class LaboratoryLoginService : ILoginService<TypeOfUser, ViewModelNavigationStore>
+    public class LaboratoryLoginService : ILoginService<User, ViewModelNavigationStore>
     {
-        public Func<ViewModelBase> LoginInAndGetLoginType(TypeOfUser userType,
+        public Func<ViewModelBase> LoginInAndGetLoginType(User user,
                                                           ViewModelNavigationStore navigationStore)
         {
-            switch (userType.Name)
+            switch (user.TypeOfUser.Name)
             {
                 case "Лаборант":
-                    return new Func<ViewModelBase>(() => new LaboratoryAssistantViewModel(navigationStore));
+                    return new Func<ViewModelBase>(() => new LaboratoryAssistantViewModel(navigationStore, user));
                 case "Лаборант-исследователь":
-                    return new Func<ViewModelBase>(() => new LaboratoryResearcherViewModel(navigationStore));
+                    return new Func<ViewModelBase>(() => new LaboratoryResearcherViewModel(navigationStore, user));
                 case "Бухгалтер":
-                    return new Func<ViewModelBase>(() => new AccountantViewModel(navigationStore));
+                    return new Func<ViewModelBase>(() => new AccountantViewModel(navigationStore, user));
                 case "Администратор":
-                    return new Func<ViewModelBase>(() => new AdminViewModel(navigationStore));
+                    return new Func<ViewModelBase>(() => new AdminViewModel(navigationStore, user));
                 default:
                     return null;
             }

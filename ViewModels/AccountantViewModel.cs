@@ -7,7 +7,7 @@ namespace LaboratoryAppMVVM.ViewModels
     {
         private readonly ViewModelNavigationStore _viewModelNavigationStore;
 
-        public AccountantViewModel(ViewModelNavigationStore viewModelNavigationStore)
+        public AccountantViewModel(ViewModelNavigationStore viewModelNavigationStore, Models.Entities.User user)
         {
             _viewModelNavigationStore = viewModelNavigationStore;
         }
