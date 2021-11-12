@@ -20,17 +20,27 @@
         </Grid.RowDefinitions>
         <Grid Style="{StaticResource BackgroundGrid}">
             <Grid>
+                <Grid.Resources>
+                    <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"></BooleanToVisibilityConverter>
+                </Grid.Resources>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto" />
                     <ColumnDefinition/>
+                    <ColumnDefinition Width="auto"/>
                 </Grid.ColumnDefinitions>
-            <Image Source="/Resources/logo.png"
+                <Image Source="/Resources/logo.png"
                    HorizontalAlignment="Left"></Image>
-            <Viewbox Grid.Column="1">
-                <TextBlock Text="Медицинская лаборатория № 20 Санкт-Петербурга"
+                <Viewbox Grid.Column="1">
+                    <TextBlock Text="Медицинская лаборатория № 20 Санкт-Петербурга"
                            Margin="10"
                            FontWeight="Bold"></TextBlock>
-            </Viewbox>
+                </Viewbox>
+                <Button Content="Вернуться на окно входа"
+                        Grid.Column="3"
+                        VerticalAlignment="Center"
+                        Visibility="{Binding IsNotOnLoginPage, Converter={StaticResource BoolToVisibilityConverter}}"
+                        Command="{Binding NavigateToLoginPageCommand}">
+                </Button>
             </Grid>
         </Grid>
         <ContentControl Grid.Row="1"

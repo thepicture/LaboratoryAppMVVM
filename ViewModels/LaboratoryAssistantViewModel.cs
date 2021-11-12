@@ -1,4 +1,5 @@
-﻿using LaboratoryAppMVVM.Models.Entities;
+﻿using LaboratoryAppMVVM.Models;
+using LaboratoryAppMVVM.Models.Entities;
 using LaboratoryAppMVVM.Services;
 using LaboratoryAppMVVM.Stores;
 using System;
@@ -24,6 +25,12 @@ namespace LaboratoryAppMVVM.ViewModels
             _sessionTimer = new LaboratoryHaveTimeService(TimeSpan.FromMinutes(1));
             _sessionTimer.TickChanged += OnSessionTimerTickChanged;
             _sessionTimer.Start();
+            _navigationStore.CurrentViewModelChanged += OnCurrentViewModelChanged;
+        }
+
+        private void OnCurrentViewModelChanged()
+        {
+            DisposerOnTypeEqual<LoginViewModel>.Dispose(_sessionTimer, _navigationStore);
         }
 
         private void OnSessionTimerTickChanged()

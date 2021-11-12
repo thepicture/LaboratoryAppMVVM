@@ -144,6 +144,7 @@
       <DependentUpon>LaboratoryBaseEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Exceptions\SessionIsAlreadyEnabledException.cs" />
+    <Compile Include="Models\DisposerOnTypeEqual.cs" />
     <Compile Include="Services\IHaveTimeService.cs" />
     <Compile Include="Services\IMessageBoxService.cs" />
     <Compile Include="Models\MaskTextBox.cs" />
