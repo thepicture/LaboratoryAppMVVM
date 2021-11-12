@@ -1,9 +1,13 @@
 ﻿using LaboratoryAppMVVM.Commands;
+using LaboratoryAppMVVM.Models;
 using LaboratoryAppMVVM.Models.Entities;
 using LaboratoryAppMVVM.Services;
 using LaboratoryAppMVVM.Stores;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 
 namespace LaboratoryAppMVVM.ViewModels
 {
@@ -15,8 +19,14 @@ namespace LaboratoryAppMVVM.ViewModels
         private string _passwordText = "4tzqHdkqzo4";
         private RelayCommand _authorizeCommand;
         private RelayCommand _exitAppCommand;
+        private RelayCommand _regenerateCaptchaCommand;
+        private RelayCommand _checkCaptchaCommand;
         private LaboratoryDatabaseEntities _context;
-        private Captcha
+        private readonly ICaptchaService _captchaService;
+        private List<ListViewCaptchaLetter> _captchaLetters;
+        private bool _isCaptchaEnabled = false;
+        private bool _isInterfaceNotBlocked = true;
+        private RenderTargetBitmap _noiseImage;
         public LoginViewModel(ViewModelNavigationStore navigationStore,
                               IMessageBoxService messageBoxService,
                               ILoginService<User, ViewModelNavigationStore> loginService)
@@ -25,6 +35,10 @@ namespace LaboratoryAppMVVM.ViewModels
             _navigationStore = navigationStore;
             _loginService = loginService;
             Title = "Авторизация";
+            _captchaService = new CaptchaWithLineService();
+            CaptchaLetters = _captchaService.GetCaptchaList(3, 4)
+                 .Cast<ListViewCaptchaLetter>()
+                 .ToList();
         }
 
         public string LoginText
@@ -81,6 +95,95 @@ namespace LaboratoryAppMVVM.ViewModels
             set => _context = value;
         }
 
+        public List<ListViewCaptchaLetter> CaptchaLetters
+        {
+            get => _captchaLetters; set
+            {
+                _captchaLetters = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public RelayCommand RegenerateCaptchaCommand
+        {
+            get
+            {
+                if (_regenerateCaptchaCommand == null)
+                {
+                    _regenerateCaptchaCommand =
+                        new RelayCommand(param => CaptchaLetters = _captchaService.GetCaptchaList(3, 4)
+                        .Cast<ListViewCaptchaLetter>()
+                        .ToList());
+                }
+                return _regenerateCaptchaCommand;
+            }
+        }
+        public RelayCommand CheckCaptchaCommand
+        {
+            get
+            {
+                if (_checkCaptchaCommand == null)
+                {
+                    _checkCaptchaCommand = new RelayCommand(param =>
+                    {
+                        if ((param as string) == string.Join("", _captchaLetters.Select(c => c.Letter)))
+                        {
+                            IsCaptchaEnabled = false;
+                        }
+                        else
+                        {
+                            BlockSystemInput();
+                        }
+                    });
+                }
+                return _checkCaptchaCommand;
+            }
+        }
+
+        private async void BlockSystemInput()
+        {
+            MessageBoxService.ShowError("Вам запрещён вход на 10 секунд");
+            IsInterfaceNotBlocked = false;
+            await Task.Delay(TimeSpan.FromSeconds(10));
+            IsInterfaceNotBlocked = true;
+        }
+
+        public bool IsCaptchaEnabled
+        {
+            get => _isCaptchaEnabled; set
+            {
+                _isCaptchaEnabled = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsInterfaceNotBlocked
+        {
+            get => _isInterfaceNotBlocked; set
+            {
+                _isInterfaceNotBlocked = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public RenderTargetBitmap NoiseImage
+        {
+            get
+            {
+                if (_noiseImage == null)
+                {
+                    _noiseImage = new NoiseGenerator().Generate(200, 40);
+                }
+                return _noiseImage;
+            }
+
+            set
+            {
+                _noiseImage = value;
+                OnPropertyChanged();
+            }
+        }
+
         private void TryToExitApp()
         {
             if (MessageBoxService.ShowQuestion("Вы действительно хотите "
@@ -104,9 +207,12 @@ namespace LaboratoryAppMVVM.ViewModels
             }
             else
             {
-                MessageBoxService.ShowError("Неверный логин и/или пароль. " +
+                MessageBoxService.ShowError("Неуспешная авторизация. " +
+                    "Неверный логин и/или пароль. " +
                     "Пожалуйста, проверьте введённые данные " +
                     "и попробуйте авторизоваться ещё раз");
+                IsCaptchaEnabled = true;
+                RegenerateCaptchaCommand.Execute();
             }
         }
     }

@@ -95,6 +95,7 @@
     </Compile>
     <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Commands\NavigateCommand.cs" />
+    <Compile Include="Models\CaptchaLetterBase.cs" />
     <Compile Include="Models\Entities\Analyzer.cs">
       <DependentUpon>LaboratoryBaseEntities.tt</DependentUpon>
     </Compile>
@@ -145,6 +146,10 @@
     </Compile>
     <Compile Include="Models\Exceptions\SessionIsAlreadyEnabledException.cs" />
     <Compile Include="Models\DisposerOnTypeEqual.cs" />
+    <Compile Include="Models\ListViewCaptchaLetter.cs" />
+    <Compile Include="Models\NoiseGenerator.cs" />
+    <Compile Include="Services\CaptchaWithLineService.cs" />
+    <Compile Include="Services\ICaptchaService.cs" />
     <Compile Include="Services\IHaveTimeService.cs" />
     <Compile Include="Services\IMessageBoxService.cs" />
     <Compile Include="Models\MaskTextBox.cs" />

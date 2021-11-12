@@ -7,7 +7,7 @@ namespace LaboratoryAppMVVM.ViewModels
 {
     public class AdminViewModel : ViewModelBase
     {
-        private ViewModelNavigationStore navigationStore;
+        private readonly ViewModelNavigationStore navigationStore;
         private List<HistoryOfLogin> _userLoginHistoriesList;
         private List<Service> _servicesList;
 
