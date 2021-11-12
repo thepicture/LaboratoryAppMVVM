@@ -14,7 +14,7 @@ namespace LaboratoryAppMVVM.Services
         {
             _timer = new DispatcherTimer(priority: DispatcherPriority.Normal)
             {
-                Interval = TimeSpan.FromSeconds(.1),
+                Interval = TimeSpan.FromSeconds(1),
             };
             TotalTimeLeft = sessionTimeSpan;
             _timer.Tick += OnSessionTimerTick;
@@ -30,7 +30,7 @@ namespace LaboratoryAppMVVM.Services
 
         private void OnSessionTimerTick(object sender, EventArgs e)
         {
-            if (TotalTimeLeft == new TimeSpan(0, 0, 30))
+            if (TotalTimeLeft == new TimeSpan(0, 5, 0))
             {
                 _ = Task.Run(ShowSessionExitSoonMessage);
             }

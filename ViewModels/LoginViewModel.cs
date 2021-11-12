@@ -16,6 +16,7 @@ namespace LaboratoryAppMVVM.ViewModels
         private RelayCommand _authorizeCommand;
         private RelayCommand _exitAppCommand;
         private LaboratoryDatabaseEntities _context;
+        private Captcha
         public LoginViewModel(ViewModelNavigationStore navigationStore,
                               IMessageBoxService messageBoxService,
                               ILoginService<User, ViewModelNavigationStore> loginService)
