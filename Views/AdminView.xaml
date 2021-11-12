@@ -3,10 +3,99 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:LaboratoryAppMVVM.Views"
+             xmlns:local="clr-namespace:LaboratoryAppMVVM.Views" xmlns:viewmodels="clr-namespace:LaboratoryAppMVVM.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:AdminViewModel}"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-            
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"></ColumnDefinition>
+            <ColumnDefinition Width="6*"/>
+        </Grid.ColumnDefinitions>
+        <Grid>
+            <Border BorderBrush="Black"
+                    BorderThickness="2"
+                    HorizontalAlignment="Center">
+                <StackPanel>
+                    <Image Stretch="Uniform"
+                           Width="200">
+                        <Image.Source>
+                            <Binding Path="User.UserImage">
+                                <Binding.TargetNullValue>
+                                    <ImageSource>
+                                        /Resources/picture.png
+                                    </ImageSource>
+                                </Binding.TargetNullValue>
+                            </Binding>
+                        </Image.Source>
+                    </Image>
+                    <StackPanel>
+                        <TextBlock HorizontalAlignment="Center"
+                               Text="{Binding User.Name}"
+                               Style="{StaticResource CommonBlock}"
+                               FontWeight="Bold"></TextBlock>
+                        <TextBlock HorizontalAlignment="Center"
+                               Text="{Binding User.TypeOfUser.Name, StringFormat={}Роль: {0}}"
+                               Grid.Row="2"></TextBlock>
+                    </StackPanel>
+                    <StackPanel>
+                        <Button Content="Сформировать отчёт по истории входа"
+                                    Width="250"></Button>
+                        <Button Content="Сформировать отчёт по материалам"
+                                    Width="250"></Button>
+                        <Button Content="Добавить расходный материал"
+                                    Width="250"></Button>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Grid>
+        <Grid Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <DataGrid ItemsSource="{Binding ServicesList}"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True"
+                  ColumnWidth="*"
+                  Grid.Column="1">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Название" 
+                                    Binding="{Binding Name}">
+                    </DataGridTextColumn>
+                    <DataGridTemplateColumn>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Content="Редактировать" Margin="0"></Button>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+            <DataGrid ItemsSource="{Binding UserLoginHistoriesList}"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True"
+                  ColumnWidth="*"
+                  Grid.Column="0">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Пользователь" 
+                                    Binding="{Binding User.Login}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Время входа" 
+                                    Binding="{Binding DateTime, StringFormat=yyyy:mm:dd hh:mm}">
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Вход">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="{x:Type TextBlock}">
+                                <Setter Property="Text" Value="Успешный"></Setter>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsSuccessful}" Value="False">
+                                        <Setter Property="Text" Value="Неудачный"></Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
     </Grid>
 </UserControl>

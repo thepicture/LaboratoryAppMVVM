@@ -13,6 +13,7 @@ namespace LaboratoryAppMVVM.ViewModels
         public AccountantViewModel(ViewModelNavigationStore viewModelNavigationStore, User user)
         {
             _viewModelNavigationStore = viewModelNavigationStore;
+            Title = "Страница бухгалтера";
             User = user;
         }
 
