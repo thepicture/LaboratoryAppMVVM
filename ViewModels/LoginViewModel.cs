@@ -17,7 +17,7 @@ namespace LaboratoryAppMVVM.ViewModels
         private RelayCommand _exitAppCommand;
         private LaboratoryDatabaseEntities _context;
         public LoginViewModel(ViewModelNavigationStore navigationStore,
-                              MessageBoxService messageBoxService,
+                              IMessageBoxService messageBoxService,
                               ILoginService<User, ViewModelNavigationStore> loginService)
         {
             MessageBoxService = messageBoxService;

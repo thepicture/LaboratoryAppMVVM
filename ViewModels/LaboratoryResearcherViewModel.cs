@@ -7,13 +7,13 @@ namespace LaboratoryAppMVVM.ViewModels
 {
     public class LaboratoryResearcherViewModel : ViewModelBase
     {
-        private ViewModelNavigationStore navigationStore;
+        private readonly ViewModelNavigationStore _navigationStore;
         private List<Analyzer> _analyzersList;
         private LaboratoryDatabaseEntities _context;
 
         public LaboratoryResearcherViewModel(ViewModelNavigationStore navigationStore, Models.Entities.User user)
         {
-            this.navigationStore = navigationStore;
+            this._navigationStore = navigationStore;
             Title = "Страница лаборанта-исследователя";
             User = user;
         }
@@ -53,7 +53,5 @@ namespace LaboratoryAppMVVM.ViewModels
                 OnPropertyChanged();
             }
         }
-
-        public User User { get; }
     }
 }

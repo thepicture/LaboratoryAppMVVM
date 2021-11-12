@@ -1,4 +1,5 @@
-﻿using LaboratoryAppMVVM.Services;
+﻿using LaboratoryAppMVVM.Models.Entities;
+using LaboratoryAppMVVM.Services;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -8,6 +9,7 @@ namespace LaboratoryAppMVVM.ViewModels
     {
         private string _title = "";
         private IMessageBoxService _messageBoxService;
+
 
         public string Title
         {
@@ -26,6 +28,8 @@ namespace LaboratoryAppMVVM.ViewModels
                 OnPropertyChanged();
             }
         }
+
+        public User User { get; protected set; } = new User();
 
         public event PropertyChangedEventHandler PropertyChanged;
 

@@ -1,6 +1,4 @@
-﻿
-using LaboratoryAppMVVM.Commands;
-using LaboratoryAppMVVM.Models.Entities;
+﻿using LaboratoryAppMVVM.Models.Entities;
 using LaboratoryAppMVVM.Services;
 using LaboratoryAppMVVM.Stores;
 using System;
@@ -15,7 +13,6 @@ namespace LaboratoryAppMVVM.ViewModels
         private List<AppliedService> _bioContent;
         private LaboratoryDatabaseEntities _context;
         private readonly LaboratoryHaveTimeService _sessionTimer;
-        private RelayCommand _navigateToLoginCommand;
         public TimeSpan CurrentTimeOfSession => _sessionTimer.TotalTimeLeft;
 
         public LaboratoryAssistantViewModel(ViewModelNavigationStore navigationStore, User user)
@@ -34,13 +31,13 @@ namespace LaboratoryAppMVVM.ViewModels
             OnPropertyChanged(nameof(CurrentTimeOfSession));
             if (CurrentTimeOfSession == new TimeSpan(0, 0, 30))
             {
-                Task.Run(ShowSessionExitSoonMessage);
+                _ = Task.Run(ShowSessionExitSoonMessage);
             }
             if (CurrentTimeOfSession == TimeSpan.Zero)
             {
-                Task.Run(ShowSessionIsDoneMessage);
+                _ = Task.Run(ShowSessionIsDoneMessage);
                 _sessionTimer.Stop();
-                NavigateToLoginCommand.Execute();
+                _navigationStore.CurrentViewModel = new LoginViewModel(_navigationStore, MessageBoxService, new LaboratoryLoginService());
             }
         }
 
@@ -60,7 +57,6 @@ namespace LaboratoryAppMVVM.ViewModels
                 $"минут.");
         }
 
-        public User User { get; }
         public List<AppliedService> BioContent
         {
             get
@@ -94,20 +90,6 @@ namespace LaboratoryAppMVVM.ViewModels
             {
                 _context = value;
                 OnPropertyChanged();
-            }
-        }
-
-        public RelayCommand NavigateToLoginCommand
-        {
-            get
-            {
-                if (_navigateToLoginCommand == null)
-                {
-                    _navigateToLoginCommand = new RelayCommand(param => _navigationStore.CurrentViewModel = new LoginViewModel(_navigationStore,
-                                                                                                                               MessageBoxService as MessageBoxService,
-                                                                                                                               new LaboratoryLoginService()));
-                }
-                return _navigateToLoginCommand;
             }
         }
     }

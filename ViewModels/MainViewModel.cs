@@ -5,8 +5,8 @@ namespace LaboratoryAppMVVM.ViewModels
 {
     public class MainViewModel : ViewModelBase
     {
-        private readonly ViewModelNavigationStore _viewModelNavigationStore;
-
+        protected ViewModelNavigationStore _viewModelNavigationStore;
+        public ViewModelBase CurrentViewModel => _viewModelNavigationStore.CurrentViewModel;
         public MainViewModel(ViewModelNavigationStore viewModelNavigationStore, IMessageBoxService messageBoxService)
         {
             MessageBoxService = messageBoxService;
@@ -19,6 +19,5 @@ namespace LaboratoryAppMVVM.ViewModels
             OnPropertyChanged(nameof(CurrentViewModel));
         }
 
-        public ViewModelBase CurrentViewModel => _viewModelNavigationStore.CurrentViewModel;
     }
 }
