@@ -16,7 +16,34 @@
                             HorizontalAlignment="Right">
                     <TextBlock Style="{StaticResource CommonBlock}"
                                Text="Введите код пробирки: "></TextBlock>
-                    <TextBox></TextBox>
+                    <Grid>
+                        <TextBox x:Name="TextBoxTube"
+                                 Text="{Binding TubeId, UpdateSourceTrigger=PropertyChanged}">
+                            <TextBox.InputBindings>
+                                <KeyBinding Key="Enter"
+                                            Command="{Binding EnterTooltipCommand}"></KeyBinding>
+                            </TextBox.InputBindings>
+                            <TextBox.Style>
+                                <Style TargetType="TextBox"
+                                       BasedOn="{StaticResource {x:Type TextBox}}">
+                                </Style>
+                            </TextBox.Style>
+                        </TextBox>
+                        <TextBlock Margin="10 5 5 5"
+                                   Foreground="Gray"
+                                   IsHitTestVisible="False">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ElementName=TextBoxTube, Path=Text.Length}"
+                                                     Value="0">
+                                    <Setter Property="Text" Value="{Binding TubeIdTooltipText}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </Grid>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal"
                             HorizontalAlignment="Right">
@@ -28,15 +55,17 @@
                             HorizontalAlignment="Right">
                     <TextBlock Style="{StaticResource CommonBlock}"
                                Text="Услуги: "></TextBlock>
-                    <ListView Width="200"
+                    <ItemsControl Width="200"
                               Margin="5"
-                              ItemsSource="{Binding AppliedServicesList}">
-                        <ListView.ItemTemplate>
+                              ItemsSource="{Binding AppliedServicesList}"
+                              ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                        <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <TextBox Text="{Binding Service.Name}"></TextBox>
+                                <TextBox Text="{Binding Service.Name}"
+                                         Margin="0 10 0 0"></TextBox>
                             </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
                 </StackPanel>
                 <Button Content="Добавить ещё услугу"
                             HorizontalAlignment="Right"
