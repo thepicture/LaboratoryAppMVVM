@@ -71,31 +71,52 @@
                     </DataGridTemplateColumn>
                 </DataGrid.Columns>
             </DataGrid>
-            <DataGrid ItemsSource="{Binding UserLoginHistoriesList}"
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <WrapPanel>
+                    <StackPanel>
+                    <TextBlock Text="Фильтрация по логину"
+                               Style="{StaticResource CommonBlock}"></TextBlock>
+                    <TextBox Text="{Binding UserLoginText, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                    </StackPanel>
+                    <StackPanel>
+                    <TextBlock Text="Сортировка"
+                               Style="{StaticResource CommonBlock}"></TextBlock>
+                    <ComboBox ItemsSource="{Binding SortTypes}"
+                              SelectedItem="{Binding CurrentSortType}"
+                              Width="200"></ComboBox>
+                        </StackPanel>
+                </WrapPanel>
+                <DataGrid ItemsSource="{Binding UserLoginHistoriesList}"
                   AutoGenerateColumns="False"
                   IsReadOnly="True"
                   ColumnWidth="*"
-                  Grid.Column="0">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Пользователь" 
-                                    Binding="{Binding User.Login}"></DataGridTextColumn>
-                    <DataGridTextColumn Header="Время входа" 
+                  Grid.Row="1"
+                  CanUserSortColumns="False">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Время входа" 
                                     Binding="{Binding DateTime, StringFormat=yyyy:mm:dd hh:mm}">
-                    </DataGridTextColumn>
-                    <DataGridTextColumn Header="Вход">
-                        <DataGridTextColumn.ElementStyle>
-                            <Style TargetType="{x:Type TextBlock}">
-                                <Setter Property="Text" Value="Успешный"></Setter>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsSuccessful}" Value="False">
-                                        <Setter Property="Text" Value="Неудачный"></Setter>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </DataGridTextColumn.ElementStyle>
-                    </DataGridTextColumn>
-                </DataGrid.Columns>
-            </DataGrid>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Логин пользователя" 
+                                    Binding="{Binding User.Login}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Попытка входа">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="{x:Type TextBlock}">
+                                    <Setter Property="Text" Value="Успешная"></Setter>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsSuccessful}" Value="False">
+                                            <Setter Property="Text" Value="Ошибочная"></Setter>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
         </Grid>
     </Grid>
 </UserControl>
