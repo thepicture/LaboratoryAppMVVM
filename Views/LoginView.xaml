@@ -41,6 +41,7 @@
                             <TextBox Width="200"
                              Name="UserShownPasswordBox"
                              MaxLength="100"
+                             Opacity="{Binding ElementName=ShowPasswordCheckBox, Path=IsChecked}"
                              Text="{Binding PasswordText, UpdateSourceTrigger=PropertyChanged}"
                              ToolTip="Введите пароль, под которым вы зарегистрированы в системе">
                             </TextBox>
@@ -70,12 +71,12 @@
                             </models:MaskTextBox>
                         </Grid>
                     </StackPanel>
-                    <Image Width="200" Height="20" Source="{Binding NoiseImage}"></Image>
                     <StackPanel Visibility="{Binding IsCaptchaEnabled, Converter={StaticResource BoolToVisibilityConverter}}">
                         <TextBlock HorizontalAlignment="Right"
                                Text="Введите капчу, изображённую ниже:"></TextBlock>
+                        <Grid HorizontalAlignment="Right">
+                            <Image Source="{Binding NoiseImage}"></Image>
                         <ItemsControl Width="200"
-                              HorizontalAlignment="Right"
                               Height="40"
                               Margin="5"
                               BorderBrush="Black"
@@ -92,11 +93,12 @@
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding Letter}"
-                                           TextDecorations="Strikethrough" Margin="-3"
-                                           FontSize="{Binding FontSize}"></TextBlock>
+                                               Margin="-3"
+                                               FontSize="{Binding FontSize}"></TextBlock>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
+                        </Grid>
                         <TextBox HorizontalAlignment="Right"
                              Width="200"
                              ToolTip="Введите капчу ..."

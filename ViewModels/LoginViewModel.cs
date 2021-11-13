@@ -27,6 +27,7 @@ namespace LaboratoryAppMVVM.ViewModels
         private bool _isCaptchaEnabled = false;
         private bool _isInterfaceNotBlocked = true;
         private RenderTargetBitmap _noiseImage;
+        private NoiseGenerator _noiseGenerator;
         public LoginViewModel(ViewModelNavigationStore navigationStore,
                               IMessageBoxService messageBoxService,
                               ILoginService<User, ViewModelNavigationStore> loginService)
@@ -39,6 +40,7 @@ namespace LaboratoryAppMVVM.ViewModels
             CaptchaLetters = _captchaService.GetCaptchaList(3, 4)
                  .Cast<ListViewCaptchaLetter>()
                  .ToList();
+            _noiseGenerator = new NoiseGenerator();
         }
 
         public string LoginText
@@ -111,9 +113,13 @@ namespace LaboratoryAppMVVM.ViewModels
                 if (_regenerateCaptchaCommand == null)
                 {
                     _regenerateCaptchaCommand =
-                        new RelayCommand(param => CaptchaLetters = _captchaService.GetCaptchaList(3, 4)
-                        .Cast<ListViewCaptchaLetter>()
-                        .ToList());
+                        new RelayCommand(param =>
+                        {
+                            CaptchaLetters = _captchaService.GetCaptchaList(3, 4)
+                            .Cast<ListViewCaptchaLetter>()
+                            .ToList();
+                            NoiseImage = _noiseGenerator.Generate(200, 40);
+                        });
                 }
                 return _regenerateCaptchaCommand;
             }
@@ -168,14 +174,7 @@ namespace LaboratoryAppMVVM.ViewModels
 
         public RenderTargetBitmap NoiseImage
         {
-            get
-            {
-                if (_noiseImage == null)
-                {
-                    _noiseImage = new NoiseGenerator().Generate(200, 40);
-                }
-                return _noiseImage;
-            }
+            get => _noiseImage;
 
             set
             {

@@ -10,14 +10,17 @@ namespace LaboratoryAppMVVM.Models
         public RenderTargetBitmap Generate(int width, int height)
         {
             DrawingVisual drawingVisual = new DrawingVisual();
+            Random random = new Random();
 
             using (DrawingContext drawingContext = drawingVisual.RenderOpen())
             {
-                for (int i = 0; i < height; i++)
+                for (int i = 0; i < width; i++)
                 {
-                    for (int j = 0; j < width; j++)
+                    for (int j = 0; j < height; j++)
                     {
-                        drawingContext.DrawRectangle(DateTime.Now.Ticks % 2 == 0 ? Brushes.Black : Brushes.White,
+                        drawingContext.DrawRectangle(new SolidColorBrush(Color.FromRgb(Convert.ToByte(255 * random.NextDouble()),
+                            Convert.ToByte(255 * random.NextDouble()),
+                            Convert.ToByte(255 * random.NextDouble()))),
                                                      null,
                                                      new Rect(i, j, 1, 1));
                     }
