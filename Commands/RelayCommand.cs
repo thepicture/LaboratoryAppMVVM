@@ -1,15 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace LaboratoryAppMVVM.Commands
 {
     public class RelayCommand : ICommand
     {
-        public event EventHandler CanExecuteChanged;
+        public event EventHandler CanExecuteChanged
+        {
+            add
+            {
+                CommandManager.RequerySuggested += value;
+            }
+            remove
+            {
+                CommandManager.RequerySuggested -= value;
+            }
+        }
         private readonly Action<object> _execute;
         private readonly Func<bool> _canExecute;
 

@@ -82,7 +82,10 @@ namespace LaboratoryAppMVVM.ViewModels
             {
                 if (_navigateToCreateOrEditOrderCommand == null)
                 {
-                    _navigateToCreateOrEditOrderCommand = new RelayCommand(param => _navigationStore.CurrentViewModel = new CreateOrEditOrderView(_navigationStore, User, param as Order));
+                    _navigateToCreateOrEditOrderCommand = new RelayCommand(param => _navigationStore.CurrentViewModel = new CreateOrEditOrderView(_navigationStore,
+                        User,
+                        param as Order,
+                        MessageBoxService));
                 }
                 return _navigateToCreateOrEditOrderCommand;
             }

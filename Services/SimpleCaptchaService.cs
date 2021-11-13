@@ -2,16 +2,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Media;
 
 namespace LaboratoryAppMVVM.Services
 {
-    public class CaptchaWithLineService : ICaptchaService
+    public class SimpleCaptchaService : ICaptchaService
     {
         private readonly Random _random;
         private List<ListViewCaptchaLetter> _captchasLettersList;
 
-        public CaptchaWithLineService()
+        public SimpleCaptchaService()
         {
             _random = new Random();
         }

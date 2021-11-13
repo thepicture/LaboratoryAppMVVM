@@ -1,10 +1,15 @@
 ﻿using LaboratoryAppMVVM.Commands;
+using LaboratoryAppMVVM.Models;
 using LaboratoryAppMVVM.Models.Entities;
+using LaboratoryAppMVVM.Models.Exceptions;
+using LaboratoryAppMVVM.Services;
 using LaboratoryAppMVVM.Stores;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
+using System.Windows;
+using System.Windows.Media.Imaging;
 
 namespace LaboratoryAppMVVM.ViewModels
 {
@@ -19,12 +24,14 @@ namespace LaboratoryAppMVVM.ViewModels
         private RelayCommand _enterTooltipCommand;
         private string _tubeIdTooltipText = "Введите код пробирки...";
         private string _tubeId;
+        private RenderTargetBitmap _barcodeBitmap;
 
-        public CreateOrEditOrderView(ViewModelNavigationStore navigationStore, User user, Order order)
+        public CreateOrEditOrderView(ViewModelNavigationStore navigationStore, User user, Order order, IMessageBoxService messageBoxService)
         {
             _navigationStore = navigationStore;
             User = user;
             Order = order;
+            MessageBoxService = messageBoxService;
         }
 
         public Order Order
@@ -132,6 +139,45 @@ namespace LaboratoryAppMVVM.ViewModels
                         {
                             TubeId = TubeIdTooltipText;
                         }
+                        else
+                        {
+                            string tempBarCodePath = AppDomain
+                            .CurrentDomain
+                            .BaseDirectory + "tempBarcode.png";
+                            BarcodeBitmap = new BarcodeImageGenerator($"{TubeId}" +
+                                $"{DateTime.Now.Day}" +
+                                $"{DateTime.Now.Month}" +
+                                $"{DateTime.Now.Year}" +
+                                $"{new Random().Next(100000, 999999 + 1)}").Generate(200, 40);
+                            PngBitmapEncoder encoder = new PngBitmapEncoder();
+                            try
+                            {
+                                encoder.Frames.Add(BitmapFrame.Create(BarcodeBitmap));
+                                using (FileStream stream = new FileStream(tempBarCodePath, FileMode.Create))
+                                {
+                                    encoder.Save(stream);
+                                }
+                                string filePath = new CustomPathPdfExporter(new BarcodePdfExporter())
+                                .Save(isShowAfterSave: true);
+                                MessageBoxService.ShowInformation("Документ успешно сохранён по пути " +
+                                    filePath +
+                                    "Путь скопирован в буфер обмена");
+                                Clipboard.SetText(filePath);
+                            }
+                            catch (PdfExportException ex)
+                            {
+                                MessageBoxService.ShowError("Не удалось сохранить штрих-код. " +
+                                    "Пожалуйста, попробуйте сохранить файл ещё раз. " +
+                                    "Ошибка: " + ex.Message);
+                            }
+                            finally
+                            {
+                                if (File.Exists(tempBarCodePath))
+                                {
+                                    File.Delete(tempBarCodePath);
+                                }
+                            }
+                        }
                     });
                 }
                 return _enterTooltipCommand;
@@ -143,6 +189,15 @@ namespace LaboratoryAppMVVM.ViewModels
             get => _tubeId; set
             {
                 _tubeId = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public RenderTargetBitmap BarcodeBitmap
+        {
+            get => _barcodeBitmap; set
+            {
+                _barcodeBitmap = value;
                 OnPropertyChanged();
             }
         }

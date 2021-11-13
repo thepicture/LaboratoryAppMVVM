@@ -36,7 +36,7 @@ namespace LaboratoryAppMVVM.ViewModels
             _navigationStore = navigationStore;
             _loginService = loginService;
             Title = "Авторизация";
-            _captchaService = new CaptchaWithLineService();
+            _captchaService = new SimpleCaptchaService();
             CaptchaLetters = _captchaService.GetCaptchaList(3, 4)
                  .Cast<ListViewCaptchaLetter>()
                  .ToList();

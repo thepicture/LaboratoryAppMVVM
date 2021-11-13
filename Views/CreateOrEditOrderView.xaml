@@ -21,6 +21,7 @@
                                  Text="{Binding TubeId, UpdateSourceTrigger=PropertyChanged}">
                             <TextBox.InputBindings>
                                 <KeyBinding Key="Enter"
+                                            CommandParameter="{Binding .}"
                                             Command="{Binding EnterTooltipCommand}"></KeyBinding>
                             </TextBox.InputBindings>
                             <TextBox.Style>
@@ -45,6 +46,15 @@
                         </TextBlock>
                     </Grid>
                 </StackPanel>
+                <Border HorizontalAlignment="Right"
+                        BorderBrush="Black"
+                        BorderThickness="1"
+                        Width="200"
+                        Height="40"
+                        Margin="5">
+                        <Image Source="{Binding BarcodeBitmap}">
+                        </Image>
+                </Border>
                 <StackPanel Orientation="Horizontal"
                             HorizontalAlignment="Right">
                     <TextBlock Style="{StaticResource CommonBlock}"
