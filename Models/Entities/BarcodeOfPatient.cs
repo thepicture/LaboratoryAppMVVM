@@ -14,11 +14,17 @@ namespace LaboratoryAppMVVM.Models.Entities
     
     public partial class BarcodeOfPatient
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public BarcodeOfPatient()
+        {
+            this.Order = new HashSet<Order>();
+        }
+    
         public int Id { get; set; }
-        public int PatientId { get; set; }
         public string Barcode { get; set; }
         public System.DateTime DateTime { get; set; }
     
-        public virtual Patient Patient { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Order> Order { get; set; }
     }
 }

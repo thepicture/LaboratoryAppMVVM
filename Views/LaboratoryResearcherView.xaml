@@ -8,55 +8,38 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200"></ColumnDefinition>
+            <ColumnDefinition Width="auto"></ColumnDefinition>
             <ColumnDefinition Width="3*"/>
         </Grid.ColumnDefinitions>
         <Grid>
             <Border BorderBrush="Black"
                     BorderThickness="2"
                     HorizontalAlignment="Center">
-                <Grid VerticalAlignment="Top">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="auto" />
-                            <RowDefinition Height="auto" />
-                            <RowDefinition Height="auto" />
-                            <RowDefinition Height="auto" />
-                            <RowDefinition Height="auto" />
-                        </Grid.RowDefinitions>
-                        <Viewbox>
-                            <Image Stretch="Uniform">
-                                <Image.Source>
-                                    <Binding Path="User.UserImage">
-                                        <Binding.TargetNullValue>
-                                            <ImageSource>
-                                                /Resources/picture.png
-                                            </ImageSource>
-                                        </Binding.TargetNullValue>
-                                    </Binding>
-                                </Image.Source>
-                            </Image>
-                        </Viewbox>
-                        <Viewbox Grid.Row="1">
-                            <StackPanel>
-                                <TextBlock HorizontalAlignment="Center"
+                <StackPanel VerticalAlignment="Top">
+                    <Image Stretch="Uniform">
+                        <Image.Source>
+                            <Binding Path="User.UserImage">
+                                <Binding.TargetNullValue>
+                                    <ImageSource>
+                                        /Resources/picture.png
+                                    </ImageSource>
+                                </Binding.TargetNullValue>
+                            </Binding>
+                        </Image.Source>
+                    </Image>
+                    <StackPanel>
+                        <TextBlock HorizontalAlignment="Center"
                                Text="{Binding User.Name}"
                                Style="{StaticResource CommonBlock}"
                                FontWeight="Bold"></TextBlock>
-                                <TextBlock HorizontalAlignment="Center"
+                        <TextBlock HorizontalAlignment="Center"
                                Text="{Binding User.TypeOfUser.Name, StringFormat={}Роль: {0}}"
                                Grid.Row="2"></TextBlock>
-                            </StackPanel>
-                        </Viewbox>
-                        <Viewbox Grid.Row="3">
-                            <Button Content="Добавить анализатор"
+                    </StackPanel>
+                    <Button Content="Добавить анализатор"
                                 Width="150"></Button>
-                        </Viewbox>
-                        <Viewbox Grid.Row="4">
-                            <TextBlock Text="{Binding CurrentTimeOfSession, StringFormat=hh\\:mm\\:ss}"></TextBlock>
-                        </Viewbox>
-                    </Grid>
-                </Grid>
+                    <TextBlock Text="{Binding CurrentTimeOfSession, StringFormat=hh\\:mm\\:ss}"></TextBlock>
+                </StackPanel>
             </Border>
         </Grid>
         <DataGrid ItemsSource="{Binding AnalyzersList}"

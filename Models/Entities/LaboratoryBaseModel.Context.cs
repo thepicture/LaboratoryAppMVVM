@@ -30,9 +30,11 @@ namespace LaboratoryAppMVVM.Models.Entities
         public virtual DbSet<BarcodeOfPatient> BarcodeOfPatient { get; set; }
         public virtual DbSet<HistoryOfLogin> HistoryOfLogin { get; set; }
         public virtual DbSet<InsuranceCompany> InsuranceCompany { get; set; }
+        public virtual DbSet<Order> Order { get; set; }
         public virtual DbSet<Patient> Patient { get; set; }
         public virtual DbSet<Service> Service { get; set; }
         public virtual DbSet<StatusOfAppliedService> StatusOfAppliedService { get; set; }
+        public virtual DbSet<StatusOfOrder> StatusOfOrder { get; set; }
         public virtual DbSet<TypeOfInsurancePolicy> TypeOfInsurancePolicy { get; set; }
         public virtual DbSet<TypeOfUser> TypeOfUser { get; set; }
         public virtual DbSet<User> User { get; set; }

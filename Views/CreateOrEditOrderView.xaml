@@ -1,0 +1,52 @@
+﻿<UserControl x:Class="LaboratoryAppMVVM.Views.CreateOrEditOrderView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:LaboratoryAppMVVM.Views" 
+      xmlns:viewmodels="clr-namespace:LaboratoryAppMVVM.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:CreateOrEditOrderView}"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" 
+      d:DesignWidth="800">
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+        <Viewbox>
+            <StackPanel HorizontalAlignment="Center"
+                        VerticalAlignment="Center">
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Right">
+                    <TextBlock Style="{StaticResource CommonBlock}"
+                               Text="Введите код пробирки: "></TextBlock>
+                    <TextBox></TextBox>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Right">
+                    <TextBlock Style="{StaticResource CommonBlock}"
+                               Text="Введите ФИО пациента: "></TextBlock>
+                    <TextBox></TextBox>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Right">
+                    <TextBlock Style="{StaticResource CommonBlock}"
+                               Text="Услуги: "></TextBlock>
+                    <ListView Width="200"
+                              Margin="5"
+                              ItemsSource="{Binding AppliedServicesList}">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <TextBox Text="{Binding Service.Name}"></TextBox>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </StackPanel>
+                <Button Content="Добавить ещё услугу"
+                            HorizontalAlignment="Right"
+                            Command="{Binding AddServiceToServicesViewCommand}"></Button>
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="Сформировать заказ"></Button>
+                    <Button Content="Отмена"
+                            Command="{Binding NavigateToLaboratoryAssistantViewModel}"></Button>
+                </StackPanel>
+            </StackPanel>
+        </Viewbox>
+    </ScrollViewer>
+</UserControl>

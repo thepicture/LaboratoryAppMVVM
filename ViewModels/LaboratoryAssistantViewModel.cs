@@ -1,4 +1,5 @@
-﻿using LaboratoryAppMVVM.Models;
+﻿using LaboratoryAppMVVM.Commands;
+using LaboratoryAppMVVM.Models;
 using LaboratoryAppMVVM.Models.Entities;
 using LaboratoryAppMVVM.Services;
 using LaboratoryAppMVVM.Stores;
@@ -14,6 +15,7 @@ namespace LaboratoryAppMVVM.ViewModels
         private List<AppliedService> _bioContent;
         private LaboratoryDatabaseEntities _context;
         private readonly LaboratoryHaveTimeService _sessionTimer;
+        private RelayCommand _navigateToCreateOrEditOrderCommand;
         public TimeSpan CurrentTimeOfSession => _sessionTimer.TotalTimeLeft;
 
         public LaboratoryAssistantViewModel(ViewModelNavigationStore navigationStore, User user)
@@ -71,6 +73,18 @@ namespace LaboratoryAppMVVM.ViewModels
             {
                 _context = value;
                 OnPropertyChanged();
+            }
+        }
+
+        public RelayCommand NavigateToCreateOrEditOrderCommand
+        {
+            get
+            {
+                if (_navigateToCreateOrEditOrderCommand == null)
+                {
+                    _navigateToCreateOrEditOrderCommand = new RelayCommand(param => _navigationStore.CurrentViewModel = new CreateOrEditOrderView(_navigationStore, User, param as Order));
+                }
+                return _navigateToCreateOrEditOrderCommand;
             }
         }
     }

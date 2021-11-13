@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="7d313faad49545118ec82b4e39b96960" Name="Diagram1">
+        <EntityTypeShape EntityType="LaboratoryDatabaseModel.Analyzer" Width="1.5" PointX="0.75" PointY="1.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="LaboratoryDatabaseModel.AppliedService" Width="1.5" PointX="3" PointY="4.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="LaboratoryDatabaseModel.BarcodeOfPatient" Width="1.5" PointX="3" PointY="1.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="LaboratoryDatabaseModel.HistoryOfLogin" Width="1.5" PointX="8.25" PointY="5.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="LaboratoryDatabaseModel.InsuranceCompany" Width="1.5" PointX="0.75" PointY="12.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="LaboratoryDatabaseModel.Order" Width="1.5" PointX="5.25" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="LaboratoryDatabaseModel.Patient" Width="1.5" PointX="3" PointY="12.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="LaboratoryDatabaseModel.Service" Width="1.5" PointX="0.75" PointY="5" IsExpanded="true" />
+        <EntityTypeShape EntityType="LaboratoryDatabaseModel.StatusOfAppliedService" Width="1.5" PointX="0.75" PointY="8.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="LaboratoryDatabaseModel.StatusOfOrder" Width="1.5" PointX="3" PointY="17.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="LaboratoryDatabaseModel.TypeOfInsurancePolicy" Width="1.5" PointX="0.75" PointY="15.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="LaboratoryDatabaseModel.TypeOfUser" Width="1.5" PointX="3.75" PointY="9.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="LaboratoryDatabaseModel.User" Width="1.5" PointX="6" PointY="4.5" IsExpanded="true" />
+        <AssociationConnector Association="LaboratoryDatabaseModel.FK_AppliedService_Analyzer" ManuallyRouted="false" />
+        <AssociationConnector Association="LaboratoryDatabaseModel.FK_AppliedService_Service" ManuallyRouted="false" />
+        <AssociationConnector Association="LaboratoryDatabaseModel.FK_AppliedService_StatusOfAppliedService" ManuallyRouted="false" />
+        <AssociationConnector Association="LaboratoryDatabaseModel.FK_AppliedService_User" ManuallyRouted="false" />
+        <AssociationConnector Association="LaboratoryDatabaseModel.FK_Order_BarcodeOfPatient" ManuallyRouted="false" />
+        <AssociationConnector Association="LaboratoryDatabaseModel.FK_HistoryOfLogin_User" ManuallyRouted="false" />
+        <AssociationConnector Association="LaboratoryDatabaseModel.FK_Patient_InsuranceCompany" ManuallyRouted="false" />
+        <AssociationConnector Association="LaboratoryDatabaseModel.FK_Order_Patient" ManuallyRouted="false" />
+        <AssociationConnector Association="LaboratoryDatabaseModel.FK_Order_StatusOfOrder" ManuallyRouted="false" />
+        <AssociationConnector Association="LaboratoryDatabaseModel.FK_Patient_TypeOfInsurancePolicy" ManuallyRouted="false" />
+        <AssociationConnector Association="LaboratoryDatabaseModel.FK_User_TypeOfUser" ManuallyRouted="false" />
+        <AssociationConnector Association="LaboratoryDatabaseModel.AppliedServiceOfOrder" ManuallyRouted="false" />
+        <AssociationConnector Association="LaboratoryDatabaseModel.ServiceOfUser" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

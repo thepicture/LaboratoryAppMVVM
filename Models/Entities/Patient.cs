@@ -17,7 +17,7 @@ namespace LaboratoryAppMVVM.Models.Entities
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Patient()
         {
-            this.BarcodeOfPatient = new HashSet<BarcodeOfPatient>();
+            this.Order = new HashSet<Order>();
         }
     
         public int Id { get; set; }
@@ -32,9 +32,9 @@ namespace LaboratoryAppMVVM.Models.Entities
         public int TypeOfInsurancePolicyId { get; set; }
         public int InsuranceCompanyId { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<BarcodeOfPatient> BarcodeOfPatient { get; set; }
         public virtual InsuranceCompany InsuranceCompany { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Order> Order { get; set; }
         public virtual TypeOfInsurancePolicy TypeOfInsurancePolicy { get; set; }
     }
 }

@@ -27,7 +27,7 @@ namespace LaboratoryAppMVVM.ViewModels
         private bool _isCaptchaEnabled = false;
         private bool _isInterfaceNotBlocked = true;
         private RenderTargetBitmap _noiseImage;
-        private NoiseGenerator _noiseGenerator;
+        private readonly NoiseGenerator _noiseGenerator;
         public LoginViewModel(ViewModelNavigationStore navigationStore,
                               IMessageBoxService messageBoxService,
                               ILoginService<User, ViewModelNavigationStore> loginService)

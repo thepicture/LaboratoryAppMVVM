@@ -12,18 +12,23 @@ namespace LaboratoryAppMVVM.Models.Entities
     using System;
     using System.Collections.Generic;
     
-    public partial class Analyzer
+    public partial class Order
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Analyzer()
+        public Order()
         {
             this.AppliedService = new HashSet<AppliedService>();
         }
     
         public int Id { get; set; }
-        public string Name { get; set; }
-        public int ExecutionTimeInSeconds { get; set; }
+        public System.DateTime Date { get; set; }
+        public int OrderStatusId { get; set; }
+        public int PatientId { get; set; }
+        public Nullable<int> BarcodeId { get; set; }
     
+        public virtual BarcodeOfPatient BarcodeOfPatient { get; set; }
+        public virtual Patient Patient { get; set; }
+        public virtual StatusOfOrder StatusOfOrder { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AppliedService> AppliedService { get; set; }
     }
