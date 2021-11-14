@@ -92,19 +92,25 @@
                     <GroupBox Header="Все услуги"
                               Margin="5"
                               Width="300">
-                        <ScrollViewer>
-                            <ItemsControl ItemsSource="{Binding AllServicesList}">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <GroupBox Header="{Binding Name}">
-                                            <Button Content="Добавить в заказ"
+                        <StackPanel>
+                            <TextBlock Text="Поиск услуги"
+                                       Style="{StaticResource CommonBlock}"
+                                       Width="200"></TextBlock>
+                            <TextBox Text="{Binding SearchServiceText, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                            <ScrollViewer>
+                                <ItemsControl ItemsSource="{Binding AllServicesList}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <GroupBox Header="{Binding Name}">
+                                                <Button Content="Добавить в заказ"
                                                 CommandParameter="{Binding .}"
                                                 Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ScrollViewer}, Path=DataContext.AddServiceToOrderCommand}"></Button>
-                                        </GroupBox>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        </ScrollViewer>
+                                            </GroupBox>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ScrollViewer>
+                        </StackPanel>
                     </GroupBox>
                     <GroupBox Header="Услуги заказа"
                               Margin="5"
@@ -123,15 +129,6 @@
                             </ItemsControl>
                         </ScrollViewer>
                     </GroupBox>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal"
-                            HorizontalAlignment="Right">
-                    <TextBlock Text="Поиск услуги в выпадающем списке выше"
-                           HorizontalAlignment="Right"
-                           Style="{StaticResource CommonBlock}"></TextBlock>
-                    <TextBox HorizontalAlignment="Right"
-                             MaxLength="100"
-                             Text="{Binding SearchServiceText, UpdateSourceTrigger=PropertyChanged}"></TextBox>
                 </StackPanel>
                 <Button Content="Показать меню добавления услуги"
                             HorizontalAlignment="Right"

@@ -37,6 +37,7 @@ namespace LaboratoryAppMVVM.ViewModels
         private RelayCommand _addNewServiceCommand;
         private bool _isAddServicePanelVisible = false;
         private RelayCommand _showAddServiceFieldCommand;
+        private string _searchServiceText = "";
 
         public CreateOrEditOrderViewModel(ViewModelNavigationStore navigationStore, User user, Order order, IMessageBoxService messageBoxService)
         {
@@ -282,7 +283,7 @@ namespace LaboratoryAppMVVM.ViewModels
             get => _searchPatientText; set
             {
                 _searchPatientText = value;
-                FilterPatients();
+                FilterAllPatients();
                 OnPropertyChanged();
             }
         }
@@ -332,7 +333,7 @@ namespace LaboratoryAppMVVM.ViewModels
                         new RelayCommand(param =>
                         {
                             OrderServicesList.Add(param as Service);
-                            AllServicesList.Remove(AllServicesList.Where(s => s.Id == (param as Service).Id).First());
+                            _ = AllServicesList.Remove(AllServicesList.First(s => s.Id == (param as Service).Id));
                         });
                 }
                 return _addServiceToOrderCommand;
@@ -349,7 +350,7 @@ namespace LaboratoryAppMVVM.ViewModels
                         new RelayCommand(param =>
                         {
                             AllServicesList.Add(param as Service);
-                            OrderServicesList.Remove(OrderServicesList.Where(s => s.Id == (param as Service).Id).First());
+                            _ = OrderServicesList.Remove(OrderServicesList.First(s => s.Id == (param as Service).Id));
                         });
                 }
                 return _deleteServiceFromOrderCommand;
@@ -395,6 +396,16 @@ namespace LaboratoryAppMVVM.ViewModels
             }
         }
 
+        public string SearchServiceText
+        {
+            get => _searchServiceText; set
+            {
+                _searchServiceText = value;
+                FilterAllServices();
+                OnPropertyChanged();
+            }
+        }
+
         private void AddNewService(string serviceName)
         {
             if (Context.Service.Any(service => service.Name.ToLower().Contains(serviceName)))
@@ -427,7 +438,7 @@ namespace LaboratoryAppMVVM.ViewModels
             }
         }
 
-        private void FilterPatients()
+        private void FilterAllPatients()
         {
             List<Patient> currentPatients = Context.Patient.ToList();
             if (!string.IsNullOrWhiteSpace(SearchPatientText))
@@ -439,6 +450,20 @@ namespace LaboratoryAppMVVM.ViewModels
             PatientsList = currentPatients;
             SelectedPatient = currentPatients.FirstOrDefault();
         }
+
+        private void FilterAllServices()
+        {
+            List<Service> currentServices = Context.Service.ToList();
+            if (!string.IsNullOrWhiteSpace(SearchServiceText))
+            {
+                currentServices = currentServices
+                    .Where(new AllPropertiesSearcher<Service>().Search(SearchServiceText))
+                    .ToList();
+            }
+            AllServicesList.Clear();
+            AllServicesList = new ObservableCollection<Service>(currentServices.Where(service => !OrderServicesList.Select(orderService => orderService.Id).Contains(service.Id)).ToList());
+        }
+
 
         private void GetBarcodeForScanner()
         {
