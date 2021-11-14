@@ -10,7 +10,6 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using WIA;
 
@@ -35,6 +34,9 @@ namespace LaboratoryAppMVVM.ViewModels
         private ObservableCollection<Service> _orderServicesList;
         private RelayCommand _addServiceToOrderCommand;
         private RelayCommand _deleteServiceFromOrderCommand;
+        private RelayCommand _addNewServiceCommand;
+        private bool _isAddServicePanelVisible = false;
+        private RelayCommand _showAddServiceFieldCommand;
 
         public CreateOrEditOrderViewModel(ViewModelNavigationStore navigationStore, User user, Order order, IMessageBoxService messageBoxService)
         {
@@ -351,6 +353,77 @@ namespace LaboratoryAppMVVM.ViewModels
                         });
                 }
                 return _deleteServiceFromOrderCommand;
+            }
+        }
+
+        public RelayCommand AddNewServiceCommand
+        {
+            get
+            {
+                if (_addNewServiceCommand == null)
+                {
+                    _addNewServiceCommand = new RelayCommand(param =>
+                    {
+                        AddNewService(param as string);
+                    });
+                }
+                return _addNewServiceCommand;
+            }
+        }
+
+        public bool IsAddServicePanelVisible
+        {
+            get => _isAddServicePanelVisible; set
+            {
+                _isAddServicePanelVisible = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public RelayCommand ShowAddServiceFieldCommand
+        {
+            get
+            {
+                if (_showAddServiceFieldCommand == null)
+                {
+                    _showAddServiceFieldCommand = new RelayCommand(param =>
+                    {
+                        IsAddServicePanelVisible = true;
+                    });
+                }
+                return _showAddServiceFieldCommand;
+            }
+        }
+
+        private void AddNewService(string serviceName)
+        {
+            if (Context.Service.Any(service => service.Name.ToLower().Contains(serviceName)))
+            {
+                MessageBoxService.ShowError("Не удалось добавить " +
+                    "новую услугу в базу данных. " +
+                    "Такая услуга уже существует. " +
+                    "Пожалуйста, используйте поиск " +
+                    "для выбора услуги, которую вы попытались " +
+                    "добавить или проверьте наименование " +
+                    "услуги");
+                return;
+            }
+
+            Service newService = new Service { Name = serviceName };
+            _ = Context.Service.Add(newService);
+            try
+            {
+                _ = Context.SaveChanges();
+                MessageBoxService.ShowInformation("Услуга " +
+                    "успешно добавлена!");
+                AllServicesList.Add(newService);
+                IsAddServicePanelVisible = false;
+            }
+            catch (Exception ex)
+            {
+                MessageBoxService.ShowError("Не удалось добавить услугу. " +
+                    "Пожалуйста, попробуйте ещё раз. " +
+                    "Ошибка: " + ex.Message);
             }
         }
 

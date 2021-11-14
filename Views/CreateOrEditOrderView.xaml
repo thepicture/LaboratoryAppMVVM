@@ -7,9 +7,12 @@
       xmlns:viewmodels="clr-namespace:LaboratoryAppMVVM.ViewModels" xmlns:models="clr-namespace:LaboratoryAppMVVM.Models" 
              d:DataContext="{d:DesignInstance Type=viewmodels:CreateOrEditOrderViewModel}"
       mc:Ignorable="d" 
-      d:DesignHeight="650" 
+      d:DesignHeight="750" 
       d:DesignWidth="800">
     <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+        <ScrollViewer.Resources>
+            <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"></BooleanToVisibilityConverter>
+        </ScrollViewer.Resources>
         <Viewbox>
             <StackPanel HorizontalAlignment="Center"
                         VerticalAlignment="Center">
@@ -90,17 +93,17 @@
                               Margin="5"
                               Width="300">
                         <ScrollViewer>
-                        <ItemsControl ItemsSource="{Binding AllServicesList}">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <GroupBox Header="{Binding Name}">
-                                        <Button Content="Добавить в заказ"
+                            <ItemsControl ItemsSource="{Binding AllServicesList}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <GroupBox Header="{Binding Name}">
+                                            <Button Content="Добавить в заказ"
                                                 CommandParameter="{Binding .}"
                                                 Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ScrollViewer}, Path=DataContext.AddServiceToOrderCommand}"></Button>
-                                    </GroupBox>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
+                                        </GroupBox>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
                         </ScrollViewer>
                     </GroupBox>
                     <GroupBox Header="Услуги заказа"
@@ -130,10 +133,53 @@
                              MaxLength="100"
                              Text="{Binding SearchServiceText, UpdateSourceTrigger=PropertyChanged}"></TextBox>
                 </StackPanel>
-                <Button Content="Добавить новую услугу"
+                <Button Content="Показать меню добавления услуги"
                             HorizontalAlignment="Right"
                             CommandParameter="{Binding ElementName=LViewServices, Path=LastSelectedItemOfComboBox}"
-                            Command="{Binding ShowAddServiceFieldCommand}"></Button>
+                            Command="{Binding ShowAddServiceFieldCommand}">
+                    <Button.Style>
+                        <Style TargetType="Button"
+                               BasedOn="{StaticResource {x:Type Button}}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}, Path=DataContext.IsAddServicePanelVisible}"
+                                             Value="True">
+                                    <Setter Property="IsEnabled" Value="False" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+                <GroupBox Header="Добавление новой услуги"
+                          Visibility="{Binding IsAddServicePanelVisible, Converter={StaticResource BoolToVisibilityConverter}}"
+                          Width="200"
+                          HorizontalAlignment="Right"
+                          Margin="5">
+                    <StackPanel>
+                        <TextBlock Text="Наименование:"
+                                   Width="150"
+                                   Style="{StaticResource CommonBlock}"></TextBlock>
+                        <TextBox Width="150"
+                                 Name="TBoxServiceName"
+                                 MaxLength="100"></TextBox>
+                        <Button Width="150"
+                                CommandParameter="{Binding ElementName=TBoxServiceName, Path=Text}"
+                                Command="{Binding AddNewServiceCommand}">
+                            <Button.Style>
+                                <Style TargetType="Button"
+                                       BasedOn="{StaticResource {x:Type Button}}">
+                                    <Setter Property="Content" Value="Добавить услугу" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ElementName=TBoxServiceName, Path=Text.Length}"
+                                                     Value="0">
+                                            <Setter Property="IsEnabled" Value="False" />
+                                            <Setter Property="Content" Value="Наименование пустое" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                    </StackPanel>
+                </GroupBox>
                 <StackPanel Orientation="Horizontal"
                             HorizontalAlignment="Right">
                     <Button Content="Сформировать заказ"></Button>
