@@ -17,31 +17,63 @@ namespace LaboratoryAppMVVM.Models
         public RenderTargetBitmap Generate(int width, int height)
         {
             DrawingVisual drawingVisual = new DrawingVisual();
-            Random random = new Random();
+            double currentCaret = 0;
 
             using (DrawingContext drawingContext = drawingVisual.RenderOpen())
             {
-                for (int i = 0; i < width; i++)
+                foreach (char charOfBarcode in _barcode)
                 {
-                    drawingContext.DrawRectangle(random.NextDouble() > 0.5
-                        ? Brushes.Black
-                        : Brushes.White,
-                        null,
-                        new Rect(i, 0, random.Next(0, 9 + 1) * 2, height - 22.85));
-                }
-                drawingContext.DrawText(
-                    new FormattedText(_barcode,
-                                      System.Globalization.CultureInfo.InvariantCulture,
-                                      FlowDirection.LeftToRight,
-                                      new Typeface("Comic Sans MS"),
-                                      10,
-                                      Brushes.Black,
-                                      96),
-                    new Point(0, height - 22.85)
-                    );
+                    double widthOfRect = Convert.ToInt32(charOfBarcode.ToString())
+                        * (0.15 + 1);
+                    FormattedText formattedText = new FormattedText
+                        (
+                            textToFormat: charOfBarcode.ToString(),
+                            culture: System.Globalization.CultureInfo.InvariantCulture,
+                            flowDirection: FlowDirection.LeftToRight,
+                            typeface: new Typeface("Comic Sans MS"),
+                            emSize: 10,
+                            foreground: Brushes.Black,
+                            pixelsPerDip: 96
+                        );
 
+                    if (charOfBarcode == '0')
+                    {
+                        drawingContext
+                            .DrawText(
+                                        formattedText,
+                                        origin: new Point(currentCaret, height - 22.85)
+                                     );
+                    }
+                    else
+                    {
+                        drawingContext.DrawRectangle
+                            (
+                                Brushes.Black,
+                                null,
+                                new Rect(
+                                    currentCaret,
+                                    0,
+                                    widthOfRect,
+                                    height - 22.85)
+                            );
+                        drawingContext
+                            .DrawText
+                            (
+                                formattedText,
+                                new Point(currentCaret, height - 22.85)
+                            );
+                    }
+                    currentCaret += widthOfRect + 1.35 + formattedText.Width;
+                }
             }
-            RenderTargetBitmap renderTargetBitmap = new RenderTargetBitmap(width, height, 96, 96, PixelFormats.Pbgra32); ;
+            RenderTargetBitmap renderTargetBitmap = new RenderTargetBitmap
+                (
+                    width,
+                    height,
+                    96,
+                    96,
+                    PixelFormats.Pbgra32
+                );
             renderTargetBitmap.Render(drawingVisual);
             return renderTargetBitmap;
         }

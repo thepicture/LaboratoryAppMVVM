@@ -145,9 +145,7 @@ namespace LaboratoryAppMVVM.ViewModels
                             .CurrentDomain
                             .BaseDirectory + "tempBarcode.png";
                             BarcodeBitmap = new BarcodeImageGenerator($"{TubeId}" +
-                                $"{DateTime.Now.Day}" +
-                                $"{DateTime.Now.Month}" +
-                                $"{DateTime.Now.Year}" +
+                                $"{DateTime.Now:ddMMyyyy}" +
                                 $"{new Random().Next(100000, 999999 + 1)}").Generate(200, 40);
                             PngBitmapEncoder encoder = new PngBitmapEncoder();
                             try
@@ -159,10 +157,13 @@ namespace LaboratoryAppMVVM.ViewModels
                                 }
                                 string filePath = new CustomPathPdfExporter(new BarcodePdfExporter())
                                 .Save(isShowAfterSave: true);
-                                MessageBoxService.ShowInformation("Документ успешно сохранён по пути " +
-                                    filePath +
-                                    "Путь скопирован в буфер обмена");
-                                Clipboard.SetText(filePath);
+                                if (!string.IsNullOrWhiteSpace(filePath))
+                                {
+                                    MessageBoxService.ShowInformation("Документ успешно сохранён по пути " +
+                                        filePath +
+                                        "Путь скопирован в буфер обмена");
+                                    Clipboard.SetText(filePath);
+                                }
                             }
                             catch (PdfExportException ex)
                             {
