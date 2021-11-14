@@ -28,6 +28,7 @@ namespace LaboratoryAppMVVM.ViewModels
         private bool _isInterfaceNotBlocked = true;
         private RenderTargetBitmap _noiseImage;
         private readonly NoiseGenerator _noiseGenerator;
+        private bool _isLoggingIn;
         public LoginViewModel(ViewModelNavigationStore navigationStore,
                               IMessageBoxService messageBoxService,
                               ILoginService<User, ViewModelNavigationStore> loginService)
@@ -183,6 +184,15 @@ namespace LaboratoryAppMVVM.ViewModels
             }
         }
 
+        public bool IsLoggingIn
+        {
+            get => _isLoggingIn; set
+            {
+                _isLoggingIn = value;
+                OnPropertyChanged();
+            }
+        }
+
         private void TryToExitApp()
         {
             if (MessageBoxService.ShowQuestion("Вы действительно хотите "
@@ -194,10 +204,12 @@ namespace LaboratoryAppMVVM.ViewModels
 
         private async void TryToAuthorize()
         {
+            IsLoggingIn = true;
             User currentUser = await Task.Run(() => Context.User.ToList()
             .FirstOrDefault(user => user.Login.ToLower()
                                               .Equals(LoginText.ToLower()) &&
                                     user.Password.Equals(PasswordText)));
+            IsLoggingIn = false;
             if (currentUser != null)
             {
                 MessageBoxService.ShowInformation($"Авторизация успешна. " +

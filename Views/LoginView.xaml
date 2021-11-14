@@ -8,9 +8,56 @@
              xmlns:models="clr-namespace:LaboratoryAppMVVM.Models" 
              d:DataContext="{d:DesignInstance Type=viewmodels:LoginViewModel}"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800"
+             d:DesignHeight="450"
+             d:DesignWidth="800"
              IsEnabled="{Binding IsInterfaceNotBlocked}">
     <Grid>
+        <Grid.Resources>
+            <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"></BooleanToVisibilityConverter>
+        </Grid.Resources>
+        <Grid Panel.ZIndex="1"
+              Visibility="{Binding IsLoggingIn, Converter={StaticResource BoolToVisibilityConverter}}">
+            <Grid Background="Gray"
+                  Opacity=".5"></Grid>
+            <Grid Background="White"
+                  Margin="100">
+                <Viewbox>
+                    <StackPanel>
+                        <TextBlock Text="Авторизация..."
+                               Style="{StaticResource CommonBlock}">
+                        </TextBlock>
+                        <Ellipse Width="20"
+                                 Height="20"
+                                 Margin="5"
+                                 RenderTransformOrigin=".5,.5">
+                            <Ellipse.Fill>
+                                <LinearGradientBrush>
+                                    <GradientStop Color="Green"
+                                                  Offset=".5"></GradientStop>
+                                    <GradientStop Color="Yellow"></GradientStop>
+                                </LinearGradientBrush>
+                            </Ellipse.Fill>
+                            <Ellipse.RenderTransform>
+                                <RotateTransform x:Name="RotateTransform"></RotateTransform>
+                            </Ellipse.RenderTransform>
+                            <Ellipse.Triggers>
+                                <EventTrigger RoutedEvent="TextBlock.Loaded">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation From="0"
+                                                             To="360"
+                                                             Duration="0:0:2"
+                                                             Storyboard.TargetProperty="RenderTransform.Angle"
+                                                             RepeatBehavior="Forever"></DoubleAnimation>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                            </Ellipse.Triggers>
+                        </Ellipse>
+                    </StackPanel>
+                </Viewbox>
+            </Grid>
+        </Grid>
         <Viewbox>
             <StackPanel>
                 <StackPanel.Resources>
@@ -76,28 +123,28 @@
                                Text="Введите капчу, изображённую ниже:"></TextBlock>
                         <Grid HorizontalAlignment="Right">
                             <Image Source="{Binding NoiseImage}"></Image>
-                        <ItemsControl Width="200"
+                            <ItemsControl Width="200"
                               Height="40"
                               Margin="5"
                               BorderBrush="Black"
                               BorderThickness="1"
                               ItemsSource="{Binding CaptchaLetters}">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <StackPanel Orientation="Horizontal"
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal"
                                             HorizontalAlignment="Center"
                                             VerticalAlignment="Center">
-                                    </StackPanel>
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding Letter}"
+                                        </StackPanel>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Letter}"
                                                Margin="-3"
                                                FontSize="{Binding FontSize}"></TextBlock>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
                         </Grid>
                         <TextBox HorizontalAlignment="Right"
                              Width="200"
