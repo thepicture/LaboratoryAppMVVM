@@ -17,7 +17,7 @@ namespace LaboratoryAppMVVM.Models.Entities
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Order()
         {
-            this.AppliedService = new HashSet<AppliedService>();
+            this.Service = new HashSet<Service>();
         }
     
         public int Id { get; set; }
@@ -30,6 +30,6 @@ namespace LaboratoryAppMVVM.Models.Entities
         public virtual Patient Patient { get; set; }
         public virtual StatusOfOrder StatusOfOrder { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<AppliedService> AppliedService { get; set; }
+        public virtual ICollection<Service> Service { get; set; }
     }
 }

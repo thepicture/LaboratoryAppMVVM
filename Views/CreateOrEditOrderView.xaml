@@ -4,9 +4,10 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:LaboratoryAppMVVM.Views" 
-      xmlns:viewmodels="clr-namespace:LaboratoryAppMVVM.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:CreateOrEditOrderViewModel}"
+      xmlns:viewmodels="clr-namespace:LaboratoryAppMVVM.ViewModels" xmlns:models="clr-namespace:LaboratoryAppMVVM.Models" 
+             d:DataContext="{d:DesignInstance Type=viewmodels:CreateOrEditOrderViewModel}"
       mc:Ignorable="d" 
-      d:DesignHeight="450" 
+      d:DesignHeight="650" 
       d:DesignWidth="800">
     <ScrollViewer HorizontalScrollBarVisibility="Disabled">
         <Viewbox>
@@ -38,7 +39,7 @@
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding ElementName=TextBoxTube, Path=Text.Length}"
                                                      Value="0">
-                                    <Setter Property="Text" Value="{Binding TubeIdTooltipText}" />
+                                            <Setter Property="Text" Value="{Binding TubeIdTooltipText}" />
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
@@ -55,38 +56,86 @@
                         Width="200"
                         Height="40"
                         Margin="5">
-                        <Image Source="{Binding BarcodeBitmap}">
-                        </Image>
+                    <Image Source="{Binding BarcodeBitmap}">
+                    </Image>
                 </Border>
                 <StackPanel Orientation="Horizontal"
                             HorizontalAlignment="Right">
                     <TextBlock Style="{StaticResource CommonBlock}"
-                               Text="Введите ФИО пациента: "></TextBlock>
-                    <ComboBox Width="200"></ComboBox>
+                               Text="Укажите ФИО пациента: "></TextBlock>
+                    <ComboBox Width="200"
+                              ItemsSource="{Binding PatientsList}"
+                              SelectedItem="{Binding SelectedPatient}"
+                              DisplayMemberPath="FullName"></ComboBox>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Right">
+                    <TextBlock Text="Поиск пациента в выпадающем списке выше"
+                           HorizontalAlignment="Right"
+                           Style="{StaticResource CommonBlock}"></TextBlock>
+                    <TextBox HorizontalAlignment="Right"
+                             MaxLength="100"
+                             Text="{Binding SearchPatientText, UpdateSourceTrigger=PropertyChanged}"></TextBox>
                 </StackPanel>
                 <Button Content="Добавить пацента"
                         HorizontalAlignment="Right"
                         Command="{Binding NavigateToAddPatientViewModelCommand}"></Button>
                 <StackPanel Orientation="Horizontal"
-                            HorizontalAlignment="Right">
-                    <TextBlock Style="{StaticResource CommonBlock}"
-                               Text="Услуги: "></TextBlock>
-                    <ItemsControl Width="200"
-                              Margin="5"
-                              ItemsSource="{Binding AppliedServicesList}"
-                              ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <TextBox Text="{Binding Service.Name}"
-                                         Margin="0 10 0 0"></TextBox>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </StackPanel>
-                <Button Content="Добавить ещё услугу"
                             HorizontalAlignment="Right"
-                            Command="{Binding AddServiceToServicesViewCommand}"></Button>
-                <StackPanel Orientation="Horizontal">
+                            Height="200">
+                    <TextBlock Style="{StaticResource CommonBlock}"
+                               Text="Услуги: "
+                               VerticalAlignment="Center"></TextBlock>
+                    <GroupBox Header="Все услуги"
+                              Margin="5"
+                              Width="300">
+                        <ScrollViewer>
+                        <ItemsControl ItemsSource="{Binding AllServicesList}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <GroupBox Header="{Binding Name}">
+                                        <Button Content="Добавить в заказ"
+                                                CommandParameter="{Binding .}"
+                                                Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ScrollViewer}, Path=DataContext.AddServiceToOrderCommand}"></Button>
+                                    </GroupBox>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        </ScrollViewer>
+                    </GroupBox>
+                    <GroupBox Header="Услуги заказа"
+                              Margin="5"
+                              Width="300">
+                        <ScrollViewer>
+                            <ItemsControl ItemsSource="{Binding OrderServicesList}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <GroupBox Header="{Binding Name}">
+                                            <Button Content="Удалить из заказа"
+                                                CommandParameter="{Binding .}"
+                                                Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ScrollViewer}, Path=DataContext.DeleteServiceFromOrderCommand}"></Button>
+                                        </GroupBox>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </GroupBox>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Right">
+                    <TextBlock Text="Поиск услуги в выпадающем списке выше"
+                           HorizontalAlignment="Right"
+                           Style="{StaticResource CommonBlock}"></TextBlock>
+                    <TextBox HorizontalAlignment="Right"
+                             MaxLength="100"
+                             Text="{Binding SearchServiceText, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                </StackPanel>
+                <Button Content="Добавить новую услугу"
+                            HorizontalAlignment="Right"
+                            CommandParameter="{Binding ElementName=LViewServices, Path=LastSelectedItemOfComboBox}"
+                            Command="{Binding ShowAddServiceFieldCommand}"></Button>
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Right">
                     <Button Content="Сформировать заказ"></Button>
                     <Button Content="Отмена"
                             Command="{Binding NavigateToLaboratoryAssistantViewModel}"></Button>

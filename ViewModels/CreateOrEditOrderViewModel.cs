@@ -5,10 +5,12 @@ using LaboratoryAppMVVM.Models.Exceptions;
 using LaboratoryAppMVVM.Services;
 using LaboratoryAppMVVM.Stores;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using WIA;
 
@@ -18,9 +20,7 @@ namespace LaboratoryAppMVVM.ViewModels
     {
         private readonly ViewModelNavigationStore _navigationStore;
         private Order _order;
-        private ObservableCollection<AppliedService> _appliedServicesList;
         private LaboratoryDatabaseEntities _context;
-        private RelayCommand _addServiceToServicesViewCommand;
         private RelayCommand _navigateToLaboratoryAssistantViewModel;
         private RelayCommand _enterTooltipCommand;
         private RelayCommand _getBarcodeFromScannerCommand;
@@ -28,6 +28,13 @@ namespace LaboratoryAppMVVM.ViewModels
         private string _tubeIdTooltipText = "Введите код пробирки...";
         private string _tubeId;
         private RenderTargetBitmap _barcodeBitmap;
+        private List<Patient> _patientsList;
+        private Patient _selectedPatient;
+        private string _searchPatientText = "";
+        private ObservableCollection<Service> _allServicesList;
+        private ObservableCollection<Service> _orderServicesList;
+        private RelayCommand _addServiceToOrderCommand;
+        private RelayCommand _deleteServiceFromOrderCommand;
 
         public CreateOrEditOrderViewModel(ViewModelNavigationStore navigationStore, User user, Order order, IMessageBoxService messageBoxService)
         {
@@ -55,24 +62,6 @@ namespace LaboratoryAppMVVM.ViewModels
             }
         }
 
-        public ObservableCollection<AppliedService> AppliedServicesList
-        {
-            get
-            {
-                if (_appliedServicesList == null)
-                {
-                    _appliedServicesList = new ObservableCollection<AppliedService>(Order.AppliedService);
-                }
-                return _appliedServicesList;
-            }
-
-            set
-            {
-                _appliedServicesList = value;
-                OnPropertyChanged();
-            }
-        }
-
         public LaboratoryDatabaseEntities Context
         {
             get
@@ -82,19 +71,6 @@ namespace LaboratoryAppMVVM.ViewModels
                     _context = new LaboratoryDatabaseEntities();
                 }
                 return _context;
-            }
-        }
-
-        public RelayCommand AddServiceToServicesViewCommand
-        {
-            get
-            {
-                if (_addServiceToServicesViewCommand == null)
-                {
-                    _addServiceToServicesViewCommand =
-                        new RelayCommand(param => AppliedServicesList.Add(new AppliedService()));
-                }
-                return _addServiceToServicesViewCommand;
             }
         }
 
@@ -262,6 +238,133 @@ namespace LaboratoryAppMVVM.ViewModels
                 }
                 return _navigateToAddPatientViewModelCommand;
             }
+        }
+
+        public List<Patient> PatientsList
+        {
+            get
+            {
+                if (_patientsList == null)
+                {
+                    _patientsList = Context.Patient.ToList();
+                }
+                return _patientsList;
+            }
+
+            set
+            {
+                _patientsList = value;
+                OnPropertyChanged();
+            }
+        }
+        public Patient SelectedPatient
+        {
+            get
+            {
+                if (_selectedPatient == null)
+                {
+                    _selectedPatient = PatientsList.FirstOrDefault();
+                }
+                return _selectedPatient;
+            }
+
+            set
+            {
+                _selectedPatient = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string SearchPatientText
+        {
+            get => _searchPatientText; set
+            {
+                _searchPatientText = value;
+                FilterPatients();
+                OnPropertyChanged();
+            }
+        }
+
+        public ObservableCollection<Service> AllServicesList
+        {
+            get
+            {
+                if (_allServicesList == null)
+                {
+                    _allServicesList = new ObservableCollection<Service>(Context.Service);
+                }
+                return _allServicesList;
+            }
+
+            set
+            {
+                _allServicesList = value;
+                OnPropertyChanged();
+            }
+        }
+        public ObservableCollection<Service> OrderServicesList
+        {
+            get
+            {
+                if (_orderServicesList == null)
+                {
+                    _orderServicesList = new ObservableCollection<Service>();
+                }
+                return _orderServicesList;
+            }
+
+            set
+            {
+                _orderServicesList = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public RelayCommand AddServiceToOrderCommand
+        {
+            get
+            {
+                if (_addServiceToOrderCommand == null)
+                {
+                    _addServiceToOrderCommand =
+                        new RelayCommand(param =>
+                        {
+                            OrderServicesList.Add(param as Service);
+                            AllServicesList.Remove(AllServicesList.Where(s => s.Id == (param as Service).Id).First());
+                        });
+                }
+                return _addServiceToOrderCommand;
+            }
+        }
+
+        public RelayCommand DeleteServiceFromOrderCommand
+        {
+            get
+            {
+                if (_deleteServiceFromOrderCommand == null)
+                {
+                    _deleteServiceFromOrderCommand =
+                        new RelayCommand(param =>
+                        {
+                            AllServicesList.Add(param as Service);
+                            OrderServicesList.Remove(OrderServicesList.Where(s => s.Id == (param as Service).Id).First());
+                        });
+                }
+                return _deleteServiceFromOrderCommand;
+            }
+        }
+
+        private void FilterPatients()
+        {
+            List<Patient> currentPatients = Context.Patient.ToList();
+            if (!string.IsNullOrWhiteSpace(SearchPatientText))
+            {
+                currentPatients = currentPatients
+                    .Where(new AllPropertiesSearcher<Patient>().Search(SearchPatientText))
+                    .ToList();
+            }
+            PatientsList = currentPatients;
+            SelectedPatient = currentPatients.FirstOrDefault();
         }
 
         private void GetBarcodeForScanner()

@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="LaboratoryDatabaseModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="LaboratoryDatabaseModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Analyzer">
           <Key>
             <PropertyRef Name="Id" />
@@ -25,14 +25,6 @@
           <Property Name="StatusId" Type="int" Nullable="false" />
           <Property Name="AnalyzerId" Type="int" Nullable="false" />
           <Property Name="UserId" Type="int" Nullable="false" />
-        </EntityType>
-        <EntityType Name="AppliedServiceOfOrder">
-          <Key>
-            <PropertyRef Name="OrderId" />
-            <PropertyRef Name="AppliedServiceId" />
-          </Key>
-          <Property Name="OrderId" Type="int" Nullable="false" />
-          <Property Name="AppliedServiceId" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="BarcodeOfPatient">
           <Key>
@@ -98,6 +90,14 @@
           <Property Name="Price" Type="decimal" Precision="20" Scale="2" Nullable="false" />
           <Property Name="Deadline" Type="datetime" />
           <Property Name="MeanDeviation" Type="decimal" Precision="20" Scale="2" />
+        </EntityType>
+        <EntityType Name="ServiceOfOrder">
+          <Key>
+            <PropertyRef Name="OrderId" />
+            <PropertyRef Name="ServiceId" />
+          </Key>
+          <Property Name="OrderId" Type="int" Nullable="false" />
+          <Property Name="ServiceId" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="ServiceOfUser">
           <Key>
@@ -195,30 +195,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_AppliedServiceOfOrder_AppliedService">
-          <End Role="AppliedService" Type="Self.AppliedService" Multiplicity="1" />
-          <End Role="AppliedServiceOfOrder" Type="Self.AppliedServiceOfOrder" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="AppliedService">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="AppliedServiceOfOrder">
-              <PropertyRef Name="AppliedServiceId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_AppliedServiceOfOrder_Order">
-          <End Role="Order" Type="Self.Order" Multiplicity="1" />
-          <End Role="AppliedServiceOfOrder" Type="Self.AppliedServiceOfOrder" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Order">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="AppliedServiceOfOrder">
-              <PropertyRef Name="OrderId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_HistoryOfLogin_User">
           <End Role="User" Type="Self.User" Multiplicity="1" />
           <End Role="HistoryOfLogin" Type="Self.HistoryOfLogin" Multiplicity="*" />
@@ -291,6 +267,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_ServiceOfOrder_Order">
+          <End Role="Order" Type="Self.Order" Multiplicity="1" />
+          <End Role="ServiceOfOrder" Type="Self.ServiceOfOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Order">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ServiceOfOrder">
+              <PropertyRef Name="OrderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ServiceOfOrder_Service">
+          <End Role="Service" Type="Self.Service" Multiplicity="1" />
+          <End Role="ServiceOfOrder" Type="Self.ServiceOfOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Service">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ServiceOfOrder">
+              <PropertyRef Name="ServiceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_ServiceOfUser_Service">
           <End Role="Service" Type="Self.Service" Multiplicity="1" />
           <End Role="ServiceOfUser" Type="Self.ServiceOfUser" Multiplicity="*" />
@@ -330,13 +330,13 @@
         <EntityContainer Name="LaboratoryDatabaseModelStoreContainer">
           <EntitySet Name="Analyzer" EntityType="Self.Analyzer" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AppliedService" EntityType="Self.AppliedService" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="AppliedServiceOfOrder" EntityType="Self.AppliedServiceOfOrder" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BarcodeOfPatient" EntityType="Self.BarcodeOfPatient" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="HistoryOfLogin" EntityType="Self.HistoryOfLogin" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="InsuranceCompany" EntityType="Self.InsuranceCompany" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Order" EntityType="Self.Order" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Patient" EntityType="Self.Patient" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Service" EntityType="Self.Service" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ServiceOfOrder" EntityType="Self.ServiceOfOrder" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ServiceOfUser" EntityType="Self.ServiceOfUser" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="StatusOfAppliedService" EntityType="Self.StatusOfAppliedService" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="StatusOfOrder" EntityType="Self.StatusOfOrder" Schema="dbo" store:Type="Tables" />
@@ -358,14 +358,6 @@
           <AssociationSet Name="FK_AppliedService_User" Association="Self.FK_AppliedService_User">
             <End Role="User" EntitySet="User" />
             <End Role="AppliedService" EntitySet="AppliedService" />
-          </AssociationSet>
-          <AssociationSet Name="FK_AppliedServiceOfOrder_AppliedService" Association="Self.FK_AppliedServiceOfOrder_AppliedService">
-            <End Role="AppliedService" EntitySet="AppliedService" />
-            <End Role="AppliedServiceOfOrder" EntitySet="AppliedServiceOfOrder" />
-          </AssociationSet>
-          <AssociationSet Name="FK_AppliedServiceOfOrder_Order" Association="Self.FK_AppliedServiceOfOrder_Order">
-            <End Role="Order" EntitySet="Order" />
-            <End Role="AppliedServiceOfOrder" EntitySet="AppliedServiceOfOrder" />
           </AssociationSet>
           <AssociationSet Name="FK_HistoryOfLogin_User" Association="Self.FK_HistoryOfLogin_User">
             <End Role="User" EntitySet="User" />
@@ -391,6 +383,14 @@
             <End Role="TypeOfInsurancePolicy" EntitySet="TypeOfInsurancePolicy" />
             <End Role="Patient" EntitySet="Patient" />
           </AssociationSet>
+          <AssociationSet Name="FK_ServiceOfOrder_Order" Association="Self.FK_ServiceOfOrder_Order">
+            <End Role="Order" EntitySet="Order" />
+            <End Role="ServiceOfOrder" EntitySet="ServiceOfOrder" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ServiceOfOrder_Service" Association="Self.FK_ServiceOfOrder_Service">
+            <End Role="Service" EntitySet="Service" />
+            <End Role="ServiceOfOrder" EntitySet="ServiceOfOrder" />
+          </AssociationSet>
           <AssociationSet Name="FK_ServiceOfUser_Service" Association="Self.FK_ServiceOfUser_Service">
             <End Role="Service" EntitySet="Service" />
             <End Role="ServiceOfUser" EntitySet="ServiceOfUser" />
@@ -404,7 +404,8 @@
             <End Role="User" EntitySet="User" />
           </AssociationSet>
         </EntityContainer>
-      </Schema></edmx:StorageModels>
+      </Schema>
+    </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="LaboratoryDatabaseModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -433,7 +434,6 @@
           <NavigationProperty Name="Service" Relationship="Self.FK_AppliedService_Service" FromRole="AppliedService" ToRole="Service" />
           <NavigationProperty Name="StatusOfAppliedService" Relationship="Self.FK_AppliedService_StatusOfAppliedService" FromRole="AppliedService" ToRole="StatusOfAppliedService" />
           <NavigationProperty Name="User" Relationship="Self.FK_AppliedService_User" FromRole="AppliedService" ToRole="User" />
-          <NavigationProperty Name="Order" Relationship="Self.AppliedServiceOfOrder" FromRole="AppliedService" ToRole="Order" />
         </EntityType>
         <EntityType Name="BarcodeOfPatient">
           <Key>
@@ -478,7 +478,7 @@
           <NavigationProperty Name="BarcodeOfPatient" Relationship="Self.FK_Order_BarcodeOfPatient" FromRole="Order" ToRole="BarcodeOfPatient" />
           <NavigationProperty Name="Patient" Relationship="Self.FK_Order_Patient" FromRole="Order" ToRole="Patient" />
           <NavigationProperty Name="StatusOfOrder" Relationship="Self.FK_Order_StatusOfOrder" FromRole="Order" ToRole="StatusOfOrder" />
-          <NavigationProperty Name="AppliedService" Relationship="Self.AppliedServiceOfOrder" FromRole="Order" ToRole="AppliedService" />
+          <NavigationProperty Name="Service" Relationship="Self.ServiceOfOrder" FromRole="Order" ToRole="Service" />
         </EntityType>
         <EntityType Name="Patient">
           <Key>
@@ -510,6 +510,7 @@
           <Property Name="Deadline" Type="DateTime" Precision="3" />
           <Property Name="MeanDeviation" Type="Decimal" Precision="20" Scale="2" />
           <NavigationProperty Name="AppliedService" Relationship="Self.FK_AppliedService_Service" FromRole="Service" ToRole="AppliedService" />
+          <NavigationProperty Name="Order" Relationship="Self.ServiceOfOrder" FromRole="Service" ToRole="Order" />
           <NavigationProperty Name="User" Relationship="Self.ServiceOfUser" FromRole="Service" ToRole="User" />
         </EntityType>
         <EntityType Name="StatusOfAppliedService">
@@ -692,9 +693,9 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="AppliedServiceOfOrder">
-          <End Role="AppliedService" Type="Self.AppliedService" Multiplicity="*" />
+        <Association Name="ServiceOfOrder">
           <End Role="Order" Type="Self.Order" Multiplicity="*" />
+          <End Role="Service" Type="Self.Service" Multiplicity="*" />
         </Association>
         <Association Name="ServiceOfUser">
           <End Role="Service" Type="Self.Service" Multiplicity="*" />
@@ -758,9 +759,9 @@
             <End Role="TypeOfUser" EntitySet="TypeOfUser" />
             <End Role="User" EntitySet="User" />
           </AssociationSet>
-          <AssociationSet Name="AppliedServiceOfOrder" Association="Self.AppliedServiceOfOrder">
-            <End Role="AppliedService" EntitySet="AppliedService" />
+          <AssociationSet Name="ServiceOfOrder" Association="Self.ServiceOfOrder">
             <End Role="Order" EntitySet="Order" />
+            <End Role="Service" EntitySet="Service" />
           </AssociationSet>
           <AssociationSet Name="ServiceOfUser" Association="Self.ServiceOfUser">
             <End Role="Service" EntitySet="Service" />
@@ -912,12 +913,12 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <AssociationSetMapping Name="AppliedServiceOfOrder" TypeName="LaboratoryDatabaseModel.AppliedServiceOfOrder" StoreEntitySet="AppliedServiceOfOrder">
-            <EndProperty Name="AppliedService">
-              <ScalarProperty Name="Id" ColumnName="AppliedServiceId" />
-            </EndProperty>
+          <AssociationSetMapping Name="ServiceOfOrder" TypeName="LaboratoryDatabaseModel.ServiceOfOrder" StoreEntitySet="ServiceOfOrder">
             <EndProperty Name="Order">
               <ScalarProperty Name="Id" ColumnName="OrderId" />
+            </EndProperty>
+            <EndProperty Name="Service">
+              <ScalarProperty Name="Id" ColumnName="ServiceId" />
             </EndProperty>
           </AssociationSetMapping>
           <AssociationSetMapping Name="ServiceOfUser" TypeName="LaboratoryDatabaseModel.ServiceOfUser" StoreEntitySet="ServiceOfUser">

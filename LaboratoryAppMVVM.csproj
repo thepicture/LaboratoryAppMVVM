@@ -119,6 +119,7 @@
     </Compile>
     <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Commands\NavigateCommand.cs" />
+    <Compile Include="Models\AllPropertiesSearcher.cs" />
     <Compile Include="Models\BarcodeImageGenerator.cs" />
     <Compile Include="Models\BarcodePdfExporter.cs" />
     <Compile Include="Models\CaptchaLetterBase.cs" />
