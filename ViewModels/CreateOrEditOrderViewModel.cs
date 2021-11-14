@@ -14,7 +14,7 @@ using WIA;
 
 namespace LaboratoryAppMVVM.ViewModels
 {
-    public class CreateOrEditOrderView : ViewModelBase
+    public class CreateOrEditOrderViewModel : ViewModelBase
     {
         private readonly ViewModelNavigationStore _navigationStore;
         private Order _order;
@@ -24,11 +24,12 @@ namespace LaboratoryAppMVVM.ViewModels
         private RelayCommand _navigateToLaboratoryAssistantViewModel;
         private RelayCommand _enterTooltipCommand;
         private RelayCommand _getBarcodeFromScannerCommand;
+        private RelayCommand _navigateToAddPatientViewModelCommand;
         private string _tubeIdTooltipText = "Введите код пробирки...";
         private string _tubeId;
         private RenderTargetBitmap _barcodeBitmap;
 
-        public CreateOrEditOrderView(ViewModelNavigationStore navigationStore, User user, Order order, IMessageBoxService messageBoxService)
+        public CreateOrEditOrderViewModel(ViewModelNavigationStore navigationStore, User user, Order order, IMessageBoxService messageBoxService)
         {
             _navigationStore = navigationStore;
             User = user;
@@ -241,6 +242,25 @@ namespace LaboratoryAppMVVM.ViewModels
                         GetBarcodeForScanner());
                 }
                 return _getBarcodeFromScannerCommand;
+            }
+        }
+
+        public RelayCommand NavigateToAddPatientViewModelCommand
+        {
+            get
+            {
+                if (_navigateToAddPatientViewModelCommand == null)
+                {
+                    _navigateToAddPatientViewModelCommand =
+                        new RelayCommand(param => _navigationStore.CurrentViewModel =
+                            new AddPatientViewModel(
+                                _navigationStore,
+                                MessageBoxService,
+                                this
+                                )
+                            );
+                }
+                return _navigateToAddPatientViewModelCommand;
             }
         }
 

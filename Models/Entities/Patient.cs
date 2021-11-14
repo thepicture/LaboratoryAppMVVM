@@ -31,6 +31,7 @@ namespace LaboratoryAppMVVM.Models.Entities
         public string Email { get; set; }
         public int TypeOfInsurancePolicyId { get; set; }
         public int InsuranceCompanyId { get; set; }
+        public string InsurancePolicyNumber { get; set; }
     
         public virtual InsuranceCompany InsuranceCompany { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

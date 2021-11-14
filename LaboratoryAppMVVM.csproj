@@ -85,6 +85,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\AddPatientView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\AdminView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -191,8 +195,9 @@
     <Compile Include="Services\ILoginService.cs" />
     <Compile Include="Stores\ViewModelNavigationStore.cs" />
     <Compile Include="ViewModels\AccountantViewModel.cs" />
+    <Compile Include="ViewModels\AddPatientViewModel.cs" />
     <Compile Include="ViewModels\AdminViewModel.cs" />
-    <Compile Include="ViewModels\CreateOrEditOrderView.cs" />
+    <Compile Include="ViewModels\CreateOrEditOrderViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="ViewModels\LaboratoryAssistantViewModel.cs" />
     <Compile Include="ViewModels\LaboratoryResearcherViewModel.cs" />
@@ -200,6 +205,9 @@
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="Views\AccountantView.xaml.cs">
       <DependentUpon>AccountantView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AddPatientView.xaml.cs">
+      <DependentUpon>AddPatientView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\AdminView.xaml.cs">
       <DependentUpon>AdminView.xaml</DependentUpon>
@@ -265,18 +273,6 @@
     <Resource Include="Resources\picture.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Models\Entities\LaboratoryBaseModel.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>LaboratoryBaseModel.edmx</DependentUpon>
-      <LastGenOutput>LaboratoryBaseModel.Context.cs</LastGenOutput>
-    </Content>
-    <Content Include="Models\Entities\LaboratoryBaseModel.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>LaboratoryBaseModel.edmx</DependentUpon>
-      <LastGenOutput>LaboratoryBaseModel.cs</LastGenOutput>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
     <COMReference Include="Microsoft.Office.Core">
       <Guid>{2DF8D04C-5BFA-101B-BDE5-00AA0044DE52}</Guid>
       <VersionMajor>2</VersionMajor>
@@ -325,6 +321,18 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Models\Entities\LaboratoryBaseModel.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>LaboratoryBaseModel.edmx</DependentUpon>
+      <LastGenOutput>LaboratoryBaseModel.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Models\Entities\LaboratoryBaseModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>LaboratoryBaseModel.edmx</DependentUpon>
+      <LastGenOutput>LaboratoryBaseModel.cs</LastGenOutput>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

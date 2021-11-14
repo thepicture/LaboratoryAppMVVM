@@ -61,8 +61,11 @@
                 <DataTemplate DataType="{x:Type viewmodels:LoginViewModel}">
                     <views:LoginView></views:LoginView>
                 </DataTemplate>
-                <DataTemplate DataType="{x:Type viewmodels:CreateOrEditOrderView}">
+                <DataTemplate DataType="{x:Type viewmodels:CreateOrEditOrderViewModel}">
                     <views:CreateOrEditOrderView></views:CreateOrEditOrderView>
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type viewmodels:AddPatientViewModel}">
+                    <views:AddPatientView></views:AddPatientView>
                 </DataTemplate>
             </ContentControl.Resources>
         </ContentControl>
