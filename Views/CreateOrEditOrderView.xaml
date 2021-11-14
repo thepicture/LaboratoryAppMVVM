@@ -46,6 +46,9 @@
                         </TextBlock>
                     </Grid>
                 </StackPanel>
+                <Button Content="Считать сканером"
+                        HorizontalAlignment="Right"
+                        Command="{Binding GetBarcodeFromScannerCommand}"></Button>
                 <Border HorizontalAlignment="Right"
                         BorderBrush="Black"
                         BorderThickness="1"
