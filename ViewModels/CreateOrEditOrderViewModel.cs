@@ -443,8 +443,13 @@ namespace LaboratoryAppMVVM.ViewModels
             try
             {
                 _ = Context.SaveChanges();
-                MessageBoxService.ShowInformation("Заказ успешно " +
-                    "сохранён!");
+                CustomPathPdfExporter customPathPdfExporter = new CustomPathPdfExporter(new OrderPdfExporter(Order));
+                string filePath = customPathPdfExporter.Save();
+                if (!string.IsNullOrWhiteSpace(filePath))
+                {
+                    MessageBoxService.ShowInformation("Заказ успешно " +
+                        $"сохранён по пути {filePath}!");
+                }
             }
             catch (Exception ex)
             {

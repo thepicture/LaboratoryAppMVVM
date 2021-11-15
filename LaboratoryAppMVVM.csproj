@@ -186,6 +186,7 @@
     <Compile Include="Models\LevenshteinDistanceCalculator.cs" />
     <Compile Include="Models\ListViewCaptchaLetter.cs" />
     <Compile Include="Models\NoiseGenerator.cs" />
+    <Compile Include="Models\OrderPdfExporter.cs" />
     <Compile Include="Services\SimpleCaptchaService.cs" />
     <Compile Include="Services\ICaptchaService.cs" />
     <Compile Include="Services\IHaveTimeService.cs" />
