@@ -423,7 +423,35 @@ namespace LaboratoryAppMVVM.ViewModels
 
         private void CreateOrder()
         {
-            throw new NotImplementedException();
+            OrderServicesList.ToList().ForEach(Order.Service.Add);
+            Order.Patient = SelectedPatient;
+            Order.Date = DateTime.Now;
+            Order.StatusOfOrder = Context.StatusOfOrder.First(status => status.Name == "В обработке");
+            if (!Context.BarcodeOfPatient.Any(barcode => barcode.Barcode == TubeId))
+            {
+                Order.BarcodeOfPatient = new BarcodeOfPatient
+                {
+                    DateTime = DateTime.Now,
+                    Barcode = TubeId
+                };
+            }
+            else
+            {
+                Order.BarcodeOfPatient = Context.BarcodeOfPatient.First(barcode => barcode.Barcode == TubeId);
+            }
+            _ = Context.Order.Add(Order);
+            try
+            {
+                _ = Context.SaveChanges();
+                MessageBoxService.ShowInformation("Заказ успешно " +
+                    "сохранён!");
+            }
+            catch (Exception ex)
+            {
+                MessageBoxService.ShowError("Не удалось сфоормировать " +
+                    "заказ. Пожалуйста, попробуйте ещё раз. " +
+                  "Ошибка: " + ex.Message);
+            }
         }
 
         private void AddNewService(string serviceName)
