@@ -39,6 +39,7 @@ namespace LaboratoryAppMVVM.ViewModels
         private RelayCommand _showAddServiceFieldCommand;
         private string _searchServiceText = "";
         private readonly LevenshteinDistanceCalculator _levenshteinDistanceCalculator;
+        private RelayCommand _createOrderCommand;
 
         public CreateOrEditOrderViewModel(ViewModelNavigationStore navigationStore, User user, Order order, IMessageBoxService messageBoxService)
         {
@@ -406,6 +407,23 @@ namespace LaboratoryAppMVVM.ViewModels
                 FilterAllServices();
                 OnPropertyChanged();
             }
+        }
+
+        public RelayCommand CreateOrderCommand
+        {
+            get
+            {
+                if (_createOrderCommand == null)
+                {
+                    _createOrderCommand = new RelayCommand(param => CreateOrder());
+                }
+                return _createOrderCommand;
+            }
+        }
+
+        private void CreateOrder()
+        {
+            throw new NotImplementedException();
         }
 
         private void AddNewService(string serviceName)

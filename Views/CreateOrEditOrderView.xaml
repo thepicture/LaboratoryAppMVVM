@@ -4,8 +4,8 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:LaboratoryAppMVVM.Views" 
-      xmlns:viewmodels="clr-namespace:LaboratoryAppMVVM.ViewModels" xmlns:models="clr-namespace:LaboratoryAppMVVM.Models" 
-             d:DataContext="{d:DesignInstance Type=viewmodels:CreateOrEditOrderViewModel}"
+      xmlns:viewmodels="clr-namespace:LaboratoryAppMVVM.ViewModels"
+      d:DataContext="{d:DesignInstance Type=viewmodels:CreateOrEditOrderViewModel}"
       mc:Ignorable="d" 
       d:DesignHeight="750" 
       d:DesignWidth="800">
@@ -42,7 +42,8 @@
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding ElementName=TextBoxTube, Path=Text.Length}"
                                                      Value="0">
-                                            <Setter Property="Text" Value="{Binding TubeIdTooltipText}" />
+                                            <Setter Property="Text" 
+                                                    Value="{Binding TubeIdTooltipText}" />
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
@@ -69,7 +70,8 @@
                     <ComboBox Width="200"
                               ItemsSource="{Binding PatientsList}"
                               SelectedItem="{Binding SelectedPatient}"
-                              DisplayMemberPath="FullName"></ComboBox>
+                              DisplayMemberPath="FullName"
+                              Name="ComboPatient"></ComboBox>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal"
                             HorizontalAlignment="Right">
@@ -116,7 +118,8 @@
                               Margin="5"
                               Width="300">
                         <ScrollViewer>
-                            <ItemsControl ItemsSource="{Binding OrderServicesList}">
+                            <ItemsControl ItemsSource="{Binding OrderServicesList}"
+                                          Name="ItemsControlServices">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <GroupBox Header="{Binding Name}">
@@ -132,7 +135,6 @@
                 </StackPanel>
                 <Button Content="Показать меню добавления услуги"
                             HorizontalAlignment="Right"
-                            CommandParameter="{Binding ElementName=LViewServices, Path=LastSelectedItemOfComboBox}"
                             Command="{Binding ShowAddServiceFieldCommand}">
                     <Button.Style>
                         <Style TargetType="Button"
@@ -140,7 +142,8 @@
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}, Path=DataContext.IsAddServicePanelVisible}"
                                              Value="True">
-                                    <Setter Property="IsEnabled" Value="False" />
+                                    <Setter Property="IsEnabled" 
+                                            Value="False" />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
@@ -168,8 +171,10 @@
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding ElementName=TBoxServiceName, Path=Text.Length}"
                                                      Value="0">
-                                            <Setter Property="IsEnabled" Value="False" />
-                                            <Setter Property="Content" Value="Наименование пустое" />
+                                            <Setter Property="IsEnabled" 
+                                                    Value="False" />
+                                            <Setter Property="Content"
+                                                    Value="Наименование пустое" />
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
@@ -179,7 +184,29 @@
                 </GroupBox>
                 <StackPanel Orientation="Horizontal"
                             HorizontalAlignment="Right">
-                    <Button Content="Сформировать заказ"></Button>
+                    <Button Content="Сформировать заказ"
+                            Command="{Binding CreateOrderCommand}">
+                        <Button.Style>
+                            <Style TargetType="Button"
+                                   BasedOn="{StaticResource {x:Type Button}}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ElementName=ItemsControlServices, Path=Items.Count}"
+                                                 Value="0">
+                                        <Setter Property="IsEnabled" 
+                                                Value="False" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding ElementName=TextBoxTube, Path=Text.Length}"
+                                                 Value="0">
+                                        <Setter Property="IsEnabled" Value="False" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding ElementName=ComboPatient, Path=SelectedItem}"
+                                                 Value="{x:Null}">
+                                        <Setter Property="IsEnabled" Value="False" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
                     <Button Content="Отмена"
                             Command="{Binding NavigateToLaboratoryAssistantViewModel}"></Button>
                 </StackPanel>
