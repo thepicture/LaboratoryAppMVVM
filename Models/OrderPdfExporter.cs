@@ -11,20 +11,20 @@ namespace LaboratoryAppMVVM.Models
     {
         private readonly object _lock = new object();
         private readonly Order _order;
+        private readonly string _nameOfFile;
 
-        public OrderPdfExporter(Order order)
+        public OrderPdfExporter(Order order, string nameOfFile)
         {
             _order = order;
+            _nameOfFile = nameOfFile;
         }
 
-        public void Export(bool isShowAfterSave, string outputPath = null)
+        public void Export(bool isShowAfterSave, string outputPath)
         {
             lock (_lock)
             {
                 try
                 {
-                    string path = outputPath ?? AppDomain.CurrentDomain.BaseDirectory;
-
                     Word.Application application = new Word.Application();
                     Word.Document document = application.Documents.Add();
                     Word.Paragraph paragraph = document.Paragraphs.Add();
@@ -38,7 +38,7 @@ namespace LaboratoryAppMVVM.Models
                     table.Cell(3, 1).Range.Text = "Номер пробирки";
                     table.Cell(3, 2).Range.Text = _order.BarcodeOfPatient.Barcode;
                     table.Cell(4, 1).Range.Text = "Номер страхового полиса";
-                    table.Cell(4, 2).Range.Text = _order.Patient.InsurancePolicyNumber;
+                    table.Cell(4, 2).Range.Text = _order.Patient.InsurancePolicyNumber ?? "Не указан";
                     table.Cell(5, 1).Range.Text = "ФИО";
                     table.Cell(5, 2).Range.Text = _order.Patient.FullName;
                     table.Cell(6, 1).Range.Text = "Дата рождения";
@@ -47,12 +47,11 @@ namespace LaboratoryAppMVVM.Models
                     table.Cell(7, 2).Range.Text = string.Join(", ", _order.Service.ToList().Select(s => s.Name));
                     table.Cell(8, 1).Range.Text = "Стоимость";
                     table.Cell(8, 2).Range.Text = _order.Service.Sum(s => s.Price).ToString("N2");
-                    string nameOfFile = $"\\Заказ{_order.Date:yyyy_MM_dd_hh_mm_ss}.pdf";
-                    document.SaveAs(path + nameOfFile, FileFormat: Word.WdSaveFormat.wdFormatPDF);
+                    document.SaveAs(Path.Combine(outputPath, _nameOfFile), FileFormat: Word.WdSaveFormat.wdFormatPDF);
 
                     if (isShowAfterSave)
                     {
-                        _ = System.Diagnostics.Process.Start(path + nameOfFile);
+                        _ = System.Diagnostics.Process.Start(Path.Combine(outputPath, _nameOfFile));
                     }
                 }
                 catch (Exception ex)

@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Windows.Forms;
 
 namespace LaboratoryAppMVVM.Models
 {
@@ -26,8 +27,13 @@ namespace LaboratoryAppMVVM.Models
             if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
             {
                 _pdfExportable.Export(isShowAfterSave, folderBrowserDialog.SelectedPath);
+                return folderBrowserDialog.SelectedPath;
             }
-            return folderBrowserDialog.SelectedPath;
+            else
+            {
+                _pdfExportable.Export(isShowAfterSave, AppDomain.CurrentDomain.BaseDirectory);
+            }
+            return AppDomain.CurrentDomain.BaseDirectory;
         }
     }
 }

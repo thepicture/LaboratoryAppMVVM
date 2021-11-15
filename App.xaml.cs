@@ -1,5 +1,4 @@
-﻿using LaboratoryAppMVVM.Models;
-using LaboratoryAppMVVM.Models.Entities;
+﻿using LaboratoryAppMVVM.Models.Entities;
 using LaboratoryAppMVVM.Services;
 using LaboratoryAppMVVM.Stores;
 using LaboratoryAppMVVM.ViewModels;

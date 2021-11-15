@@ -7,6 +7,7 @@ using LaboratoryAppMVVM.Stores;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -440,20 +441,48 @@ namespace LaboratoryAppMVVM.ViewModels
                 Order.BarcodeOfPatient = Context.BarcodeOfPatient.First(barcode => barcode.Barcode == TubeId);
             }
             _ = Context.Order.Add(Order);
+            NameValueCollection orderBase64String = System.Web.HttpUtility.ParseQueryString(string.Empty);
+            foreach (System.Reflection.PropertyInfo property in Order.GetType().GetProperties())
+            {
+                orderBase64String.Add("дата_заказа", _order.Date.ToString("yyyy-MM-ddThh:mm:ss"));
+                orderBase64String.Add("номер_заказа", _order.Id.ToString());
+                orderBase64String.Add("номер_пробирки", _order.BarcodeOfPatient.Barcode);
+                orderBase64String.Add("номер_страхового полиса", _order.Patient.InsurancePolicyNumber ?? "Не указан");
+                orderBase64String.Add("фио", _order.Patient.FullName);
+                orderBase64String.Add("дата_рождения", _order.Patient.BirthDate.ToString("yyyy-MM-dd"));
+                orderBase64String.Add("перечень_услуг", string.Join(", ", _order.Service.ToList().Select(s => s.Name)));
+                orderBase64String.Add("стоимость", _order.Service.Sum(s => s.Price).ToString("N2"));
+            }
             try
             {
                 _ = Context.SaveChanges();
-                CustomPathPdfExporter customPathPdfExporter = new CustomPathPdfExporter(new OrderPdfExporter(Order));
+                string nameOfOrder = $"Заказ_{Order.Date:yyyy_MM_dd_hh_mm_ss}";
+                CustomPathPdfExporter customPathPdfExporter = new CustomPathPdfExporter
+                    (
+                        new OrderPdfExporter(Order, nameOfOrder + ".pdf")
+                    );
                 string filePath = customPathPdfExporter.Save();
                 if (!string.IsNullOrWhiteSpace(filePath))
                 {
+                    string urlEncodeText = $"https://wsrussia.ru/?data=base64({orderBase64String})";
+                    File.WriteAllText(Path.Combine(filePath, nameOfOrder + ".txt"),
+                        urlEncodeText,
+                        encoding: System.Text.Encoding.UTF8);
+                    MessageBoxService.ShowInformation("Информация о заказе " +
+                        "успешно сохранена в базу данных, а также " +
+                        $"по пути {filePath} в формате .pdf и .txt!");
+                }
+                else
+                {
                     MessageBoxService.ShowInformation("Заказ успешно " +
-                        $"сохранён по пути {filePath}!");
+                        "сохранён в базу данных " +
+                        "с отчётностью в папке выполняемого " +
+                        "в данный момент приложения!");
                 }
             }
             catch (Exception ex)
             {
-                MessageBoxService.ShowError("Не удалось сфоормировать " +
+                MessageBoxService.ShowError("Не удалось сформировать " +
                     "заказ. Пожалуйста, попробуйте ещё раз. " +
                   "Ошибка: " + ex.Message);
             }
