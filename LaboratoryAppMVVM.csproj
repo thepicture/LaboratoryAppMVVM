@@ -183,6 +183,7 @@
     <Compile Include="Models\DisposerOnTypeEqual.cs" />
     <Compile Include="Models\IPdfExportable.cs" />
     <Compile Include="Models\IRenderTargetBitmapGenerator.cs" />
+    <Compile Include="Models\LevenshteinDistanceCalculator.cs" />
     <Compile Include="Models\ListViewCaptchaLetter.cs" />
     <Compile Include="Models\NoiseGenerator.cs" />
     <Compile Include="Services\SimpleCaptchaService.cs" />

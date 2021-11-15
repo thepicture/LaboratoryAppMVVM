@@ -38,6 +38,7 @@ namespace LaboratoryAppMVVM.ViewModels
         private bool _isAddServicePanelVisible = false;
         private RelayCommand _showAddServiceFieldCommand;
         private string _searchServiceText = "";
+        private readonly LevenshteinDistanceCalculator _levenshteinDistanceCalculator;
 
         public CreateOrEditOrderViewModel(ViewModelNavigationStore navigationStore, User user, Order order, IMessageBoxService messageBoxService)
         {
@@ -45,6 +46,7 @@ namespace LaboratoryAppMVVM.ViewModels
             User = user;
             Order = order;
             MessageBoxService = messageBoxService;
+            _levenshteinDistanceCalculator = new LevenshteinDistanceCalculator();
         }
 
         public Order Order
@@ -447,6 +449,11 @@ namespace LaboratoryAppMVVM.ViewModels
                     .Where(new AllPropertiesSearcher<Patient>().Search(SearchPatientText))
                     .ToList();
             }
+            currentPatients = currentPatients
+                .Union(Context.Patient.ToList()
+                .Where(p => _levenshteinDistanceCalculator.Calculate(
+                p.FullName.ToLower(),
+                SearchPatientText.ToLower()) < 4)).ToList();
             PatientsList = currentPatients;
             SelectedPatient = currentPatients.FirstOrDefault();
         }
@@ -460,8 +467,20 @@ namespace LaboratoryAppMVVM.ViewModels
                     .Where(new AllPropertiesSearcher<Service>().Search(SearchServiceText))
                     .ToList();
             }
+            currentServices = currentServices
+                .Union(Context.Service.ToList()
+                .Where(p => _levenshteinDistanceCalculator.Calculate(
+                    p.Name.ToLower(),
+                    SearchServiceText.ToLower()) < 4))
+                .ToList();
             AllServicesList.Clear();
-            AllServicesList = new ObservableCollection<Service>(currentServices.Where(service => !OrderServicesList.Select(orderService => orderService.Id).Contains(service.Id)).ToList());
+            AllServicesList = new ObservableCollection<Service>
+                (
+                currentServices
+                .Where(service => !OrderServicesList.Select(orderService => orderService.Id)
+                .Contains(service.Id))
+                .ToList()
+                );
         }
 
 
