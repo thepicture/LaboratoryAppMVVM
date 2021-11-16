@@ -31,6 +31,7 @@
         <AssociationConnector Association="LaboratoryDatabaseModel.FK_User_TypeOfUser" ManuallyRouted="false" />
         <AssociationConnector Association="LaboratoryDatabaseModel.ServiceOfOrder" ManuallyRouted="false" />
         <AssociationConnector Association="LaboratoryDatabaseModel.ServiceOfUser" ManuallyRouted="false" />
+        <AssociationConnector Association="LaboratoryDatabaseModel.FK_AppliedService_Patient" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

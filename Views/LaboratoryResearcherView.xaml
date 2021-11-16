@@ -27,7 +27,7 @@
                             </Binding>
                         </Image.Source>
                     </Image>
-                    <StackPanel>
+                    <StackPanel Width="200">
                         <TextBlock HorizontalAlignment="Center"
                                Text="{Binding User.Name}"
                                Style="{StaticResource CommonBlock}"
@@ -36,9 +36,8 @@
                                Text="{Binding User.TypeOfUser.Name, StringFormat={}Роль: {0}}"
                                Grid.Row="2"></TextBlock>
                     </StackPanel>
-                    <Button Content="Добавить анализатор"
-                                Width="150"></Button>
-                    <TextBlock Text="{Binding CurrentTimeOfSession, StringFormat=hh\\:mm\\:ss}"></TextBlock>
+                    <TextBlock Text="{Binding CurrentTimeOfSession, StringFormat=hh\\:mm\\:ss}"
+                               HorizontalAlignment="Center"></TextBlock>
                 </StackPanel>
             </Border>
         </Grid>

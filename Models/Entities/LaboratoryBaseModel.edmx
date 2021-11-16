@@ -25,6 +25,7 @@
           <Property Name="StatusId" Type="int" Nullable="false" />
           <Property Name="AnalyzerId" Type="int" Nullable="false" />
           <Property Name="UserId" Type="int" Nullable="false" />
+          <Property Name="PatientId" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="BarcodeOfPatient">
           <Key>
@@ -156,6 +157,18 @@
             </Principal>
             <Dependent Role="AppliedService">
               <PropertyRef Name="AnalyzerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AppliedService_Patient">
+          <End Role="Patient" Type="Self.Patient" Multiplicity="1" />
+          <End Role="AppliedService" Type="Self.AppliedService" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Patient">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AppliedService">
+              <PropertyRef Name="PatientId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -347,6 +360,10 @@
             <End Role="Analyzer" EntitySet="Analyzer" />
             <End Role="AppliedService" EntitySet="AppliedService" />
           </AssociationSet>
+          <AssociationSet Name="FK_AppliedService_Patient" Association="Self.FK_AppliedService_Patient">
+            <End Role="Patient" EntitySet="Patient" />
+            <End Role="AppliedService" EntitySet="AppliedService" />
+          </AssociationSet>
           <AssociationSet Name="FK_AppliedService_Service" Association="Self.FK_AppliedService_Service">
             <End Role="Service" EntitySet="Service" />
             <End Role="AppliedService" EntitySet="AppliedService" />
@@ -433,6 +450,8 @@
           <NavigationProperty Name="Service" Relationship="Self.FK_AppliedService_Service" FromRole="AppliedService" ToRole="Service" />
           <NavigationProperty Name="StatusOfAppliedService" Relationship="Self.FK_AppliedService_StatusOfAppliedService" FromRole="AppliedService" ToRole="StatusOfAppliedService" />
           <NavigationProperty Name="User" Relationship="Self.FK_AppliedService_User" FromRole="AppliedService" ToRole="User" />
+          <Property Name="PatientId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Patient" Relationship="LaboratoryDatabaseModel.FK_AppliedService_Patient" FromRole="AppliedService" ToRole="Patient" />
         </EntityType>
         <EntityType Name="BarcodeOfPatient">
           <Key>
@@ -498,6 +517,7 @@
           <NavigationProperty Name="InsuranceCompany" Relationship="Self.FK_Patient_InsuranceCompany" FromRole="Patient" ToRole="InsuranceCompany" />
           <NavigationProperty Name="Order" Relationship="Self.FK_Order_Patient" FromRole="Patient" ToRole="Order" />
           <NavigationProperty Name="TypeOfInsurancePolicy" Relationship="Self.FK_Patient_TypeOfInsurancePolicy" FromRole="Patient" ToRole="TypeOfInsurancePolicy" />
+          <NavigationProperty Name="AppliedService" Relationship="LaboratoryDatabaseModel.FK_AppliedService_Patient" FromRole="Patient" ToRole="AppliedService" />
         </EntityType>
         <EntityType Name="Service">
           <Key>
@@ -766,7 +786,23 @@
             <End Role="Service" EntitySet="Service" />
             <End Role="User" EntitySet="User" />
           </AssociationSet>
+          <AssociationSet Name="FK_AppliedService_Patient" Association="LaboratoryDatabaseModel.FK_AppliedService_Patient">
+            <End Role="Patient" EntitySet="Patient" />
+            <End Role="AppliedService" EntitySet="AppliedService" />
+          </AssociationSet>
         </EntityContainer>
+        <Association Name="FK_AppliedService_Patient">
+          <End Type="LaboratoryDatabaseModel.Patient" Role="Patient" Multiplicity="1" />
+          <End Type="LaboratoryDatabaseModel.AppliedService" Role="AppliedService" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Patient">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AppliedService">
+              <PropertyRef Name="PatientId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -785,6 +821,7 @@
           <EntitySetMapping Name="AppliedService">
             <EntityTypeMapping TypeName="LaboratoryDatabaseModel.AppliedService">
               <MappingFragment StoreEntitySet="AppliedService">
+                <ScalarProperty Name="PatientId" ColumnName="PatientId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="ServiceId" ColumnName="ServiceId" />
                 <ScalarProperty Name="Result" ColumnName="Result" />

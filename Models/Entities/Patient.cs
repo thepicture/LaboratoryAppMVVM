@@ -18,6 +18,7 @@ namespace LaboratoryAppMVVM.Models.Entities
         public Patient()
         {
             this.Order = new HashSet<Order>();
+            this.AppliedService = new HashSet<AppliedService>();
         }
     
         public int Id { get; set; }
@@ -37,5 +38,7 @@ namespace LaboratoryAppMVVM.Models.Entities
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Order> Order { get; set; }
         public virtual TypeOfInsurancePolicy TypeOfInsurancePolicy { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<AppliedService> AppliedService { get; set; }
     }
 }

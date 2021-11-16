@@ -22,10 +22,12 @@ namespace LaboratoryAppMVVM.Models.Entities
         public int StatusId { get; set; }
         public int AnalyzerId { get; set; }
         public int UserId { get; set; }
+        public int PatientId { get; set; }
     
         public virtual Analyzer Analyzer { get; set; }
         public virtual Service Service { get; set; }
         public virtual StatusOfAppliedService StatusOfAppliedService { get; set; }
         public virtual User User { get; set; }
+        public virtual Patient Patient { get; set; }
     }
 }
