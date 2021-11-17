@@ -27,10 +27,17 @@ namespace LaboratoryAppMVVM.ViewModels
                 if (_navigateToLoginPageCommand == null)
                 {
                     _navigateToLoginPageCommand =
-                        new RelayCommand(param => _viewModelNavigationStore.CurrentViewModel
-                        = new LoginViewModel(_viewModelNavigationStore,
-                                             MessageBoxService,
-                                             new LaboratoryLoginService()));
+                        new RelayCommand(param =>
+                        {
+                            if (MessageBoxService.ShowQuestion("Вы действительно хотите завершить сессию?"))
+                            {
+
+                                _viewModelNavigationStore.CurrentViewModel
+                                                        = new LoginViewModel(_viewModelNavigationStore,
+                                                                             MessageBoxService,
+                                                                             new LaboratoryLoginService());
+                            }
+                        });
                 }
                 return _navigateToLoginPageCommand;
             }

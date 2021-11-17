@@ -14,7 +14,7 @@ namespace LaboratoryAppMVVM.Services
         {
             _timer = new DispatcherTimer(priority: DispatcherPriority.Normal)
             {
-                Interval = TimeSpan.FromSeconds(.1),
+                Interval = TimeSpan.FromSeconds(1),
             };
             TotalTimeLeft = sessionTimeSpan;
             _timer.Tick += OnSessionTimerTick;
