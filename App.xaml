@@ -43,7 +43,37 @@
         <Style TargetType="Viewbox">
             <Setter Property="Margin" Value="5"></Setter>
         </Style>
-        
+
+        <Grid Style="{StaticResource BackgroundGrid}"
+              x:Key="TitleGrid">
+            <Grid.Effect>
+                <DropShadowEffect ShadowDepth=".3"></DropShadowEffect>
+            </Grid.Effect>
+            <Grid>
+                <Grid.Resources>
+                    <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"></BooleanToVisibilityConverter>
+                </Grid.Resources>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+                <Image Source="/Resources/logo.png"
+                   HorizontalAlignment="Left"></Image>
+                <Viewbox Grid.Column="1">
+                    <TextBlock Text="Медицинская лаборатория № 20 Санкт-Петербурга"
+                           Margin="10"
+                           FontWeight="Bold"></TextBlock>
+                </Viewbox>
+                <Button Content="Вернуться на окно входа"
+                        Grid.Column="3"
+                        VerticalAlignment="Center"
+                        Visibility="{Binding IsNotOnLoginPage, Converter={StaticResource BoolToVisibilityConverter}}"
+                        Command="{Binding NavigateToLoginPageCommand}">
+                </Button>
+            </Grid>
+        </Grid>
+
         <!--Content templates for windows.-->
         <DataTemplate DataType="{x:Type viewmodels:AnalyzerViewModel}">
             <views:AnalyzerView></views:AnalyzerView>

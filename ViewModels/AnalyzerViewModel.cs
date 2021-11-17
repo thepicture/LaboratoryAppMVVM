@@ -10,6 +10,7 @@ namespace LaboratoryAppMVVM.ViewModels
         private readonly ViewModelNavigationStore _viewModelNavigationStore;
         private Analyzer _analyzer;
         private ObservableCollection<AppliedService> _notAcceptedServicesList;
+        private bool _isNotOnLoginPage = false;
 
         public AnalyzerViewModel(ViewModelNavigationStore viewModelNavigationStore,
                                  Analyzer analyzer)
@@ -44,6 +45,15 @@ namespace LaboratoryAppMVVM.ViewModels
             set
             {
                 _notAcceptedServicesList = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsNotOnLoginPage
+        {
+            get => _isNotOnLoginPage; set
+            {
+                _isNotOnLoginPage = value;
                 OnPropertyChanged();
             }
         }

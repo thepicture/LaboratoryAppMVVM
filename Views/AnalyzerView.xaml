@@ -7,23 +7,29 @@
       mc:Ignorable="d" 
       d:DesignHeight="450" 
       d:DesignWidth="800">
-    <UserControl.Resources>
-        <Style TargetType="Window">
-            <Setter Property="Title" Value="{Binding Analyzer.Name, StringFormat={}Окно услуг анализатора {0}}"></Setter>
-            <Setter Property="MinWidth" Value="1200" />
-            <Setter Property="MinHeight" Value="800" />
-            <Setter Property="WindowStartupLocation" Value="CenterScreen" />
-        </Style>
-    </UserControl.Resources>
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="5*" />
+        </Grid.RowDefinitions>
+        <ContentControl Content="{StaticResource TitleGrid}">
+        </ContentControl>
         <DataGrid ItemsSource="{Binding NotAcceptedServicesList}"
                   AutoGenerateColumns="False"
                   IsReadOnly="True"
-                  ColumnWidth="*">
+                  ColumnWidth="*"
+                  Grid.Row="1">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Невыполненные услуги"
-                                    Binding="{Binding Name}">
-                </DataGridTextColumn>
+                <DataGridTemplateColumn Header="Невыполненные услуги">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock>
+                                <Run Text="{Binding Service.Name}"></Run>
+                                <Run Text="{Binding Patient.FullName, StringFormat={}(Пациент {0})}"></Run>
+                            </TextBlock>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
                 <DataGridTemplateColumn>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
