@@ -19,6 +19,7 @@ namespace LaboratoryAppMVVM.ViewModels
     public class CreateOrEditOrderViewModel : ViewModelBase
     {
         private readonly ViewModelNavigationStore _navigationStore;
+        private readonly LaboratoryAssistantViewModel _laboratoryAssistantViewModel;
         private Order _order;
         private LaboratoryDatabaseEntities _context;
         private RelayCommand _navigateToLaboratoryAssistantViewModel;
@@ -42,11 +43,16 @@ namespace LaboratoryAppMVVM.ViewModels
         private readonly LevenshteinDistanceCalculator _levenshteinDistanceCalculator;
         private RelayCommand _createOrderCommand;
 
-        public CreateOrEditOrderViewModel(ViewModelNavigationStore navigationStore, User user, Order order, IMessageBoxService messageBoxService)
+        public CreateOrEditOrderViewModel(ViewModelNavigationStore navigationStore,
+                                          User user,
+                                          Order order,
+                                          IMessageBoxService messageBoxService,
+                                          LaboratoryAssistantViewModel laboratoryAssistantViewModel)
         {
             _navigationStore = navigationStore;
             User = user;
             Order = order;
+            _laboratoryAssistantViewModel = laboratoryAssistantViewModel;
             MessageBoxService = messageBoxService;
             _levenshteinDistanceCalculator = new LevenshteinDistanceCalculator();
         }
@@ -89,8 +95,10 @@ namespace LaboratoryAppMVVM.ViewModels
                     == null)
                 {
                     _navigateToLaboratoryAssistantViewModel =
-                        new RelayCommand(param => _navigationStore.CurrentViewModel =
-                        new LaboratoryAssistantViewModel(_navigationStore, User));
+                        new RelayCommand(param =>
+                        {
+                            _navigationStore.CurrentViewModel = _laboratoryAssistantViewModel;
+                        });
                 }
                 return _navigateToLaboratoryAssistantViewModel;
             }
