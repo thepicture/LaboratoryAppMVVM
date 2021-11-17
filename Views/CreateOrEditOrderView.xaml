@@ -94,12 +94,12 @@
                     <GroupBox Header="Все услуги"
                               Margin="5"
                               Width="300">
+                            <ScrollViewer>
                         <StackPanel>
                             <TextBlock Text="Поиск услуги"
                                        Style="{StaticResource CommonBlock}"
                                        Width="200"></TextBlock>
                             <TextBox Text="{Binding SearchServiceText, UpdateSourceTrigger=PropertyChanged}"></TextBox>
-                            <ScrollViewer>
                                 <ItemsControl ItemsSource="{Binding AllServicesList}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
@@ -111,8 +111,8 @@
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
-                            </ScrollViewer>
                         </StackPanel>
+                            </ScrollViewer>
                     </GroupBox>
                     <GroupBox Header="Услуги заказа"
                               Margin="5"
