@@ -1,4 +1,5 @@
-﻿using LaboratoryAppMVVM.Models;
+﻿using LaboratoryAppMVVM.Commands;
+using LaboratoryAppMVVM.Models;
 using LaboratoryAppMVVM.Models.Entities;
 using LaboratoryAppMVVM.Services;
 using LaboratoryAppMVVM.Stores;
@@ -10,14 +11,17 @@ namespace LaboratoryAppMVVM.ViewModels
     public class LaboratoryResearcherViewModel : ViewModelBase
     {
         private readonly ViewModelNavigationStore _navigationStore;
+        private readonly LaboratoryWindowService _laboratoryWindowService;
         private List<Analyzer> _analyzersList;
         private LaboratoryDatabaseEntities _context;
         private readonly LaboratoryHaveTimeService _sessionTimer;
         public TimeSpan CurrentTimeOfSession => _sessionTimer.TotalTimeLeft;
+        private RelayCommand _openAnalyzerViewModelCommand;
 
-        public LaboratoryResearcherViewModel(ViewModelNavigationStore navigationStore, User user)
+        public LaboratoryResearcherViewModel(ViewModelNavigationStore navigationStore, User user, LaboratoryWindowService laboratoryWindowService)
         {
             _navigationStore = navigationStore;
+            _laboratoryWindowService = laboratoryWindowService;
             Title = "Страница лаборанта-исследователя";
             User = user;
             MessageBoxService = new MessageBoxService();
@@ -70,6 +74,23 @@ namespace LaboratoryAppMVVM.ViewModels
             {
                 _context = value;
                 OnPropertyChanged();
+            }
+        }
+
+        public RelayCommand OpenAnalyzerViewModelCommand
+        {
+            get
+            {
+                if (_openAnalyzerViewModelCommand == null)
+                {
+                    _openAnalyzerViewModelCommand = new RelayCommand(param =>
+                    {
+                        _laboratoryWindowService
+                        .ShowWindow(new AnalyzerViewModel(_navigationStore,
+                                                          param as Analyzer));
+                    });
+                }
+                return _openAnalyzerViewModelCommand;
             }
         }
     }

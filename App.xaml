@@ -2,7 +2,9 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:models="clr-namespace:LaboratoryAppMVVM.Models"
-             xmlns:local="clr-namespace:LaboratoryAppMVVM">
+             xmlns:viewmodels="clr-namespace:LaboratoryAppMVVM.ViewModels"
+             xmlns:local="clr-namespace:LaboratoryAppMVVM" 
+             xmlns:views="clr-namespace:LaboratoryAppMVVM.Views">
     <Application.Resources>
         <Style TargetType="Window" x:Key="GlobalFontFamilyStyle">
             <Setter Property="FontFamily" Value="Comic Sans MS" />
@@ -41,5 +43,10 @@
         <Style TargetType="Viewbox">
             <Setter Property="Margin" Value="5"></Setter>
         </Style>
+        
+        <!--Content templates for windows.-->
+        <DataTemplate DataType="{x:Type viewmodels:AnalyzerViewModel}">
+            <views:AnalyzerView></views:AnalyzerView>
+        </DataTemplate>
     </Application.Resources>
 </Application>

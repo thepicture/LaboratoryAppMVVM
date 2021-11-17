@@ -15,7 +15,7 @@ namespace LaboratoryAppMVVM.Services
                 case "Лаборант":
                     return new Func<ViewModelBase>(() => new LaboratoryAssistantViewModel(navigationStore, user));
                 case "Лаборант-исследователь":
-                    return new Func<ViewModelBase>(() => new LaboratoryResearcherViewModel(navigationStore, user));
+                    return new Func<ViewModelBase>(() => new LaboratoryResearcherViewModel(navigationStore, user, new LaboratoryWindowService()));
                 case "Бухгалтер":
                     return new Func<ViewModelBase>(() => new AccountantViewModel(navigationStore, user));
                 case "Администратор":

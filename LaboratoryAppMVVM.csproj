@@ -94,6 +94,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\AnalyzerView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\CreateOrEditOrderView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -188,6 +192,8 @@
     <Compile Include="Models\ListViewCaptchaLetter.cs" />
     <Compile Include="Models\NoiseGenerator.cs" />
     <Compile Include="Models\OrderPdfExporter.cs" />
+    <Compile Include="Services\IWindowService.cs" />
+    <Compile Include="Services\LaboratoryWindowService.cs" />
     <Compile Include="Services\SimpleCaptchaService.cs" />
     <Compile Include="Services\ICaptchaService.cs" />
     <Compile Include="Services\IHaveTimeService.cs" />
@@ -201,6 +207,7 @@
     <Compile Include="ViewModels\AccountantViewModel.cs" />
     <Compile Include="ViewModels\AddPatientViewModel.cs" />
     <Compile Include="ViewModels\AdminViewModel.cs" />
+    <Compile Include="ViewModels\AnalyzerViewModel.cs" />
     <Compile Include="ViewModels\CreateOrEditOrderViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="ViewModels\LaboratoryAssistantViewModel.cs" />
@@ -215,6 +222,9 @@
     </Compile>
     <Compile Include="Views\AdminView.xaml.cs">
       <DependentUpon>AdminView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AnalyzerView.xaml.cs">
+      <DependentUpon>AnalyzerView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\CreateOrEditOrderView.xaml.cs">
       <DependentUpon>CreateOrEditOrderView.xaml</DependentUpon>

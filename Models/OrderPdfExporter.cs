@@ -23,10 +23,12 @@ namespace LaboratoryAppMVVM.Models
         {
             lock (_lock)
             {
+                Word.Application application = null;
+                Word.Document document = null;
                 try
                 {
-                    Word.Application application = new Word.Application();
-                    Word.Document document = application.Documents.Add();
+                    application = new Word.Application();
+                    document = application.Documents.Add();
                     Word.Paragraph paragraph = document.Paragraphs.Add();
                     Word.Range range = paragraph.Range;
                     Word.Table table = range.Tables.Add(range, 8, 2);
@@ -57,6 +59,11 @@ namespace LaboratoryAppMVVM.Models
                 catch (Exception ex)
                 {
                     throw new PdfExportException(ex.Message);
+                }
+                finally
+                {
+                    document.Close(SaveChanges: Word.WdSaveOptions.wdDoNotSaveChanges);
+                    application.Quit(SaveChanges: Word.WdSaveOptions.wdDoNotSaveChanges);
                 }
             }
         }

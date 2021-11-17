@@ -12,14 +12,18 @@ namespace LaboratoryAppMVVM.Models
         {
             lock (_lock)
             {
+                Word.Application application = null;
+                Word.Document document = null;
+                Word.Paragraph paragraph = null;
+                Word.Range range = null;
                 try
                 {
                     string path = outputPath ?? AppDomain.CurrentDomain.BaseDirectory;
 
-                    Word.Application application = new Word.Application();
-                    Word.Document document = application.Documents.Add();
-                    Word.Paragraph paragraph = document.Paragraphs.Add();
-                    Word.Range range = paragraph.Range;
+                    application = new Word.Application();
+                    document = application.Documents.Add();
+                    paragraph = document.Paragraphs.Add();
+                    range = paragraph.Range;
                     if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory + "tempBarcode.png"))
                     {
                         throw new PdfExportException("Barcode was not found");
@@ -37,6 +41,14 @@ namespace LaboratoryAppMVVM.Models
                 catch (Exception ex)
                 {
                     throw new PdfExportException(ex.Message);
+                }
+                finally
+                {
+                    if (application != null)
+                    {
+                        document.Close(SaveChanges: Word.WdSaveOptions.wdDoNotSaveChanges);
+                        application.Quit(SaveChanges: Word.WdSaveOptions.wdDoNotSaveChanges);
+                    }
                 }
             }
         }
