@@ -3,17 +3,19 @@ using LaboratoryAppMVVM.Models.Entities;
 using LaboratoryAppMVVM.Services;
 using LaboratoryAppMVVM.Stores;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Threading;
 
 namespace LaboratoryAppMVVM.ViewModels
 {
     public class AnalyzerViewModel : ViewModelBase
     {
         private readonly ViewModelNavigationStore _viewModelNavigationStore;
+        private readonly LaboratoryDatabaseEntities _context;
         private Analyzer _analyzer;
         private ObservableCollection<AppliedService> _notAcceptedServicesList;
         private bool _isNotOnLoginPage = false;
@@ -23,11 +25,37 @@ namespace LaboratoryAppMVVM.ViewModels
 
         public AnalyzerViewModel(ViewModelNavigationStore viewModelNavigationStore,
                                  Analyzer analyzer,
-                                 IMessageBoxService messageBoxService)
+                                 IMessageBoxService messageBoxService,
+                                 LaboratoryDatabaseEntities context)
         {
             _viewModelNavigationStore = viewModelNavigationStore;
             Analyzer = analyzer;
+            _context = context;
             MessageBoxService = messageBoxService;
+            DispatcherTimer dispatcherTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(1)
+            };
+            dispatcherTimer.Tick += OnUpdateServicesValuesTick;
+            dispatcherTimer.Start();
+        }
+
+        private void OnUpdateServicesValuesTick(object sender, EventArgs e)
+        {
+            UpdateServicesList();
+        }
+
+        private void UpdateServicesList()
+        {
+            _ = Task.Run(() =>
+            {
+                NotAcceptedServicesList = new ObservableCollection<AppliedService>(
+                new LaboratoryDatabaseEntities().Analyzer
+                      .Find(Analyzer.Id)
+                      .AppliedService
+                      .Where(s => !s.IsAccepted)
+                      .ToList());
+            });
         }
 
         public Analyzer Analyzer
@@ -128,6 +156,7 @@ namespace LaboratoryAppMVVM.ViewModels
                 _ = client.UploadData(webApiURL,
                                   "POST",
                                   Encoding.UTF8.GetBytes(jsonData));
+                UpdateServicesList();
             }
             catch (WebException ex)
             {
