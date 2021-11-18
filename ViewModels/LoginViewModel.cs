@@ -15,8 +15,8 @@ namespace LaboratoryAppMVVM.ViewModels
     {
         private readonly ViewModelNavigationStore _navigationStore;
         private readonly ILoginService<User, ViewModelNavigationStore> _loginService;
-        private string _loginText = "chacking0";
-        private string _passwordText = "4tzqHdkqzo4";
+        private string _loginText = "nmably1";
+        private string _passwordText = "123";
         private RelayCommand _authorizeCommand;
         private RelayCommand _exitAppCommand;
         private RelayCommand _regenerateCaptchaCommand;

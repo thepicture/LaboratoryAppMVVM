@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="LaboratoryDatabaseModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="LaboratoryDatabaseModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Analyzer">
           <Key>
             <PropertyRef Name="Id" />
@@ -17,7 +17,7 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ServiceId" Type="int" Nullable="false" />
           <Property Name="Result" Type="float" Nullable="false" />
           <Property Name="FinishedDateTime" Type="datetime" Nullable="false" />
@@ -26,6 +26,14 @@
           <Property Name="AnalyzerId" Type="int" Nullable="false" />
           <Property Name="UserId" Type="int" Nullable="false" />
           <Property Name="PatientId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="AppliedServiceOfOrder">
+          <Key>
+            <PropertyRef Name="OrderId" />
+            <PropertyRef Name="AppliedServiceId" />
+          </Key>
+          <Property Name="OrderId" Type="int" Nullable="false" />
+          <Property Name="AppliedServiceId" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="BarcodeOfPatient">
           <Key>
@@ -91,14 +99,6 @@
           <Property Name="Price" Type="decimal" Precision="20" Scale="2" Nullable="false" />
           <Property Name="Deadline" Type="datetime" />
           <Property Name="MeanDeviation" Type="decimal" Precision="20" Scale="2" />
-        </EntityType>
-        <EntityType Name="ServiceOfOrder">
-          <Key>
-            <PropertyRef Name="OrderId" />
-            <PropertyRef Name="ServiceId" />
-          </Key>
-          <Property Name="OrderId" Type="int" Nullable="false" />
-          <Property Name="ServiceId" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="ServiceOfUser">
           <Key>
@@ -280,27 +280,27 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_ServiceOfOrder_AppliedService">
+          <End Role="AppliedService" Type="Self.AppliedService" Multiplicity="1" />
+          <End Role="AppliedServiceOfOrder" Type="Self.AppliedServiceOfOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AppliedService">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AppliedServiceOfOrder">
+              <PropertyRef Name="AppliedServiceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_ServiceOfOrder_Order">
           <End Role="Order" Type="Self.Order" Multiplicity="1" />
-          <End Role="ServiceOfOrder" Type="Self.ServiceOfOrder" Multiplicity="*" />
+          <End Role="AppliedServiceOfOrder" Type="Self.AppliedServiceOfOrder" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Order">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="ServiceOfOrder">
+            <Dependent Role="AppliedServiceOfOrder">
               <PropertyRef Name="OrderId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_ServiceOfOrder_Service">
-          <End Role="Service" Type="Self.Service" Multiplicity="1" />
-          <End Role="ServiceOfOrder" Type="Self.ServiceOfOrder" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Service">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="ServiceOfOrder">
-              <PropertyRef Name="ServiceId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -343,13 +343,13 @@
         <EntityContainer Name="LaboratoryDatabaseModelStoreContainer">
           <EntitySet Name="Analyzer" EntityType="Self.Analyzer" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AppliedService" EntityType="Self.AppliedService" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AppliedServiceOfOrder" EntityType="Self.AppliedServiceOfOrder" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BarcodeOfPatient" EntityType="Self.BarcodeOfPatient" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="HistoryOfLogin" EntityType="Self.HistoryOfLogin" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="InsuranceCompany" EntityType="Self.InsuranceCompany" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Order" EntityType="Self.Order" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Patient" EntityType="Self.Patient" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Service" EntityType="Self.Service" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="ServiceOfOrder" EntityType="Self.ServiceOfOrder" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ServiceOfUser" EntityType="Self.ServiceOfUser" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="StatusOfAppliedService" EntityType="Self.StatusOfAppliedService" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="StatusOfOrder" EntityType="Self.StatusOfOrder" Schema="dbo" store:Type="Tables" />
@@ -400,13 +400,13 @@
             <End Role="TypeOfInsurancePolicy" EntitySet="TypeOfInsurancePolicy" />
             <End Role="Patient" EntitySet="Patient" />
           </AssociationSet>
+          <AssociationSet Name="FK_ServiceOfOrder_AppliedService" Association="Self.FK_ServiceOfOrder_AppliedService">
+            <End Role="AppliedService" EntitySet="AppliedService" />
+            <End Role="AppliedServiceOfOrder" EntitySet="AppliedServiceOfOrder" />
+          </AssociationSet>
           <AssociationSet Name="FK_ServiceOfOrder_Order" Association="Self.FK_ServiceOfOrder_Order">
             <End Role="Order" EntitySet="Order" />
-            <End Role="ServiceOfOrder" EntitySet="ServiceOfOrder" />
-          </AssociationSet>
-          <AssociationSet Name="FK_ServiceOfOrder_Service" Association="Self.FK_ServiceOfOrder_Service">
-            <End Role="Service" EntitySet="Service" />
-            <End Role="ServiceOfOrder" EntitySet="ServiceOfOrder" />
+            <End Role="AppliedServiceOfOrder" EntitySet="AppliedServiceOfOrder" />
           </AssociationSet>
           <AssociationSet Name="FK_ServiceOfUser_Service" Association="Self.FK_ServiceOfUser_Service">
             <End Role="Service" EntitySet="Service" />
@@ -421,7 +421,8 @@
             <End Role="User" EntitySet="User" />
           </AssociationSet>
         </EntityContainer>
-      </Schema></edmx:StorageModels>
+      </Schema>
+    </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="LaboratoryDatabaseModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -438,7 +439,7 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ServiceId" Type="Int32" Nullable="false" />
           <Property Name="Result" Type="Double" Nullable="false" />
           <Property Name="FinishedDateTime" Type="DateTime" Nullable="false" Precision="3" />
@@ -446,18 +447,19 @@
           <Property Name="StatusId" Type="Int32" Nullable="false" />
           <Property Name="AnalyzerId" Type="Int32" Nullable="false" />
           <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="PatientId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Analyzer" Relationship="Self.FK_AppliedService_Analyzer" FromRole="AppliedService" ToRole="Analyzer" />
+          <NavigationProperty Name="Patient" Relationship="Self.FK_AppliedService_Patient" FromRole="AppliedService" ToRole="Patient" />
           <NavigationProperty Name="Service" Relationship="Self.FK_AppliedService_Service" FromRole="AppliedService" ToRole="Service" />
           <NavigationProperty Name="StatusOfAppliedService" Relationship="Self.FK_AppliedService_StatusOfAppliedService" FromRole="AppliedService" ToRole="StatusOfAppliedService" />
           <NavigationProperty Name="User" Relationship="Self.FK_AppliedService_User" FromRole="AppliedService" ToRole="User" />
-          <Property Name="PatientId" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Patient" Relationship="LaboratoryDatabaseModel.FK_AppliedService_Patient" FromRole="AppliedService" ToRole="Patient" />
+          <NavigationProperty Name="Order" Relationship="Self.AppliedServiceOfOrder" FromRole="AppliedService" ToRole="Order" />
         </EntityType>
         <EntityType Name="BarcodeOfPatient">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Barcode" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="DateTime" Type="DateTime" Nullable="false" Precision="3" />
           <NavigationProperty Name="Order" Relationship="Self.FK_Order_BarcodeOfPatient" FromRole="BarcodeOfPatient" ToRole="Order" />
@@ -496,13 +498,13 @@
           <NavigationProperty Name="BarcodeOfPatient" Relationship="Self.FK_Order_BarcodeOfPatient" FromRole="Order" ToRole="BarcodeOfPatient" />
           <NavigationProperty Name="Patient" Relationship="Self.FK_Order_Patient" FromRole="Order" ToRole="Patient" />
           <NavigationProperty Name="StatusOfOrder" Relationship="Self.FK_Order_StatusOfOrder" FromRole="Order" ToRole="StatusOfOrder" />
-          <NavigationProperty Name="Service" Relationship="Self.ServiceOfOrder" FromRole="Order" ToRole="Service" />
+          <NavigationProperty Name="AppliedService" Relationship="Self.AppliedServiceOfOrder" FromRole="Order" ToRole="AppliedService" />
         </EntityType>
         <EntityType Name="Patient">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Login" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Password" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="FullName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
@@ -514,10 +516,10 @@
           <Property Name="TypeOfInsurancePolicyId" Type="Int32" Nullable="false" />
           <Property Name="InsuranceCompanyId" Type="Int32" Nullable="false" />
           <Property Name="InsurancePolicyNumber" Type="String" MaxLength="20" FixedLength="true" Unicode="true" />
+          <NavigationProperty Name="AppliedService" Relationship="Self.FK_AppliedService_Patient" FromRole="Patient" ToRole="AppliedService" />
           <NavigationProperty Name="InsuranceCompany" Relationship="Self.FK_Patient_InsuranceCompany" FromRole="Patient" ToRole="InsuranceCompany" />
           <NavigationProperty Name="Order" Relationship="Self.FK_Order_Patient" FromRole="Patient" ToRole="Order" />
           <NavigationProperty Name="TypeOfInsurancePolicy" Relationship="Self.FK_Patient_TypeOfInsurancePolicy" FromRole="Patient" ToRole="TypeOfInsurancePolicy" />
-          <NavigationProperty Name="AppliedService" Relationship="LaboratoryDatabaseModel.FK_AppliedService_Patient" FromRole="Patient" ToRole="AppliedService" />
         </EntityType>
         <EntityType Name="Service">
           <Key>
@@ -529,7 +531,6 @@
           <Property Name="Deadline" Type="DateTime" Precision="3" />
           <Property Name="MeanDeviation" Type="Decimal" Precision="20" Scale="2" />
           <NavigationProperty Name="AppliedService" Relationship="Self.FK_AppliedService_Service" FromRole="Service" ToRole="AppliedService" />
-          <NavigationProperty Name="Order" Relationship="Self.ServiceOfOrder" FromRole="Service" ToRole="Order" />
           <NavigationProperty Name="User" Relationship="Self.ServiceOfUser" FromRole="Service" ToRole="User" />
         </EntityType>
         <EntityType Name="StatusOfAppliedService">
@@ -589,6 +590,18 @@
             </Principal>
             <Dependent Role="AppliedService">
               <PropertyRef Name="AnalyzerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AppliedService_Patient">
+          <End Role="Patient" Type="Self.Patient" Multiplicity="1" />
+          <End Role="AppliedService" Type="Self.AppliedService" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Patient">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AppliedService">
+              <PropertyRef Name="PatientId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -712,9 +725,9 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="ServiceOfOrder">
+        <Association Name="AppliedServiceOfOrder">
+          <End Role="AppliedService" Type="Self.AppliedService" Multiplicity="*" />
           <End Role="Order" Type="Self.Order" Multiplicity="*" />
-          <End Role="Service" Type="Self.Service" Multiplicity="*" />
         </Association>
         <Association Name="ServiceOfUser">
           <End Role="Service" Type="Self.Service" Multiplicity="*" />
@@ -736,6 +749,10 @@
           <EntitySet Name="User" EntityType="Self.User" />
           <AssociationSet Name="FK_AppliedService_Analyzer" Association="Self.FK_AppliedService_Analyzer">
             <End Role="Analyzer" EntitySet="Analyzer" />
+            <End Role="AppliedService" EntitySet="AppliedService" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AppliedService_Patient" Association="Self.FK_AppliedService_Patient">
+            <End Role="Patient" EntitySet="Patient" />
             <End Role="AppliedService" EntitySet="AppliedService" />
           </AssociationSet>
           <AssociationSet Name="FK_AppliedService_Service" Association="Self.FK_AppliedService_Service">
@@ -778,31 +795,15 @@
             <End Role="TypeOfUser" EntitySet="TypeOfUser" />
             <End Role="User" EntitySet="User" />
           </AssociationSet>
-          <AssociationSet Name="ServiceOfOrder" Association="Self.ServiceOfOrder">
+          <AssociationSet Name="AppliedServiceOfOrder" Association="Self.AppliedServiceOfOrder">
+            <End Role="AppliedService" EntitySet="AppliedService" />
             <End Role="Order" EntitySet="Order" />
-            <End Role="Service" EntitySet="Service" />
           </AssociationSet>
           <AssociationSet Name="ServiceOfUser" Association="Self.ServiceOfUser">
             <End Role="Service" EntitySet="Service" />
             <End Role="User" EntitySet="User" />
           </AssociationSet>
-          <AssociationSet Name="FK_AppliedService_Patient" Association="LaboratoryDatabaseModel.FK_AppliedService_Patient">
-            <End Role="Patient" EntitySet="Patient" />
-            <End Role="AppliedService" EntitySet="AppliedService" />
-          </AssociationSet>
         </EntityContainer>
-        <Association Name="FK_AppliedService_Patient">
-          <End Type="LaboratoryDatabaseModel.Patient" Role="Patient" Multiplicity="1" />
-          <End Type="LaboratoryDatabaseModel.AppliedService" Role="AppliedService" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Patient">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="AppliedService">
-              <PropertyRef Name="PatientId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -821,7 +822,6 @@
           <EntitySetMapping Name="AppliedService">
             <EntityTypeMapping TypeName="LaboratoryDatabaseModel.AppliedService">
               <MappingFragment StoreEntitySet="AppliedService">
-                <ScalarProperty Name="PatientId" ColumnName="PatientId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="ServiceId" ColumnName="ServiceId" />
                 <ScalarProperty Name="Result" ColumnName="Result" />
@@ -830,6 +830,7 @@
                 <ScalarProperty Name="StatusId" ColumnName="StatusId" />
                 <ScalarProperty Name="AnalyzerId" ColumnName="AnalyzerId" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="PatientId" ColumnName="PatientId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -949,12 +950,12 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <AssociationSetMapping Name="ServiceOfOrder" TypeName="LaboratoryDatabaseModel.ServiceOfOrder" StoreEntitySet="ServiceOfOrder">
+          <AssociationSetMapping Name="AppliedServiceOfOrder" TypeName="LaboratoryDatabaseModel.AppliedServiceOfOrder" StoreEntitySet="AppliedServiceOfOrder">
+            <EndProperty Name="AppliedService">
+              <ScalarProperty Name="Id" ColumnName="AppliedServiceId" />
+            </EndProperty>
             <EndProperty Name="Order">
               <ScalarProperty Name="Id" ColumnName="OrderId" />
-            </EndProperty>
-            <EndProperty Name="Service">
-              <ScalarProperty Name="Id" ColumnName="ServiceId" />
             </EndProperty>
           </AssociationSetMapping>
           <AssociationSetMapping Name="ServiceOfUser" TypeName="LaboratoryDatabaseModel.ServiceOfUser" StoreEntitySet="ServiceOfUser">

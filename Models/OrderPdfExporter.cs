@@ -46,9 +46,9 @@ namespace LaboratoryAppMVVM.Models
                     table.Cell(6, 1).Range.Text = "Дата рождения";
                     table.Cell(6, 2).Range.Text = _order.Patient.BirthDate.ToString("yyyy-MM-dd");
                     table.Cell(7, 1).Range.Text = "Перечень услуг";
-                    table.Cell(7, 2).Range.Text = string.Join(", ", _order.Service.ToList().Select(s => s.Name));
+                    table.Cell(7, 2).Range.Text = string.Join(", ", _order.AppliedService.ToList().Select(s => s.Service.Name));
                     table.Cell(8, 1).Range.Text = "Стоимость";
-                    table.Cell(8, 2).Range.Text = _order.Service.Sum(s => s.Price).ToString("N2");
+                    table.Cell(8, 2).Range.Text = _order.AppliedService.Sum(s => s.Service.Price).ToString("N2");
                     document.SaveAs(Path.Combine(outputPath, _nameOfFile), FileFormat: Word.WdSaveFormat.wdFormatPDF);
 
                     if (isShowAfterSave)

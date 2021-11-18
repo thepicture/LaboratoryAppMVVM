@@ -432,7 +432,20 @@ namespace LaboratoryAppMVVM.ViewModels
 
         private void CreateOrder()
         {
-            OrderServicesList.ToList().ForEach(Order.Service.Add);
+            OrderServicesList.Select(s =>
+            {
+                return new AppliedService
+                {
+                    AnalyzerId = _context.Analyzer.First().Id,
+                    Result = 0,
+                    ServiceId = s.Id,
+                    FinishedDateTime = DateTime.Now + TimeSpan.FromDays(1),
+                    IsAccepted = false,
+                    StatusId = _context.StatusOfAppliedService.First(status => status.Name.StartsWith("В обработке")).Id,
+                    UserId = User.Id,
+                    PatientId = SelectedPatient.Id
+                };
+            }).ToList().ForEach(Order.AppliedService.Add);
             Order.Patient = SelectedPatient;
             Order.Date = DateTime.Now;
             Order.StatusOfOrder = Context.StatusOfOrder.First(status => status.Name == "В обработке");
@@ -458,8 +471,8 @@ namespace LaboratoryAppMVVM.ViewModels
                 orderBase64String.Add("номер_страхового полиса", _order.Patient.InsurancePolicyNumber ?? "Не указан");
                 orderBase64String.Add("фио", _order.Patient.FullName);
                 orderBase64String.Add("дата_рождения", _order.Patient.BirthDate.ToString("yyyy-MM-dd"));
-                orderBase64String.Add("перечень_услуг", string.Join(", ", _order.Service.ToList().Select(s => s.Name)));
-                orderBase64String.Add("стоимость", _order.Service.Sum(s => s.Price).ToString("N2"));
+                orderBase64String.Add("перечень_услуг", string.Join(", ", _order.AppliedService.ToList().Select(s => s.Service.Name)));
+                orderBase64String.Add("стоимость", _order.AppliedService.Sum(s => s.Service.Price).ToString("N2"));
             }
             try
             {

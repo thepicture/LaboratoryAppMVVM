@@ -18,7 +18,6 @@ namespace LaboratoryAppMVVM.Models.Entities
         public Service()
         {
             this.AppliedService = new HashSet<AppliedService>();
-            this.Order = new HashSet<Order>();
             this.User = new HashSet<User>();
         }
     
@@ -30,8 +29,6 @@ namespace LaboratoryAppMVVM.Models.Entities
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AppliedService> AppliedService { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Order> Order { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<User> User { get; set; }
     }

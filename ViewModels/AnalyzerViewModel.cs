@@ -1,4 +1,6 @@
-﻿using LaboratoryAppMVVM.Models.Entities;
+﻿using LaboratoryAppMVVM.Commands;
+using LaboratoryAppMVVM.Models.Entities;
+using LaboratoryAppMVVM.Services;
 using LaboratoryAppMVVM.Stores;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -11,6 +13,7 @@ namespace LaboratoryAppMVVM.ViewModels
         private Analyzer _analyzer;
         private ObservableCollection<AppliedService> _notAcceptedServicesList;
         private bool _isNotOnLoginPage = false;
+        private RelayCommand _navigateToLoginPageCommand;
 
         public AnalyzerViewModel(ViewModelNavigationStore viewModelNavigationStore,
                                  Analyzer analyzer)
@@ -55,6 +58,24 @@ namespace LaboratoryAppMVVM.ViewModels
             {
                 _isNotOnLoginPage = value;
                 OnPropertyChanged();
+            }
+        }
+
+        public RelayCommand NavigateToLoginPageCommand
+        {
+            get
+            {
+                if (_navigateToLoginPageCommand == null)
+                {
+                    _navigateToLoginPageCommand = new RelayCommand(param =>
+                    {
+                        _viewModelNavigationStore.CurrentViewModel =
+                        new LoginViewModel(_viewModelNavigationStore,
+                                           new MessageBoxService(),
+                                           new LaboratoryLoginService());
+                    });
+                }
+                return _navigateToLoginPageCommand;
             }
         }
     }

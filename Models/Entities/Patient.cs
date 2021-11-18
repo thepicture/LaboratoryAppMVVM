@@ -17,8 +17,8 @@ namespace LaboratoryAppMVVM.Models.Entities
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Patient()
         {
-            this.Order = new HashSet<Order>();
             this.AppliedService = new HashSet<AppliedService>();
+            this.Order = new HashSet<Order>();
         }
     
         public int Id { get; set; }
@@ -34,11 +34,11 @@ namespace LaboratoryAppMVVM.Models.Entities
         public int InsuranceCompanyId { get; set; }
         public string InsurancePolicyNumber { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<AppliedService> AppliedService { get; set; }
         public virtual InsuranceCompany InsuranceCompany { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Order> Order { get; set; }
         public virtual TypeOfInsurancePolicy TypeOfInsurancePolicy { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<AppliedService> AppliedService { get; set; }
     }
 }
