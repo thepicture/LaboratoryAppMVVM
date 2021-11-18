@@ -87,7 +87,8 @@ namespace LaboratoryAppMVVM.ViewModels
                     {
                         _laboratoryWindowService
                         .ShowWindow(new AnalyzerViewModel(_navigationStore,
-                                                          param as Analyzer));
+                                                          param as Analyzer,
+                                                          MessageBoxService));
                     });
                 }
                 return _openAnalyzerViewModelCommand;
