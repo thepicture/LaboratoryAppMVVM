@@ -1,5 +1,6 @@
 ﻿using LaboratoryAppMVVM.Commands;
 using LaboratoryAppMVVM.Models.Entities;
+using LaboratoryAppMVVM.Models.Http;
 using LaboratoryAppMVVM.Services;
 using LaboratoryAppMVVM.Stores;
 using System;
@@ -34,7 +35,7 @@ namespace LaboratoryAppMVVM.ViewModels
             MessageBoxService = messageBoxService;
             DispatcherTimer dispatcherTimer = new DispatcherTimer
             {
-                Interval = TimeSpan.FromSeconds(1)
+                Interval = TimeSpan.FromSeconds(5)
             };
             dispatcherTimer.Tick += OnUpdateServicesValuesTick;
             dispatcherTimer.Start();
@@ -144,7 +145,7 @@ namespace LaboratoryAppMVVM.ViewModels
             try
             {
 
-                WebClient client = new WebClient();
+                WebClient client = new ThirtySecondsTimeoutWebClient();
                 client.Headers.Add("Content-Type", "application/json");
                 string webApiURL = $"http://localhost:60954/api/analyzer/"
                     + Analyzer.Name;
@@ -169,7 +170,9 @@ namespace LaboratoryAppMVVM.ViewModels
                 else
                 {
                     MessageBoxService.ShowError("Произошла ошибка " +
-                        "при отправке услуги. " +
+                        "при отправке услуги. Вероятно, прошло 30 секунд " +
+                        "с момента попытки отправки услуги " +
+                        "на исследование. " +
                         "Пожалуйста, попробуйте ещё раз. " +
                         "Ошибка: " + ex.Message);
                 }

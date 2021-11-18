@@ -186,6 +186,9 @@
     <Compile Include="Models\Exceptions\PdfExportException.cs" />
     <Compile Include="Models\Exceptions\SessionIsAlreadyEnabledException.cs" />
     <Compile Include="Models\DisposerOnTypeEqual.cs" />
+    <Compile Include="Models\Http\ThirtySecondsTimeoutWebClient.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Models\IPdfExportable.cs" />
     <Compile Include="Models\IRenderTargetBitmapGenerator.cs" />
     <Compile Include="Models\LevenshteinDistanceCalculator.cs" />
@@ -347,6 +350,7 @@
       <DependentUpon>LaboratoryBaseModel.edmx</DependentUpon>
       <LastGenOutput>LaboratoryBaseModel.cs</LastGenOutput>
     </Content>
+    <Resource Include="Resources\loader.gif" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
