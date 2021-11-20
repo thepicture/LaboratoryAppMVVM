@@ -1,42 +1,66 @@
 ﻿using System;
+using System.Reflection;
 
 namespace LaboratoryAppMVVM.Models
 {
     /// <summary>
-    /// Class for searching in all properties of the instance of a class.
+    /// Class for searching search text in any properties of the instance.
     /// </summary>
     /// <typeparam name="T">The type of the class.</typeparam>
-    public class AllPropertiesSearcher<T> where T : class
+    public class AllPropertiesSearcher : IPropertiesSearcher
     {
+        private readonly string _searchText;
+
         /// <summary>
-        /// Search in all instances properties for the given search text.
+        /// Creates a instance of all properties searcher 
+        /// with the given search text.
         /// </summary>
-        /// <param name="text">The search text.</param>
-        /// <returns>The function which takes type 
-        /// and returns bool which determines 
-        /// if the object satisfies the search text.</returns>
-        public Func<T, bool> Search(string searchText)
+        /// <param name="searchText"></param>
+        public AllPropertiesSearcher(string searchText)
+        {
+            _searchText = searchText;
+        }
+
+        public Func<T, bool> Search<T>() where T: class
         {
             return instance =>
             {
-                System.Reflection.PropertyInfo[] properties = instance.GetType()
-                .GetProperties();
+                PropertyInfo[] properties = instance.GetType().GetProperties();
                 bool isSatisfies = false;
-                foreach (System.Reflection.PropertyInfo property in properties)
-                {
-                    if (isSatisfies)
-                    {
-                        break;
-                    }
-                    object valueOfPatient = property.GetValue(instance);
-                    if (valueOfPatient == null)
-                    {
-                        continue;
-                    }
-                    isSatisfies = valueOfPatient.ToString().ToLower().Contains(searchText.ToLower());
-                }
+                isSatisfies = IsAnyPropertyInObjectContainsValue(_searchText,
+                                                          instance,
+                                                          properties,
+                                                          isSatisfies);
                 return isSatisfies;
             };
+        }
+
+        private static bool IsAnyPropertyInObjectContainsValue<T>(string searchText,
+                                                        T instance,
+                                                        PropertyInfo[] properties,
+                                                        bool isPropertySatisfiesSearchText)
+        {
+            foreach (PropertyInfo property in properties)
+            {
+                if (isPropertySatisfiesSearchText)
+                {
+                    break;
+                }
+                object valueOfProperty = property.GetValue(instance);
+                if (valueOfProperty == null)
+                {
+                    continue;
+                }
+                isPropertySatisfiesSearchText = IsValueContainsSearchText(searchText, valueOfProperty);
+            }
+
+            return isPropertySatisfiesSearchText;
+        }
+
+        private static bool IsValueContainsSearchText(string searchText,
+                                                      object valueOfObject)
+        {
+            return valueOfObject.ToString().ToLower().Contains(searchText.ToLower());
         }
     }
 }

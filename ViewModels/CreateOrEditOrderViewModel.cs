@@ -547,7 +547,7 @@ namespace LaboratoryAppMVVM.ViewModels
             if (!string.IsNullOrWhiteSpace(SearchPatientText))
             {
                 currentPatients = currentPatients
-                    .Where(new AllPropertiesSearcher<Patient>().Search(SearchPatientText))
+                    .Where(new AllPropertiesSearcher(SearchPatientText).Search<Patient>())
                     .ToList();
             }
             currentPatients = currentPatients
@@ -565,7 +565,7 @@ namespace LaboratoryAppMVVM.ViewModels
             if (!string.IsNullOrWhiteSpace(SearchServiceText))
             {
                 currentServices = currentServices
-                    .Where(new AllPropertiesSearcher<Service>().Search(SearchServiceText))
+                    .Where(new AllPropertiesSearcher(SearchServiceText).Search<Service>())
                     .ToList();
             }
             currentServices = currentServices

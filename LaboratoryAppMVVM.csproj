@@ -190,6 +190,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Models\IPdfExportable.cs" />
+    <Compile Include="Models\IPropertiesSearcher.cs" />
     <Compile Include="Models\IRenderTargetBitmapGenerator.cs" />
     <Compile Include="Models\LevenshteinDistanceCalculator.cs" />
     <Compile Include="Models\ListViewCaptchaLetter.cs" />

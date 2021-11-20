@@ -140,43 +140,46 @@ namespace LaboratoryAppMVVM.ViewModels
             }
         }
 
-        private void SendService(AppliedService appliedService)
+        private async void SendService(AppliedService appliedService)
         {
-            try
+            await Task.Run(() =>
             {
+                try
+                {
 
-                WebClient client = new ThirtySecondsTimeoutWebClient();
-                client.Headers.Add("Content-Type", "application/json");
-                string webApiURL = $"http://localhost:60954/api/analyzer/"
-                    + Analyzer.Name;
-                string jsonData = "{\"patient\":"
-                                  + appliedService.PatientId
-                                  + ",\"services\":[{\"serviceCode\": "
-                                  + appliedService.Id
-                                  + "}]}";
-                _ = client.UploadData(webApiURL,
-                                  "POST",
-                                  Encoding.UTF8.GetBytes(jsonData));
-                UpdateServicesList();
-            }
-            catch (WebException ex)
-            {
-                if (ex.Status == WebExceptionStatus.Success)
-                {
-                    MessageBoxService.ShowError("Произошла ошибка, " +
-                        "но запрос обработан. " +
-                        "Ошибка: " + ex.Message);
+                    WebClient client = new ThirtySecondsTimeoutWebClient();
+                    client.Headers.Add("Content-Type", "application/json");
+                    string webApiURL = $"http://localhost:60954/api/analyzer/"
+                        + Analyzer.Name;
+                    string jsonData = "{\"patient\":"
+                                      + appliedService.PatientId
+                                      + ",\"services\":[{\"serviceCode\": "
+                                      + appliedService.Id
+                                      + "}]}";
+                    _ = client.UploadData(webApiURL,
+                                      "POST",
+                                      Encoding.UTF8.GetBytes(jsonData));
+                    UpdateServicesList();
                 }
-                else
+                catch (WebException ex)
                 {
-                    MessageBoxService.ShowError("Произошла ошибка " +
-                        "при отправке услуги. Вероятно, прошло 30 секунд " +
-                        "с момента попытки отправки услуги " +
-                        "на исследование. " +
-                        "Пожалуйста, попробуйте ещё раз. " +
-                        "Ошибка: " + ex.Message);
+                    if (ex.Status == WebExceptionStatus.Success)
+                    {
+                        MessageBoxService.ShowError("Произошла ошибка, " +
+                            "но запрос обработан. " +
+                            "Ошибка: " + ex.Message);
+                    }
+                    else
+                    {
+                        MessageBoxService.ShowError("Произошла ошибка " +
+                            "при отправке услуги. Вероятно, прошло 30 секунд " +
+                            "с момента попытки отправки услуги " +
+                            "на исследование. " +
+                            "Пожалуйста, попробуйте ещё раз. " +
+                            "Ошибка: " + ex.Message);
+                    }
                 }
-            }
+            });
         }
     }
 }
