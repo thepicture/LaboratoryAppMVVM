@@ -125,10 +125,9 @@
     <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Commands\NavigateCommand.cs" />
     <Compile Include="Models\AllPropertiesSearcher.cs" />
+    <Compile Include="Models\Barcode.cs" />
     <Compile Include="Models\BarcodeImageGenerator.cs" />
-    <Compile Include="Models\BarcodePdfExporter.cs" />
     <Compile Include="Models\CaptchaLetterBase.cs" />
-    <Compile Include="Models\CustomPathPdfExporter.cs" />
     <Compile Include="Models\Entities\Analyzer.cs">
       <DependentUpon>LaboratoryBaseModel.tt</DependentUpon>
     </Compile>
@@ -186,16 +185,23 @@
     <Compile Include="Models\Exceptions\PdfExportException.cs" />
     <Compile Include="Models\Exceptions\SessionIsAlreadyEnabledException.cs" />
     <Compile Include="Models\DisposerOnTypeEqual.cs" />
+    <Compile Include="Models\Exports\BarcodeContentDrawer.cs" />
+    <Compile Include="Models\Exports\BarcodePdfExporter.cs" />
+    <Compile Include="Models\Exports\DrawingContext.cs" />
+    <Compile Include="Models\Exports\ContentDrawer.cs" />
+    <Compile Include="Models\Exports\Exporter.cs" />
+    <Compile Include="Models\Exports\ICanSaveResource.cs" />
+    <Compile Include="Models\Exports\OrderContentDrawer.cs" />
+    <Compile Include="Models\Exports\OrderPdfExporter.cs" />
+    <Compile Include="Models\Exports\WordDrawingContext.cs" />
     <Compile Include="Models\Http\ThirtySecondsTimeoutWebClient.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Models\IPdfExportable.cs" />
     <Compile Include="Models\IPropertiesSearcher.cs" />
     <Compile Include="Models\IRenderTargetBitmapGenerator.cs" />
     <Compile Include="Models\LevenshteinDistanceCalculator.cs" />
     <Compile Include="Models\ListViewCaptchaLetter.cs" />
     <Compile Include="Models\NoiseGenerator.cs" />
-    <Compile Include="Models\OrderPdfExporter.cs" />
     <Compile Include="Services\IWindowService.cs" />
     <Compile Include="Services\LaboratoryWindowService.cs" />
     <Compile Include="Services\SimpleCaptchaService.cs" />

@@ -2,6 +2,7 @@
 using LaboratoryAppMVVM.Models;
 using LaboratoryAppMVVM.Models.Entities;
 using LaboratoryAppMVVM.Models.Exceptions;
+using LaboratoryAppMVVM.Models.Exports;
 using LaboratoryAppMVVM.Services;
 using LaboratoryAppMVVM.Stores;
 using System;
@@ -145,9 +146,9 @@ namespace LaboratoryAppMVVM.ViewModels
             }
             else
             {
-                string tempBarCodePath = AppDomain
+                string tempBarCodePath = Path.Combine(AppDomain
                 .CurrentDomain
-                .BaseDirectory + "tempBarcode.png";
+                .BaseDirectory, "tempBarcode.png");
                 string barcodeText = $"{TubeId}" +
                                     $"{DateTime.Now:ddMMyyyy}" +
                                     $"{new Random().Next(100000, 999999 + 1)}";
@@ -186,21 +187,23 @@ namespace LaboratoryAppMVVM.ViewModels
             {
                 encoder.Save(stream);
             }
-            string filePath = new CustomPathPdfExporter(
-                pdfExportable: new BarcodePdfExporter()
-                )
-            .Save(isShowAfterSave: true);
-            bool fileWasSaved = !string.IsNullOrWhiteSpace(
-                filePath);
-
-            if (fileWasSaved)
+            System.Windows.Forms.FolderBrowserDialog folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
+            bool isPathSelected = folderBrowserDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK;
+            if (!isPathSelected)
             {
-                MessageBoxService.ShowInformation("Документ " +
-                    "успешно сохранён по пути " +
-                    filePath +
-                    "Путь скопирован в буфер обмена");
-                Clipboard.SetText(filePath);
+                return;
             }
+            IDrawingContext drawingContext = new WordDrawingContext();
+            BarcodeContentDrawer contentDrawer = new BarcodeContentDrawer(drawingContext,
+                                                                          folderBrowserDialog.SelectedPath,
+                                                                          new Barcode(tempBarCodePath));
+            new BarcodePdfExporter(contentDrawer).Export();
+
+            MessageBoxService.ShowInformation("Документ " +
+                "успешно сохранён по пути " +
+                folderBrowserDialog.SelectedPath +
+                "Путь скопирован в буфер обмена");
+            Clipboard.SetText(folderBrowserDialog.SelectedPath);
         }
 
         public string TubeId
@@ -464,7 +467,7 @@ namespace LaboratoryAppMVVM.ViewModels
             NameValueCollection orderBase64String = System.Web.HttpUtility.ParseQueryString(string.Empty);
             foreach (System.Reflection.PropertyInfo property in Order.GetType().GetProperties())
             {
-                orderBase64String.Add("дата_заказа", _order.Date.ToString("yyyy-MM-ddThh:mm:ss"));
+                orderBase64String.Add("дата_заказа", _order.Date.ToString("yyyy-MM-dd_hh:mm:ss"));
                 orderBase64String.Add("номер_заказа", _order.Id.ToString());
                 orderBase64String.Add("номер_пробирки", _order.BarcodeOfPatient.Barcode);
                 orderBase64String.Add("номер_страхового полиса", _order.Patient.InsurancePolicyNumber ?? "Не указан");
@@ -477,27 +480,30 @@ namespace LaboratoryAppMVVM.ViewModels
             {
                 _ = Context.SaveChanges();
                 string nameOfOrder = $"Заказ_{Order.Date:yyyy_MM_dd_hh_mm_ss}";
-                CustomPathPdfExporter customPathPdfExporter = new CustomPathPdfExporter
-                    (
-                        new OrderPdfExporter(Order, nameOfOrder + ".pdf")
-                    );
-                string filePath = customPathPdfExporter.Save();
-                if (!string.IsNullOrWhiteSpace(filePath))
+
+                System.Windows.Forms.FolderBrowserDialog folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
+                bool isPathSelected = folderBrowserDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK;
+                if (isPathSelected)
                 {
+                    IDrawingContext drawingContext = new WordDrawingContext();
+                    OrderContentDrawer contentDrawer = new OrderContentDrawer(drawingContext,
+                                                                              folderBrowserDialog.SelectedPath,
+                                                                              Order);
+                    new OrderPdfExporter(contentDrawer).Export();
+
                     string urlEncodeText = $"https://wsrussia.ru/?data=base64({orderBase64String})";
-                    File.WriteAllText(Path.Combine(filePath, nameOfOrder + ".txt"),
+                    File.WriteAllText(Path.Combine(folderBrowserDialog.SelectedPath, "заказ" + ".txt"),
                         urlEncodeText,
                         encoding: System.Text.Encoding.UTF8);
                     MessageBoxService.ShowInformation("Информация о заказе " +
                         "успешно сохранена в базу данных, а также " +
-                        $"по пути {filePath} в формате .pdf и .txt!");
+                        $"по пути {folderBrowserDialog.SelectedPath} в формате .pdf и .txt!");
                 }
                 else
                 {
                     MessageBoxService.ShowInformation("Заказ успешно " +
-                        "сохранён в базу данных " +
-                        "с отчётностью в папке выполняемого " +
-                        "в данный момент приложения!");
+                      "сохранён в базу данных " +
+                      "без отчётности!");
                 }
             }
             catch (Exception ex)
