@@ -176,9 +176,8 @@ namespace LaboratoryAppMVVM.ViewModels
         private void SaveBarcodeToPdfFile(string tempBarCodePath,
                                           string barcodeText)
         {
-            BarcodeBitmap = new BarcodeImageGenerator(
-    barcodeText)
-    .Generate(200, 40);
+            BarcodeBitmap = new BarcodeImageGenerator(barcodeText)
+                            .Generate(new Size(200, 40));
             PngBitmapEncoder encoder = new PngBitmapEncoder();
             encoder.Frames.Add(BitmapFrame.Create(BarcodeBitmap));
             using (FileStream stream = new FileStream(

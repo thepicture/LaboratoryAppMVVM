@@ -21,7 +21,7 @@ namespace LaboratoryAppMVVM.Models
             _searchText = searchText;
         }
 
-        public Func<T, bool> Search<T>() where T: class
+        public Func<T, bool> Search<T>() where T : class
         {
             return instance =>
             {
