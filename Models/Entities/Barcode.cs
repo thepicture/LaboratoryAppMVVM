@@ -1,9 +1,9 @@
-﻿namespace LaboratoryAppMVVM.Models
+﻿namespace LaboratoryAppMVVM.Models.Entities
 {
     /// <summary>
     /// Represents a barcode for exporting.
     /// </summary>
-    class Barcode
+    public class Barcode
     {
         public string ImagePath { get; set; }
 

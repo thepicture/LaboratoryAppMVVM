@@ -8,7 +8,7 @@ namespace LaboratoryAppMVVM.ViewModels
     public class ViewModelBase : INotifyPropertyChanged
     {
         private string _title = "";
-        private IMessageBoxService _messageBoxService;
+        private IMessageService _messageBoxService;
 
 
         public string Title
@@ -20,7 +20,7 @@ namespace LaboratoryAppMVVM.ViewModels
             }
         }
 
-        public IMessageBoxService MessageBoxService
+        public IMessageService MessageBoxService
         {
             get => _messageBoxService; set
             {

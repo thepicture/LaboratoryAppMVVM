@@ -8,7 +8,7 @@ namespace LaboratoryAppMVVM.ViewModels
     public class AccountantViewModel : ViewModelBase
     {
         private readonly ViewModelNavigationStore _viewModelNavigationStore;
-        private List<AppliedService> _appliedServicesList;
+        private List<AppliedService> _appliedServices;
 
         public AccountantViewModel(ViewModelNavigationStore viewModelNavigationStore, User user)
         {
@@ -17,20 +17,20 @@ namespace LaboratoryAppMVVM.ViewModels
             User = user;
         }
 
-        public List<AppliedService> AppliedServicesList
+        public List<AppliedService> AppliedServices
         {
             get
             {
-                if (_appliedServicesList == null)
+                if (_appliedServices == null)
                 {
-                    _appliedServicesList = new LaboratoryDatabaseEntities().AppliedService.ToList();
+                    _appliedServices = new LaboratoryDatabaseEntities().AppliedService.ToList();
                 }
-                return _appliedServicesList;
+                return _appliedServices;
             }
 
             set
             {
-                _appliedServicesList = value;
+                _appliedServices = value;
                 OnPropertyChanged();
             }
         }

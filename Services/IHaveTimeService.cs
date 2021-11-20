@@ -2,6 +2,9 @@
 
 namespace LaboratoryAppMVVM.Services
 {
+    /// <summary>
+    /// Defines methods for classes which handles the tick event of a timer.
+    /// </summary>
     public interface IHaveTimeService
     {
         /// <summary>

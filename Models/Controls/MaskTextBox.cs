@@ -1,8 +1,7 @@
 ﻿using System.Linq;
 using System.Windows.Controls;
-using System.Windows.Input;
 
-namespace LaboratoryAppMVVM.Models
+namespace LaboratoryAppMVVM.Models.Controls
 {
     public class MaskTextBox : TextBox
     {

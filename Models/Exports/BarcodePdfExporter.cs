@@ -1,4 +1,6 @@
-﻿namespace LaboratoryAppMVVM.Models.Exports
+﻿using LaboratoryAppMVVM.Models.Entities;
+
+namespace LaboratoryAppMVVM.Models.Exports
 {
     class BarcodePdfExporter : Exporter<Barcode>
     {

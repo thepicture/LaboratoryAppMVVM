@@ -1,6 +1,6 @@
 ﻿using LaboratoryAppMVVM.Commands;
-using LaboratoryAppMVVM.Models;
 using LaboratoryAppMVVM.Models.Entities;
+using LaboratoryAppMVVM.Models.Generators;
 using LaboratoryAppMVVM.Services;
 using LaboratoryAppMVVM.Stores;
 using System;
@@ -30,7 +30,7 @@ namespace LaboratoryAppMVVM.ViewModels
         private readonly NoiseGenerator _noiseGenerator;
         private bool _isLoggingIn;
         public LoginViewModel(ViewModelNavigationStore navigationStore,
-                              IMessageBoxService messageBoxService,
+                              IMessageService messageBoxService,
                               ILoginService<User, ViewModelNavigationStore> loginService)
         {
             MessageBoxService = messageBoxService;
@@ -119,7 +119,7 @@ namespace LaboratoryAppMVVM.ViewModels
                             CaptchaLetters = _captchaService.GetCaptchaList(3, 4)
                             .Cast<ListViewCaptchaLetter>()
                             .ToList();
-                            NoiseImage = _noiseGenerator.Generate(200, 40);
+                            NoiseImage = _noiseGenerator.Generate(new System.Windows.Size(200, 40));
                         });
                 }
                 return _regenerateCaptchaCommand;

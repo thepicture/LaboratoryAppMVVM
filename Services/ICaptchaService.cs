@@ -1,4 +1,4 @@
-﻿using LaboratoryAppMVVM.Models;
+﻿using LaboratoryAppMVVM.Models.Entities;
 using System.Collections.Generic;
 
 namespace LaboratoryAppMVVM.Services
@@ -6,9 +6,9 @@ namespace LaboratoryAppMVVM.Services
     public interface ICaptchaService
     {
         /// <summary>
-        /// Generates the captcha and returns the string representation.
+        /// Generates the captcha and returns the list of captcha letters.
         /// </summary>
-        /// <returns>The string representation of the captcha.</returns>
+        /// <returns>The list of captcha letters.</returns>
         IEnumerable<CaptchaLetterBase> GetCaptchaList(int minLetters, int maxLetters);
 
     }

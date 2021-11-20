@@ -43,7 +43,7 @@
                     </StackPanel>
             </Border>
         </Grid>
-        <DataGrid ItemsSource="{Binding AppliedServicesList}"
+        <DataGrid ItemsSource="{Binding AppliedServices}"
                   AutoGenerateColumns="False"
                   IsReadOnly="True"
                   ColumnWidth="*"

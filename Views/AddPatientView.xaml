@@ -77,7 +77,7 @@
                 <TextBlock Text="Тип страхового полиса: "
                            Style="{StaticResource CommonBlock}"
                            VerticalAlignment="Center"></TextBlock>
-                <ComboBox ItemsSource="{Binding PolicyTypesList}"
+                <ComboBox ItemsSource="{Binding PolicyTypes}"
                           SelectedItem="{Binding SelectedPolicyType}"
                           DisplayMemberPath="Name"
                           Width="200"
@@ -88,7 +88,7 @@
                 <TextBlock Text="Тип страхового полиса: "
                            Style="{StaticResource CommonBlock}"
                            VerticalAlignment="Center"></TextBlock>
-                <ComboBox ItemsSource="{Binding InsuranceCompaniesList}"
+                <ComboBox ItemsSource="{Binding InsuranceCompanies}"
                           SelectedItem="{Binding SelectedInsuranceCompany}"
                           DisplayMemberPath="Name"
                           Width="200"

@@ -1,27 +1,32 @@
-﻿using LaboratoryAppMVVM.Models;
+﻿using LaboratoryAppMVVM.Models.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace LaboratoryAppMVVM.Services
 {
     public class SimpleCaptchaService : ICaptchaService
     {
+        private const int minValueOfASCIIEncoding = 48;
+        private const int maxValueOfASCIIEncoding = 90 + 1;
+        private const int fontSize = 20;
         private readonly Random _random;
-        private List<ListViewCaptchaLetter> _captchasLettersList;
+        private List<ListViewCaptchaLetter> _captchaLetters;
 
         public SimpleCaptchaService()
         {
             _random = new Random();
         }
 
-        public IEnumerable<CaptchaLetterBase> GetCaptchaList(int minLetters, int maxLetters)
+        public IEnumerable<CaptchaLetterBase> GetCaptchaList(int minLettersCount,
+                                                             int maxLettersCount)
         {
-            int lettersCount = _random.Next(minLetters, maxLetters + 1);
+            int lettersCount = _random.Next(minLettersCount, maxLettersCount + 1);
             List<char> characterList = new List<char>();
-            _captchasLettersList = new List<ListViewCaptchaLetter>();
+            _captchaLetters = new List<ListViewCaptchaLetter>();
 
-            for (int i = 0; i < 127; i++)
+            for (int i = minValueOfASCIIEncoding; i < maxValueOfASCIIEncoding; i++)
             {
                 if (char.IsDigit((char)i) || char.IsLetter((char)i))
                 {
@@ -31,14 +36,17 @@ namespace LaboratoryAppMVVM.Services
 
             for (int i = 0; i < lettersCount; i++)
             {
-                _captchasLettersList.Add(new ListViewCaptchaLetter
+                _captchaLetters.Add(new ListViewCaptchaLetter
                 {
-                    Letter = Convert.ToString(characterList.ElementAt(_random.Next(0, characterList.Count))),
-                    FontSize = 20,
+                    Letter = Convert.ToString
+                    (
+                        characterList.ElementAt(_random.Next(0, characterList.Count))
+                    ),
+                    FontSize = fontSize,
                 });
             }
 
-            return _captchasLettersList;
+            return _captchaLetters;
         }
     }
 }

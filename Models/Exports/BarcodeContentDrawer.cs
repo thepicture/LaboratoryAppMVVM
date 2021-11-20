@@ -1,4 +1,5 @@
-﻿using LaboratoryAppMVVM.Models.Exceptions;
+﻿using LaboratoryAppMVVM.Models.Entities;
+using LaboratoryAppMVVM.Models.Exceptions;
 using Microsoft.Office.Interop.Word;
 using System;
 using System.IO;

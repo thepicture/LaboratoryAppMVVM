@@ -3,17 +3,21 @@ using LaboratoryAppMVVM.Stores;
 
 namespace LaboratoryAppMVVM.Models
 {
+    /// <summary>
+    /// Implements method for disposing the current timer 
+    /// if the type equals 
+    /// to the given navigation store type.
+    /// </summary>
+    /// <typeparam name="T">The type of a navigation store.</typeparam>
     public class DisposerOnTypeEqual<T>
     {
         /// <summary>
-        /// Disposes of the current timer if the type equals to navigation store type.
-        /// Mostly used in a view model logic, when
-        /// changing of view model requires stopping
-        /// of services.
+        /// Disposes the current timer if the type equals to the given navigation store type.
+        /// Used, when a view model must not have a timer.
         /// </summary>
         /// <param name="haveTimeService">A time service.</param>
-        /// <param name="type">The type.</param>
-        /// <param name="navigationStore">The navigation store.</param>
+        /// <param name="type">The type of a navigation store.</param>
+        /// <param name="navigationStore">A navigation store.</param>
         public static void Dispose(IHaveTimeService haveTimeService, ViewModelNavigationStore navigationStore)
         {
             if (navigationStore.CurrentViewModel.GetType() == typeof(T))

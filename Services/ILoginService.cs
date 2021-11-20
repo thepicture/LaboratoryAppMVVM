@@ -8,14 +8,18 @@ namespace LaboratoryAppMVVM.Services
         where TNavigationStore : ViewModelNavigationStore
     {
         /// <summary>
-        /// The method must get the user type 
-        /// and return the view model with the navigation
-        /// depending on the given user type 
-        /// for further actions.
+        /// Gets the user type 
+        /// and returns a view model with the navigation
+        /// depending on the given user type.
         /// </summary>
-        /// <param name="user">The user to identify the view model to return.</param>
-        /// <param name="navigationStore">The navigation store of the returning login type.</param>
-        /// <returns>The function to create a view model with the navigation.</returns>
+        /// <param name="user">The user to identify 
+        /// the view model to return.</param>
+        /// <param name="navigationStore">The navigation store 
+        /// for a new view model 
+        /// depending on the user's role.</param>
+        /// <returns>The function 
+        /// to create a view model 
+        /// with the navigation.</returns>
         Func<ViewModelBase> LoginInAndGetLoginType(TUser user,
                                                    TNavigationStore navigationStore);
     }

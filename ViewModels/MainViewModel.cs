@@ -43,7 +43,7 @@ namespace LaboratoryAppMVVM.ViewModels
             }
         }
 
-        public MainViewModel(ViewModelNavigationStore viewModelNavigationStore, IMessageBoxService messageBoxService)
+        public MainViewModel(ViewModelNavigationStore viewModelNavigationStore, IMessageService messageBoxService)
         {
             MessageBoxService = messageBoxService;
             _viewModelNavigationStore = viewModelNavigationStore;

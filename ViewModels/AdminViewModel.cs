@@ -9,8 +9,8 @@ namespace LaboratoryAppMVVM.ViewModels
     public class AdminViewModel : ViewModelBase
     {
         private readonly ViewModelNavigationStore navigationStore;
-        private List<HistoryOfLogin> _userLoginHistoriesList;
-        private List<Service> _servicesList;
+        private List<HistoryOfLogin> _userLoginHistories;
+        private List<Service> _services;
         private string _userLoginText = string.Empty;
         private LaboratoryDatabaseEntities _context;
         private List<string> _sortTypes;
@@ -23,37 +23,37 @@ namespace LaboratoryAppMVVM.ViewModels
             User = user;
         }
 
-        public List<HistoryOfLogin> UserLoginHistoriesList
+        public List<HistoryOfLogin> UserLoginHistories
         {
             get
             {
-                if (_userLoginHistoriesList == null)
+                if (_userLoginHistories == null)
                 {
-                    _userLoginHistoriesList = Context.HistoryOfLogin.ToList();
+                    _userLoginHistories = Context.HistoryOfLogin.ToList();
                 }
-                return _userLoginHistoriesList;
+                return _userLoginHistories;
             }
 
             set
             {
-                _userLoginHistoriesList = value;
+                _userLoginHistories = value;
                 OnPropertyChanged();
             }
         }
-        public List<Service> ServicesList
+        public List<Service> Services
         {
             get
             {
-                if (_servicesList == null)
+                if (_services == null)
                 {
-                    _servicesList = Context.Service.ToList();
+                    _services = Context.Service.ToList();
                 }
-                return _servicesList;
+                return _services;
             }
 
             set
             {
-                _servicesList = value;
+                _services = value;
                 OnPropertyChanged();
             }
         }
@@ -124,17 +124,22 @@ namespace LaboratoryAppMVVM.ViewModels
 
         private void FilterUserLoginHistory()
         {
-            UserLoginHistoriesList = Context
+            UserLoginHistories = Context
                 .HistoryOfLogin
                 .Where(history => history.User.Login.ToLower().Contains(UserLoginText))
                 .ToList();
+            OrderLoginHistoriesByCurrentSortType();
+        }
+
+        private void OrderLoginHistoriesByCurrentSortType()
+        {
             switch (SortTypes.IndexOf(CurrentSortType))
             {
                 case 1:
-                    UserLoginHistoriesList = UserLoginHistoriesList.OrderBy(history => history.DateTime).ToList();
+                    UserLoginHistories = UserLoginHistories.OrderBy(history => history.DateTime).ToList();
                     break;
                 case 2:
-                    UserLoginHistoriesList = UserLoginHistoriesList.OrderByDescending(history => history.DateTime).ToList();
+                    UserLoginHistories = UserLoginHistories.OrderByDescending(history => history.DateTime).ToList();
                     break;
                 default:
                     break;

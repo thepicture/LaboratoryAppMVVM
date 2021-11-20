@@ -3,6 +3,7 @@ using LaboratoryAppMVVM.Models;
 using LaboratoryAppMVVM.Models.Entities;
 using LaboratoryAppMVVM.Models.Exceptions;
 using LaboratoryAppMVVM.Models.Exports;
+using LaboratoryAppMVVM.Models.Generators;
 using LaboratoryAppMVVM.Services;
 using LaboratoryAppMVVM.Stores;
 using System;
@@ -47,7 +48,7 @@ namespace LaboratoryAppMVVM.ViewModels
         public CreateOrEditOrderViewModel(ViewModelNavigationStore navigationStore,
                                           User user,
                                           Order order,
-                                          IMessageBoxService messageBoxService,
+                                          IMessageService messageBoxService,
                                           LaboratoryAssistantViewModel laboratoryAssistantViewModel)
         {
             _navigationStore = navigationStore;

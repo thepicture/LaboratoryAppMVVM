@@ -1,4 +1,4 @@
-﻿namespace LaboratoryAppMVVM.Models
+﻿namespace LaboratoryAppMVVM.Models.Entities
 {
     /// <summary>
     /// The base class of captcha letters representation. 

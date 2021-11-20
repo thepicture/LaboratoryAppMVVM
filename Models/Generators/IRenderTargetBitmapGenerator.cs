@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Media.Imaging;
 
-namespace LaboratoryAppMVVM.Models
+namespace LaboratoryAppMVVM.Models.Generators
 {
     /// <summary>
     /// Defines a method 

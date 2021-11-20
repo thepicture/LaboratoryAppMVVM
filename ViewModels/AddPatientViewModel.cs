@@ -15,14 +15,14 @@ namespace LaboratoryAppMVVM.ViewModels
         private Patient _currentPatient;
         private RelayCommand _savePatientCommand;
         private RelayCommand _returnToEditOrderViewModelCommand;
-        private List<TypeOfInsurancePolicy> _policyTypesList;
-        private List<InsuranceCompany> _insuranceCompaniesList;
+        private List<TypeOfInsurancePolicy> _policyTypes;
+        private List<InsuranceCompany> _insuranceCompanies;
         private LaboratoryDatabaseEntities _context;
         private InsuranceCompany _selectedInsuranceCompany;
         private TypeOfInsurancePolicy _selectedPolicyType;
 
         public AddPatientViewModel(ViewModelNavigationStore navigationStore,
-                                   IMessageBoxService messageBoxService,
+                                   IMessageService messageBoxService,
                                    CreateOrEditOrderViewModel createOrEditOrderViewModel)
         {
             _navigationStore = navigationStore;
@@ -35,7 +35,7 @@ namespace LaboratoryAppMVVM.ViewModels
         {
             get
             {
-                if(_currentPatient == null)
+                if (_currentPatient == null)
                 {
                     _currentPatient = new Patient();
                 }
@@ -63,26 +63,26 @@ namespace LaboratoryAppMVVM.ViewModels
                 return _returnToEditOrderViewModelCommand;
             }
         }
-        public List<TypeOfInsurancePolicy> PolicyTypesList
+        public List<TypeOfInsurancePolicy> PolicyTypes
         {
             get
             {
-                if (_policyTypesList == null)
+                if (_policyTypes == null)
                 {
-                    _policyTypesList = Context.TypeOfInsurancePolicy.ToList();
+                    _policyTypes = Context.TypeOfInsurancePolicy.ToList();
                 }
-                return _policyTypesList;
+                return _policyTypes;
             }
         }
-        public List<InsuranceCompany> InsuranceCompaniesList
+        public List<InsuranceCompany> InsuranceCompanies
         {
             get
             {
-                if (_insuranceCompaniesList == null)
+                if (_insuranceCompanies == null)
                 {
-                    _insuranceCompaniesList = Context.InsuranceCompany.ToList();
+                    _insuranceCompanies = Context.InsuranceCompany.ToList();
                 }
-                return _insuranceCompaniesList;
+                return _insuranceCompanies;
             }
         }
         public RelayCommand SavePatientCommand
@@ -99,12 +99,22 @@ namespace LaboratoryAppMVVM.ViewModels
 
         private void SavePatient()
         {
+            InsertValuesIntoPatientEntity();
+            TryToSavePatient();
+        }
+
+        private void InsertValuesIntoPatientEntity()
+        {
             CurrentPatient.InsuranceCompany = SelectedInsuranceCompany;
             CurrentPatient.TypeOfInsurancePolicy = SelectedPolicyType;
-            Context.Patient.Add(CurrentPatient);
+            _ = Context.Patient.Add(CurrentPatient);
+        }
+
+        private void TryToSavePatient()
+        {
             try
             {
-                Context.SaveChanges();
+                _ = Context.SaveChanges();
                 MessageBoxService.ShowInformation("Пациент " +
                     "успешно сохранён!");
             }

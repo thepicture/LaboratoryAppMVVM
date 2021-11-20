@@ -1,6 +1,6 @@
 ﻿using LaboratoryAppMVVM.Commands;
 using LaboratoryAppMVVM.Models.Entities;
-using LaboratoryAppMVVM.Models.Http;
+using LaboratoryAppMVVM.Models.HttpClasses;
 using LaboratoryAppMVVM.Services;
 using LaboratoryAppMVVM.Stores;
 using System;
@@ -26,7 +26,7 @@ namespace LaboratoryAppMVVM.ViewModels
 
         public AnalyzerViewModel(ViewModelNavigationStore viewModelNavigationStore,
                                  Analyzer analyzer,
-                                 IMessageBoxService messageBoxService,
+                                 IMessageService messageBoxService,
                                  LaboratoryDatabaseEntities context)
         {
             _viewModelNavigationStore = viewModelNavigationStore;

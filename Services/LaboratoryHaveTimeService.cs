@@ -21,7 +21,7 @@ namespace LaboratoryAppMVVM.Services
         }
 
         public LaboratoryHaveTimeService(TimeSpan sessionTimeSpan,
-                                         IMessageBoxService messageBoxService,
+                                         IMessageService messageBoxService,
                                          ViewModelNavigationStore navigationStore) : this(sessionTimeSpan)
         {
             MessageBoxService = messageBoxService;
@@ -74,7 +74,7 @@ namespace LaboratoryAppMVVM.Services
             }
         }
 
-        public IMessageBoxService MessageBoxService { get; }
+        public IMessageService MessageBoxService { get; }
         public ViewModelNavigationStore NavigationStore { get; }
 
         private readonly DispatcherTimer _timer;

@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace LaboratoryAppMVVM.Models
+namespace LaboratoryAppMVVM.Models.Generators
 {
     public class BarcodeImageGenerator : IRenderTargetBitmapGenerator
     {

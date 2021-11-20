@@ -125,9 +125,9 @@
     <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Commands\NavigateCommand.cs" />
     <Compile Include="Models\AllPropertiesSearcher.cs" />
-    <Compile Include="Models\Barcode.cs" />
-    <Compile Include="Models\BarcodeImageGenerator.cs" />
-    <Compile Include="Models\CaptchaLetterBase.cs" />
+    <Compile Include="Models\Entities\Barcode.cs" />
+    <Compile Include="Models\Generators\BarcodeImageGenerator.cs" />
+    <Compile Include="Models\Entities\CaptchaLetterBase.cs" />
     <Compile Include="Models\Entities\Analyzer.cs">
       <DependentUpon>LaboratoryBaseModel.tt</DependentUpon>
     </Compile>
@@ -194,21 +194,21 @@
     <Compile Include="Models\Exports\OrderContentDrawer.cs" />
     <Compile Include="Models\Exports\OrderPdfExporter.cs" />
     <Compile Include="Models\Exports\WordDrawingContext.cs" />
-    <Compile Include="Models\Http\ThirtySecondsTimeoutWebClient.cs">
+    <Compile Include="Models\HttpClasses\ThirtySecondsTimeoutWebClient.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Models\IPropertiesSearcher.cs" />
-    <Compile Include="Models\IRenderTargetBitmapGenerator.cs" />
+    <Compile Include="Models\Generators\IRenderTargetBitmapGenerator.cs" />
     <Compile Include="Models\LevenshteinDistanceCalculator.cs" />
-    <Compile Include="Models\ListViewCaptchaLetter.cs" />
-    <Compile Include="Models\NoiseGenerator.cs" />
+    <Compile Include="Models\Entities\ListViewCaptchaLetter.cs" />
+    <Compile Include="Models\Generators\NoiseGenerator.cs" />
     <Compile Include="Services\IWindowService.cs" />
     <Compile Include="Services\LaboratoryWindowService.cs" />
     <Compile Include="Services\SimpleCaptchaService.cs" />
     <Compile Include="Services\ICaptchaService.cs" />
     <Compile Include="Services\IHaveTimeService.cs" />
-    <Compile Include="Services\IMessageBoxService.cs" />
-    <Compile Include="Models\MaskTextBox.cs" />
+    <Compile Include="Services\IMessageService.cs" />
+    <Compile Include="Models\Controls\MaskTextBox.cs" />
     <Compile Include="Services\LaboratoryHaveTimeService.cs" />
     <Compile Include="Services\LaboratoryLoginService.cs" />
     <Compile Include="Services\MessageBoxService.cs" />
