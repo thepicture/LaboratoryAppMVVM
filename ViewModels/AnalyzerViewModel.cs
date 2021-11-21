@@ -17,6 +17,7 @@ namespace LaboratoryAppMVVM.ViewModels
 {
     public class AnalyzerViewModel : ViewModelBase
     {
+        private const int timerTimeout = 5;
         private readonly ViewModelNavigationStore _viewModelNavigationStore;
         private readonly LaboratoryDatabaseEntities _context;
         private Analyzer _analyzer;
@@ -39,7 +40,7 @@ namespace LaboratoryAppMVVM.ViewModels
             MessageBoxService = messageBoxService;
             DispatcherTimer dispatcherTimer = new DispatcherTimer
             {
-                Interval = TimeSpan.FromSeconds(5)
+                Interval = TimeSpan.FromSeconds(timerTimeout)
             };
             dispatcherTimer.Tick += OnUpdateServiceValue;
             dispatcherTimer.Start();
@@ -176,20 +177,30 @@ namespace LaboratoryAppMVVM.ViewModels
         {
             if (IsWaitingForResearchCompletion)
             {
-                string url = $"http://localhost:60954/api/analyzer/"
-                               + Analyzer.Name;
-                IGettable statusGetter = new JsonResearchStatusGetter(url);
-                byte[] response = statusGetter.Get();
-                DataContractJsonSerializer contractJsonSerializer =
-                    new DataContractJsonSerializer(typeof(ResearchStatus));
-                Status = (ResearchStatus)contractJsonSerializer
-                    .ReadObject(new MemoryStream(response));
-                if (Status.Progress == ProgressState.Fulfilled)
-                {
-                    IsWaitingForResearchCompletion = false;
-                    SentServices.Clear();
-                }
+                SendGetRequest();
             }
+        }
+
+        private void SendGetRequest()
+        {
+            string url = $"http://localhost:60954/api/analyzer/"
+                           + Analyzer.Name;
+            IGettable statusGetter = new JsonResearchStatusGetter(url);
+            byte[] response = statusGetter.Get();
+            DataContractJsonSerializer contractJsonSerializer =
+                new DataContractJsonSerializer(typeof(ResearchStatus));
+            Status = (ResearchStatus)contractJsonSerializer
+                .ReadObject(new MemoryStream(response));
+            if (Status.Progress == ProgressState.Fulfilled)
+            {
+                DisableWaitMode();
+            }
+        }
+
+        private void DisableWaitMode()
+        {
+            IsWaitingForResearchCompletion = false;
+            SentServices.Clear();
         }
 
         private async void RunNewServiceResearchTask(AppliedService appliedService)
@@ -204,39 +215,49 @@ namespace LaboratoryAppMVVM.ViewModels
         {
             try
             {
-                string url = $"http://localhost:60954/api/analyzer/"
-                                + Analyzer.Name;
-                string jsonData = "{\"patient\":"
-                                              + appliedService.PatientId
-                                              + ",\"services\":[{\"serviceCode\": "
-                                              + appliedService.Id
-                                              + "}]}";
-                IPostable jsonServicePoster = new JsonServicePoster(url, jsonData);
-                _ = jsonServicePoster.Post();
-                SentServices.Add(appliedService);
-                if (!IsWaitingForResearchCompletion)
-                {
-                    IsWaitingForResearchCompletion = true;
-                }
+                PostCurrentAppliedService(appliedService);
                 UpdateServices();
             }
             catch (WebException ex)
             {
-                if (ex.Status == WebExceptionStatus.Success)
-                {
-                    MessageBoxService.ShowError("Произошла ошибка, " +
-                        "но запрос обработан. " +
-                        "Ошибка: " + ex.Message);
-                }
-                else
-                {
-                    MessageBoxService.ShowError("Произошла ошибка " +
-                        "при отправке услуги. Вероятно, прошло 30 секунд " +
-                        "с момента попытки отправки услуги " +
-                        "на исследование. " +
-                        "Пожалуйста, попробуйте ещё раз. " +
-                        "Ошибка: " + ex.Message);
-                }
+                ShowException(ex);
+            }
+        }
+
+        private void ShowException(WebException ex)
+        {
+            if (ex.Status == WebExceptionStatus.Success)
+            {
+                MessageBoxService.ShowError("Произошла ошибка, " +
+                    "но запрос обработан. " +
+                    "Ошибка: " + ex.Message);
+            }
+            else
+            {
+                MessageBoxService.ShowError("Произошла ошибка " +
+                    "при отправке услуги. Вероятно, прошло 30 секунд " +
+                    "с момента попытки отправки услуги " +
+                    "на исследование. " +
+                    "Пожалуйста, попробуйте ещё раз. " +
+                    "Ошибка: " + ex.Message);
+            }
+        }
+
+        private void PostCurrentAppliedService(AppliedService appliedService)
+        {
+            string url = $"http://localhost:60954/api/analyzer/"
+                            + Analyzer.Name;
+            string jsonData = "{\"patient\":"
+                                          + appliedService.PatientId
+                                          + ",\"services\":[{\"serviceCode\": "
+                                          + appliedService.Id
+                                          + "}]}";
+            IPostable jsonServicePoster = new JsonServicePoster(url, jsonData);
+            _ = jsonServicePoster.Post();
+            SentServices.Add(appliedService);
+            if (!IsWaitingForResearchCompletion)
+            {
+                IsWaitingForResearchCompletion = true;
             }
         }
     }
