@@ -126,6 +126,8 @@
     <Compile Include="Commands\NavigateCommand.cs" />
     <Compile Include="Models\AllPropertiesSearcher.cs" />
     <Compile Include="Models\Entities\Barcode.cs" />
+    <Compile Include="Models\Entities\ProgressState.cs" />
+    <Compile Include="Models\Entities\ResearchStatus.cs" />
     <Compile Include="Models\Generators\BarcodeImageGenerator.cs" />
     <Compile Include="Models\Entities\CaptchaLetterBase.cs" />
     <Compile Include="Models\Entities\Analyzer.cs">
@@ -194,7 +196,9 @@
     <Compile Include="Models\Exports\OrderContentDrawer.cs" />
     <Compile Include="Models\Exports\OrderPdfExporter.cs" />
     <Compile Include="Models\Exports\WordDrawingContext.cs" />
-    <Compile Include="Models\HttpClasses\ThirtySecondsTimeoutWebClient.cs">
+    <Compile Include="Models\HttpClasses\IGettable.cs" />
+    <Compile Include="Models\HttpClasses\JsonResearchStatusGetter.cs" />
+    <Compile Include="Models\HttpClasses\CustomTimeoutWebClient.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Models\IPropertiesSearcher.cs" />
@@ -202,8 +206,10 @@
     <Compile Include="Models\LevenshteinDistanceCalculator.cs" />
     <Compile Include="Models\Entities\ListViewCaptchaLetter.cs" />
     <Compile Include="Models\Generators\NoiseGenerator.cs" />
+    <Compile Include="Models\HttpClasses\IPostable.cs" />
     <Compile Include="Services\IWindowService.cs" />
     <Compile Include="Services\LaboratoryWindowService.cs" />
+    <Compile Include="Models\HttpClasses\JsonServicePoster.cs" />
     <Compile Include="Services\SimpleCaptchaService.cs" />
     <Compile Include="Services\ICaptchaService.cs" />
     <Compile Include="Services\IHaveTimeService.cs" />

@@ -5,8 +5,10 @@ using LaboratoryAppMVVM.Services;
 using LaboratoryAppMVVM.Stores;
 using System;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Net;
+using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Threading;
@@ -18,11 +20,13 @@ namespace LaboratoryAppMVVM.ViewModels
         private readonly ViewModelNavigationStore _viewModelNavigationStore;
         private readonly LaboratoryDatabaseEntities _context;
         private Analyzer _analyzer;
-        private ObservableCollection<AppliedService> _notAcceptedServicesList;
+        private ObservableCollection<AppliedService> _notAcceptedServices;
         private bool _isNotOnLoginPage = false;
         private RelayCommand _navigateToLoginPageCommand;
         private RelayCommand _sendServiceToResearchingCommand;
-        private ObservableCollection<AppliedService> _sentServicesList;
+        private ObservableCollection<AppliedService> _sentServices;
+        private ResearchStatus _status;
+        private bool _isWaitingForResearchCompletion = false;
 
         public AnalyzerViewModel(ViewModelNavigationStore viewModelNavigationStore,
                                  Analyzer analyzer,
@@ -37,20 +41,21 @@ namespace LaboratoryAppMVVM.ViewModels
             {
                 Interval = TimeSpan.FromSeconds(5)
             };
-            dispatcherTimer.Tick += OnUpdateServicesValuesTick;
+            dispatcherTimer.Tick += OnUpdateServiceValue;
             dispatcherTimer.Start();
         }
 
-        private void OnUpdateServicesValuesTick(object sender, EventArgs e)
+        private void OnUpdateServiceValue(object sender, EventArgs e)
         {
-            UpdateServicesList();
+            UpdateServices();
+            GetResearchStatusInPercent();
         }
 
-        private void UpdateServicesList()
+        private void UpdateServices()
         {
             _ = Task.Run(() =>
             {
-                NotAcceptedServicesList = new ObservableCollection<AppliedService>(
+                NotAcceptedServices = new ObservableCollection<AppliedService>(
                 new LaboratoryDatabaseEntities().Analyzer
                       .Find(Analyzer.Id)
                       .AppliedService
@@ -68,23 +73,23 @@ namespace LaboratoryAppMVVM.ViewModels
             }
         }
 
-        public ObservableCollection<AppliedService> NotAcceptedServicesList
+        public ObservableCollection<AppliedService> NotAcceptedServices
         {
             get
             {
-                if (_notAcceptedServicesList == null)
+                if (_notAcceptedServices == null)
                 {
-                    _notAcceptedServicesList = new ObservableCollection<AppliedService>
+                    _notAcceptedServices = new ObservableCollection<AppliedService>
                         (
                             Analyzer.AppliedService.Where(s => !s.IsAccepted)
                         );
                 }
-                return _notAcceptedServicesList;
+                return _notAcceptedServices;
             }
 
             set
             {
-                _notAcceptedServicesList = value;
+                _notAcceptedServices = value;
                 OnPropertyChanged();
             }
         }
@@ -108,7 +113,7 @@ namespace LaboratoryAppMVVM.ViewModels
                     {
                         _viewModelNavigationStore.CurrentViewModel =
                         new LoginViewModel(_viewModelNavigationStore,
-                                           new MessageBoxService(),
+                                           MessageBoxService,
                                            new LaboratoryLoginService());
                     });
                 }
@@ -124,62 +129,115 @@ namespace LaboratoryAppMVVM.ViewModels
                 {
                     _sendServiceToResearchingCommand = new RelayCommand(param =>
                     {
-                        SendService(param as AppliedService);
+                        RunNewServiceResearchTask(param as AppliedService);
                     });
                 }
                 return _sendServiceToResearchingCommand;
             }
         }
 
-        public ObservableCollection<AppliedService> SentServicesList
+        public ObservableCollection<AppliedService> SentServices
         {
-            get => _sentServicesList; set
+            get
             {
-                _sentServicesList = value;
+                if (_sentServices == null)
+                {
+                    _sentServices = new ObservableCollection<AppliedService>();
+                }
+                return _sentServices;
+            }
+
+            set
+            {
+                _sentServices = value;
                 OnPropertyChanged();
             }
         }
 
-        private async void SendService(AppliedService appliedService)
+        public ResearchStatus Status
+        {
+            get => _status; set
+            {
+                _status = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsWaitingForResearchCompletion
+        {
+            get => _isWaitingForResearchCompletion; set
+            {
+                _isWaitingForResearchCompletion = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private void GetResearchStatusInPercent()
+        {
+            if (IsWaitingForResearchCompletion)
+            {
+                string url = $"http://localhost:60954/api/analyzer/"
+                               + Analyzer.Name;
+                IGettable statusGetter = new JsonResearchStatusGetter(url);
+                byte[] response = statusGetter.Get();
+                DataContractJsonSerializer contractJsonSerializer =
+                    new DataContractJsonSerializer(typeof(ResearchStatus));
+                Status = (ResearchStatus)contractJsonSerializer
+                    .ReadObject(new MemoryStream(response));
+                if (Status.Progress == ProgressState.Fulfilled)
+                {
+                    IsWaitingForResearchCompletion = false;
+                    SentServices.Clear();
+                }
+            }
+        }
+
+        private async void RunNewServiceResearchTask(AppliedService appliedService)
         {
             await Task.Run(() =>
             {
-                try
-                {
-
-                    WebClient client = new ThirtySecondsTimeoutWebClient();
-                    client.Headers.Add("Content-Type", "application/json");
-                    string webApiURL = $"http://localhost:60954/api/analyzer/"
-                        + Analyzer.Name;
-                    string jsonData = "{\"patient\":"
-                                      + appliedService.PatientId
-                                      + ",\"services\":[{\"serviceCode\": "
-                                      + appliedService.Id
-                                      + "}]}";
-                    _ = client.UploadData(webApiURL,
-                                      "POST",
-                                      Encoding.UTF8.GetBytes(jsonData));
-                    UpdateServicesList();
-                }
-                catch (WebException ex)
-                {
-                    if (ex.Status == WebExceptionStatus.Success)
-                    {
-                        MessageBoxService.ShowError("Произошла ошибка, " +
-                            "но запрос обработан. " +
-                            "Ошибка: " + ex.Message);
-                    }
-                    else
-                    {
-                        MessageBoxService.ShowError("Произошла ошибка " +
-                            "при отправке услуги. Вероятно, прошло 30 секунд " +
-                            "с момента попытки отправки услуги " +
-                            "на исследование. " +
-                            "Пожалуйста, попробуйте ещё раз. " +
-                            "Ошибка: " + ex.Message);
-                    }
-                }
+                PostServiceResearchRequest(appliedService);
             });
+        }
+
+        private void PostServiceResearchRequest(AppliedService appliedService)
+        {
+            try
+            {
+                string url = $"http://localhost:60954/api/analyzer/"
+                                + Analyzer.Name;
+                string jsonData = "{\"patient\":"
+                                              + appliedService.PatientId
+                                              + ",\"services\":[{\"serviceCode\": "
+                                              + appliedService.Id
+                                              + "}]}";
+                IPostable jsonServicePoster = new JsonServicePoster(url, jsonData);
+                _ = jsonServicePoster.Post();
+                SentServices.Add(appliedService);
+                if (!IsWaitingForResearchCompletion)
+                {
+                    IsWaitingForResearchCompletion = true;
+                }
+                UpdateServices();
+            }
+            catch (WebException ex)
+            {
+                if (ex.Status == WebExceptionStatus.Success)
+                {
+                    MessageBoxService.ShowError("Произошла ошибка, " +
+                        "но запрос обработан. " +
+                        "Ошибка: " + ex.Message);
+                }
+                else
+                {
+                    MessageBoxService.ShowError("Произошла ошибка " +
+                        "при отправке услуги. Вероятно, прошло 30 секунд " +
+                        "с момента попытки отправки услуги " +
+                        "на исследование. " +
+                        "Пожалуйста, попробуйте ещё раз. " +
+                        "Ошибка: " + ex.Message);
+                }
+            }
         }
     }
 }
