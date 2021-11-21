@@ -5,26 +5,29 @@ using LaboratoryAppMVVM.Services;
 using LaboratoryAppMVVM.Stores;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace LaboratoryAppMVVM.ViewModels
 {
     public class LaboratoryAssistantViewModel : ViewModelBase
     {
         private readonly ViewModelNavigationStore _navigationStore;
-        private List<AppliedService> _bioContent;
+        private List<AppliedService> _appliedServices;
         private LaboratoryDatabaseEntities _context;
-        private readonly LaboratoryHaveTimeService _sessionTimer;
-        private RelayCommand _navigateToCreateOrEditOrderCommand;
+        private readonly HaveTimeServiceBase _sessionTimer;
+        private ICommand _navigateToCreateOrEditOrderCommand;
         public TimeSpan CurrentTimeOfSession => _sessionTimer.TotalTimeLeft;
 
-        public LaboratoryAssistantViewModel(ViewModelNavigationStore navigationStore, User user)
+        public LaboratoryAssistantViewModel(ViewModelNavigationStore navigationStore,
+                                            User user)
         {
             _navigationStore = navigationStore;
             User = user;
             Title = "Страница лаборанта";
             MessageBoxService = new MessageBoxService();
-            _sessionTimer = new LaboratoryHaveTimeService(TimeSpan.FromMinutes(10), MessageBoxService, _navigationStore);
+            _sessionTimer = new LaboratoryHaveTimeService(TimeSpan.FromMinutes(10),
+                                                          MessageBoxService,
+                                                          _navigationStore);
             _sessionTimer.TickChanged += OnTickChanged;
             _sessionTimer.Start();
             _navigationStore.CurrentViewModelChanged += OnCurrentViewModelChanged;
@@ -40,20 +43,20 @@ namespace LaboratoryAppMVVM.ViewModels
             DisposerOnTypeEqual<LoginViewModel>.Dispose(_sessionTimer, _navigationStore);
         }
 
-        public List<AppliedService> BioContent
+        public List<AppliedService> AppliedServices
         {
             get
             {
-                if (_bioContent == null)
+                if (_appliedServices == null)
                 {
-                    _bioContent = new List<AppliedService>(Context.AppliedService);
+                    _appliedServices = new List<AppliedService>(Context.AppliedService);
                 }
-                return _bioContent;
+                return _appliedServices;
             }
 
             set
             {
-                _bioContent = value;
+                _appliedServices = value;
                 OnPropertyChanged();
             }
         }
@@ -76,17 +79,21 @@ namespace LaboratoryAppMVVM.ViewModels
             }
         }
 
-        public RelayCommand NavigateToCreateOrEditOrderCommand
+        public ICommand NavigateToCreateOrEditOrderCommand
         {
             get
             {
                 if (_navigateToCreateOrEditOrderCommand == null)
                 {
-                    _navigateToCreateOrEditOrderCommand = new RelayCommand(param => _navigationStore.CurrentViewModel = new CreateOrEditOrderViewModel(_navigationStore,
-                        User,
-                        param as Order,
-                        MessageBoxService,
-                        this));
+                    _navigateToCreateOrEditOrderCommand = new RelayCommand(param =>
+                    {
+                        _navigationStore.CurrentViewModel =
+                        new CreateOrEditOrderViewModel(_navigationStore,
+                                                       User,
+                                                       param as Order,
+                                                       MessageBoxService,
+                                                       this);
+                    });
                 }
                 return _navigateToCreateOrEditOrderCommand;
             }

@@ -18,7 +18,7 @@ namespace LaboratoryAppMVVM.Models
         /// <param name="haveTimeService">A time service.</param>
         /// <param name="type">The type of a navigation store.</param>
         /// <param name="navigationStore">A navigation store.</param>
-        public static void Dispose(IHaveTimeService haveTimeService, ViewModelNavigationStore navigationStore)
+        public static void Dispose(HaveTimeServiceBase haveTimeService, ViewModelNavigationStore navigationStore)
         {
             if (navigationStore.CurrentViewModel.GetType() == typeof(T))
             {

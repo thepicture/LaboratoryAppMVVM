@@ -7,9 +7,8 @@ using System.Windows.Threading;
 
 namespace LaboratoryAppMVVM.Services
 {
-    public class LaboratoryHaveTimeService : IHaveTimeService
+    public class LaboratoryHaveTimeService : HaveTimeServiceBase
     {
-        public event Action TickChanged;
         public LaboratoryHaveTimeService(TimeSpan sessionTimeSpan)
         {
             _timer = new DispatcherTimer(priority: DispatcherPriority.Normal)
@@ -59,28 +58,12 @@ namespace LaboratoryAppMVVM.Services
                 $"минут.");
         }
 
-
-        private void OnTickChanged()
-        {
-            TickChanged?.Invoke();
-        }
-
-        public TimeSpan TotalTimeLeft
-        {
-            get => _totalTimeLeft; set
-            {
-                _totalTimeLeft = value;
-                OnTickChanged();
-            }
-        }
-
         public IMessageService MessageBoxService { get; }
         public ViewModelNavigationStore NavigationStore { get; }
 
         private readonly DispatcherTimer _timer;
-        private TimeSpan _totalTimeLeft;
 
-        public void Start()
+        public override void Start()
         {
             if (_timer.IsEnabled)
             {
@@ -89,7 +72,7 @@ namespace LaboratoryAppMVVM.Services
             _timer.Start();
         }
 
-        public void Stop()
+        public override void Stop()
         {
             if (!_timer.IsEnabled)
             {

@@ -212,7 +212,7 @@
     <Compile Include="Models\HttpClasses\JsonServicePoster.cs" />
     <Compile Include="Services\SimpleCaptchaService.cs" />
     <Compile Include="Services\ICaptchaService.cs" />
-    <Compile Include="Services\IHaveTimeService.cs" />
+    <Compile Include="Services\HaveTimeServiceBase.cs" />
     <Compile Include="Services\IMessageService.cs" />
     <Compile Include="Models\Controls\MaskTextBox.cs" />
     <Compile Include="Services\LaboratoryHaveTimeService.cs" />
