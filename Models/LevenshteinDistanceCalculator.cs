@@ -10,23 +10,26 @@ namespace LaboratoryAppMVVM.Models
         /// <summary>
         /// Calculates a not concrete distance between two given strings.
         /// </summary>
-        /// <param name="s1">The first string.</param>
-        /// <param name="s2">The second string.</param>
+        /// <param name="firstString">The first string.</param>
+        /// <param name="secondString">The second string.</param>
         /// <returns>The not concrete distance between two given strings.</returns>
-        public int Calculate(string s1, string s2)
+        public int Calculate(string firstString, string secondString)
         {
-            if (s2.Length == 0) return s1.Length;
-            if (s1.Length == 0) return s2.Length;
-            if (s1[0] == s2[0])
+            if (secondString.Length == 0) return firstString.Length;
+            if (firstString.Length == 0) return secondString.Length;
+            if (firstString[0] == secondString[0])
             {
-                return Calculate(s1.Substring(1), s2.Substring(1));
+                return Calculate(firstString.Substring(1), secondString.Substring(1));
             }
             else
             {
                 return 1 + Math.Min
                     (
-                        Calculate(s1.Substring(1), s2),
-                        Math.Min(Calculate(s1, s2.Substring(1)), Calculate(s1.Substring(1), s2.Substring(1)))
+                        Calculate(firstString.Substring(1), secondString),
+                        Math.Min(Calculate(firstString,
+                                           secondString.Substring(1)), Calculate(
+                                               firstString.Substring(1),
+                                               secondString.Substring(1)))
                     );
             }
         }

@@ -21,7 +21,7 @@ namespace LaboratoryAppMVVM.ViewModels
     public class CreateOrEditOrderViewModel : ViewModelBase
     {
         private readonly ViewModelNavigationStore _navigationStore;
-        private readonly LaboratoryAssistantViewModel _laboratoryAssistantViewModel;
+        private readonly ViewModelBase _laboratoryAssistantViewModel;
         private Order _order;
         private LaboratoryDatabaseEntities _context;
         private RelayCommand _navigateToLaboratoryAssistantViewModel;
@@ -31,11 +31,11 @@ namespace LaboratoryAppMVVM.ViewModels
         private string _tubeIdTooltipText = "Введите код пробирки...";
         private string _tubeId;
         private RenderTargetBitmap _barcodeBitmap;
-        private List<Patient> _patientsList;
+        private List<Patient> _patients;
         private Patient _selectedPatient;
         private string _searchPatientText = "";
-        private ObservableCollection<Service> _allServicesList;
-        private ObservableCollection<Service> _orderServicesList;
+        private ObservableCollection<Service> _allServices;
+        private ObservableCollection<Service> _orderServices;
         private RelayCommand _addServiceToOrderCommand;
         private RelayCommand _deleteServiceFromOrderCommand;
         private RelayCommand _addNewServiceCommand;
@@ -44,12 +44,17 @@ namespace LaboratoryAppMVVM.ViewModels
         private string _searchServiceText = "";
         private readonly LevenshteinDistanceCalculator _levenshteinDistanceCalculator;
         private RelayCommand _createOrderCommand;
+        private string barcodeText;
+        private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog;
+        private NameValueCollection orderBase64String;
+        private DeviceInfo scanner;
+        private DeviceManager deviceManager;
 
         public CreateOrEditOrderViewModel(ViewModelNavigationStore navigationStore,
                                           User user,
                                           Order order,
                                           IMessageService messageBoxService,
-                                          LaboratoryAssistantViewModel laboratoryAssistantViewModel)
+                                          ViewModelBase laboratoryAssistantViewModel)
         {
             _navigationStore = navigationStore;
             User = user;
@@ -99,7 +104,8 @@ namespace LaboratoryAppMVVM.ViewModels
                     _navigateToLaboratoryAssistantViewModel =
                         new RelayCommand(param =>
                         {
-                            _navigationStore.CurrentViewModel = _laboratoryAssistantViewModel;
+                            _navigationStore.CurrentViewModel =
+                            _laboratoryAssistantViewModel;
                         });
                 }
                 return _navigateToLaboratoryAssistantViewModel;
@@ -147,36 +153,95 @@ namespace LaboratoryAppMVVM.ViewModels
             }
             else
             {
-                string tempBarCodePath = Path.Combine(AppDomain
-                .CurrentDomain
-                .BaseDirectory, "tempBarcode.png");
-                string barcodeText = $"{TubeId}" +
-                                    $"{DateTime.Now:ddMMyyyy}" +
-                                    $"{new Random().Next(100000, 999999 + 1)}";
-                try
-                {
-                    SaveBarcodeToPdfFile(tempBarCodePath, barcodeText);
-                }
-                catch (PdfExportException ex)
-                {
-                    MessageBoxService.ShowError("Не удалось " +
-                        "сохранить штрих-код. " +
-                        "Пожалуйста, попробуйте сохранить " +
-                        "файл ещё раз. " +
-                        "Ошибка: " + ex.Message);
-                }
-                finally
-                {
-                    if (File.Exists(tempBarCodePath))
-                    {
-                        File.Delete(tempBarCodePath);
-                    }
-                }
+                string tempBarCodePath = GetBarcodePath();
+                TryToSaveBarcodeToPdfFile(tempBarCodePath);
             }
         }
 
-        private void SaveBarcodeToPdfFile(string tempBarCodePath,
-                                          string barcodeText)
+        private void TryToSaveBarcodeToPdfFile(string tempBarCodePath)
+        {
+            try
+            {
+                SaveBarcodeToPdfFile(tempBarCodePath);
+            }
+            catch (PdfExportException ex)
+            {
+                MessageBoxService.ShowError("Не удалось " +
+                    "сохранить штрих-код. " +
+                    "Пожалуйста, попробуйте сохранить " +
+                    "файл ещё раз. " +
+                    "Ошибка: " + ex.Message);
+            }
+            finally
+            {
+                DeleteTempBarcodeFileIfItExists(tempBarCodePath);
+            }
+        }
+
+        private static void DeleteTempBarcodeFileIfItExists(string tempBarCodePath)
+        {
+            if (File.Exists(tempBarCodePath))
+            {
+                File.Delete(tempBarCodePath);
+            }
+        }
+
+        private string GetBarcodePath()
+        {
+            string tempBarCodePath = Path.Combine(AppDomain
+            .CurrentDomain
+            .BaseDirectory, "tempBarcode.png");
+            barcodeText = $"{TubeId}" +
+                                $"{DateTime.Now:ddMMyyyy}" +
+                                $"{new Random().Next(100000, 999999 + 1)}";
+            return tempBarCodePath;
+        }
+
+        private void SaveBarcodeToPdfFile(string tempBarCodePath)
+        {
+            GenerateBarcodeBitmap(tempBarCodePath);
+            folderBrowserDialog
+                = new System.Windows.Forms.FolderBrowserDialog();
+            bool isPathSelected = folderBrowserDialog.ShowDialog()
+                                  == System.Windows.Forms.DialogResult.OK;
+            if (!isPathSelected)
+            {
+                return;
+            }
+            else
+            {
+                SaveBarcodeToSystem(tempBarCodePath);
+                SetClipboard();
+            }
+        }
+
+        private void SetClipboard()
+        {
+            Clipboard.SetText(folderBrowserDialog.SelectedPath);
+        }
+
+        private void SaveBarcodeToSystem(string tempBarCodePath)
+        {
+            BarcodeContentDrawer contentDrawer = DrawContent(tempBarCodePath);
+            new BarcodePdfExporter(contentDrawer).Export();
+
+            MessageBoxService.ShowInformation("Документ " +
+                "успешно сохранён по пути " +
+                folderBrowserDialog.SelectedPath +
+                "Путь скопирован в буфер обмена");
+        }
+
+        private BarcodeContentDrawer DrawContent(string tempBarCodePath)
+        {
+            IDrawingContext drawingContext = new WordDrawingContext();
+            BarcodeContentDrawer contentDrawer =
+                new BarcodeContentDrawer(drawingContext,
+                                         folderBrowserDialog.SelectedPath,
+                                         new Barcode(tempBarCodePath));
+            return contentDrawer;
+        }
+
+        private void GenerateBarcodeBitmap(string tempBarCodePath)
         {
             BarcodeBitmap = new BarcodeImageGenerator(barcodeText)
                             .Generate(new Size(200, 40));
@@ -188,23 +253,6 @@ namespace LaboratoryAppMVVM.ViewModels
             {
                 encoder.Save(stream);
             }
-            System.Windows.Forms.FolderBrowserDialog folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
-            bool isPathSelected = folderBrowserDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK;
-            if (!isPathSelected)
-            {
-                return;
-            }
-            IDrawingContext drawingContext = new WordDrawingContext();
-            BarcodeContentDrawer contentDrawer = new BarcodeContentDrawer(drawingContext,
-                                                                          folderBrowserDialog.SelectedPath,
-                                                                          new Barcode(tempBarCodePath));
-            new BarcodePdfExporter(contentDrawer).Export();
-
-            MessageBoxService.ShowInformation("Документ " +
-                "успешно сохранён по пути " +
-                folderBrowserDialog.SelectedPath +
-                "Путь скопирован в буфер обмена");
-            Clipboard.SetText(folderBrowserDialog.SelectedPath);
         }
 
         public string TubeId
@@ -258,20 +306,20 @@ namespace LaboratoryAppMVVM.ViewModels
             }
         }
 
-        public List<Patient> PatientsList
+        public List<Patient> Patients
         {
             get
             {
-                if (_patientsList == null)
+                if (_patients == null)
                 {
-                    _patientsList = Context.Patient.ToList();
+                    _patients = Context.Patient.ToList();
                 }
-                return _patientsList;
+                return _patients;
             }
 
             set
             {
-                _patientsList = value;
+                _patients = value;
                 OnPropertyChanged();
             }
         }
@@ -281,7 +329,7 @@ namespace LaboratoryAppMVVM.ViewModels
             {
                 if (_selectedPatient == null)
                 {
-                    _selectedPatient = PatientsList.FirstOrDefault();
+                    _selectedPatient = Patients.FirstOrDefault();
                 }
                 return _selectedPatient;
             }
@@ -303,37 +351,37 @@ namespace LaboratoryAppMVVM.ViewModels
             }
         }
 
-        public ObservableCollection<Service> AllServicesList
+        public ObservableCollection<Service> AllServices
         {
             get
             {
-                if (_allServicesList == null)
+                if (_allServices == null)
                 {
-                    _allServicesList = new ObservableCollection<Service>(Context.Service);
+                    _allServices = new ObservableCollection<Service>(Context.Service);
                 }
-                return _allServicesList;
+                return _allServices;
             }
 
             set
             {
-                _allServicesList = value;
+                _allServices = value;
                 OnPropertyChanged();
             }
         }
-        public ObservableCollection<Service> OrderServicesList
+        public ObservableCollection<Service> OrderServices
         {
             get
             {
-                if (_orderServicesList == null)
+                if (_orderServices == null)
                 {
-                    _orderServicesList = new ObservableCollection<Service>();
+                    _orderServices = new ObservableCollection<Service>();
                 }
-                return _orderServicesList;
+                return _orderServices;
             }
 
             set
             {
-                _orderServicesList = value;
+                _orderServices = value;
                 OnPropertyChanged();
             }
         }
@@ -347,8 +395,10 @@ namespace LaboratoryAppMVVM.ViewModels
                     _addServiceToOrderCommand =
                         new RelayCommand(param =>
                         {
-                            OrderServicesList.Add(param as Service);
-                            _ = AllServicesList.Remove(AllServicesList.First(s => s.Id == (param as Service).Id));
+                            OrderServices.Add(param as Service);
+                            _ = AllServices
+                            .Remove(AllServices.First(s => s.Id
+                                                           == (param as Service).Id));
                         });
                 }
                 return _addServiceToOrderCommand;
@@ -364,8 +414,10 @@ namespace LaboratoryAppMVVM.ViewModels
                     _deleteServiceFromOrderCommand =
                         new RelayCommand(param =>
                         {
-                            AllServicesList.Add(param as Service);
-                            _ = OrderServicesList.Remove(OrderServicesList.First(s => s.Id == (param as Service).Id));
+                            AllServices.Add(param as Service);
+                            _ = OrderServices
+                            .Remove(OrderServices.First(s => s.Id == (param
+                                                                      as Service).Id));
                         });
                 }
                 return _deleteServiceFromOrderCommand;
@@ -435,77 +487,33 @@ namespace LaboratoryAppMVVM.ViewModels
 
         private void CreateOrder()
         {
-            OrderServicesList.Select(s =>
-            {
-                return new AppliedService
-                {
-                    AnalyzerId = _context.Analyzer.First().Id,
-                    Result = 0,
-                    ServiceId = s.Id,
-                    FinishedDateTime = DateTime.Now + TimeSpan.FromDays(1),
-                    IsAccepted = false,
-                    StatusId = _context.StatusOfAppliedService.First(status => status.Name.StartsWith("В обработке")).Id,
-                    UserId = User.Id,
-                    PatientId = SelectedPatient.Id
-                };
-            }).ToList().ForEach(Order.AppliedService.Add);
-            Order.Patient = SelectedPatient;
-            Order.Date = DateTime.Now;
-            Order.StatusOfOrder = Context.StatusOfOrder.First(status => status.Name == "В обработке");
+            InsertValuesIntoOrder();
             if (!Context.BarcodeOfPatient.Any(barcode => barcode.Barcode == TubeId))
             {
-                Order.BarcodeOfPatient = new BarcodeOfPatient
-                {
-                    DateTime = DateTime.Now,
-                    Barcode = TubeId
-                };
+                CreateNewBarcodeAndAssignItToOrder();
             }
             else
             {
-                Order.BarcodeOfPatient = Context.BarcodeOfPatient.First(barcode => barcode.Barcode == TubeId);
+                Order.BarcodeOfPatient = Context
+                    .BarcodeOfPatient
+                    .First(barcode => barcode.Barcode == TubeId);
             }
             _ = Context.Order.Add(Order);
-            NameValueCollection orderBase64String = System.Web.HttpUtility.ParseQueryString(string.Empty);
-            foreach (System.Reflection.PropertyInfo property in Order.GetType().GetProperties())
-            {
-                orderBase64String.Add("дата_заказа", _order.Date.ToString("yyyy-MM-dd_hh:mm:ss"));
-                orderBase64String.Add("номер_заказа", _order.Id.ToString());
-                orderBase64String.Add("номер_пробирки", _order.BarcodeOfPatient.Barcode);
-                orderBase64String.Add("номер_страхового полиса", _order.Patient.InsurancePolicyNumber ?? "Не указан");
-                orderBase64String.Add("фио", _order.Patient.FullName);
-                orderBase64String.Add("дата_рождения", _order.Patient.BirthDate.ToString("yyyy-MM-dd"));
-                orderBase64String.Add("перечень_услуг", string.Join(", ", _order.AppliedService.ToList().Select(s => s.Service.Name)));
-                orderBase64String.Add("стоимость", _order.AppliedService.Sum(s => s.Service.Price).ToString("N2"));
-            }
+            CreateNameValueCollectionOfOrder();
+            TryToSaveOrder();
+        }
+
+        private void TryToSaveOrder()
+        {
             try
             {
                 _ = Context.SaveChanges();
                 string nameOfOrder = $"Заказ_{Order.Date:yyyy_MM_dd_hh_mm_ss}";
 
-                System.Windows.Forms.FolderBrowserDialog folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
-                bool isPathSelected = folderBrowserDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK;
-                if (isPathSelected)
-                {
-                    IDrawingContext drawingContext = new WordDrawingContext();
-                    OrderContentDrawer contentDrawer = new OrderContentDrawer(drawingContext,
-                                                                              folderBrowserDialog.SelectedPath,
-                                                                              Order);
-                    new OrderPdfExporter(contentDrawer).Export();
-
-                    string urlEncodeText = $"https://wsrussia.ru/?data=base64({orderBase64String})";
-                    File.WriteAllText(Path.Combine(folderBrowserDialog.SelectedPath, "заказ" + ".txt"),
-                        urlEncodeText,
-                        encoding: System.Text.Encoding.UTF8);
-                    MessageBoxService.ShowInformation("Информация о заказе " +
-                        "успешно сохранена в базу данных, а также " +
-                        $"по пути {folderBrowserDialog.SelectedPath} в формате .pdf и .txt!");
-                }
-                else
-                {
-                    MessageBoxService.ShowInformation("Заказ успешно " +
-                      "сохранён в базу данных " +
-                      "без отчётности!");
-                }
+                folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
+                bool isPathSelected = folderBrowserDialog.ShowDialog()
+                                      == System.Windows.Forms.DialogResult.OK;
+                SaveOrderInfoIfPathIsSelected(isPathSelected);
             }
             catch (Exception ex)
             {
@@ -515,9 +523,118 @@ namespace LaboratoryAppMVVM.ViewModels
             }
         }
 
+        private void SaveOrderInfoIfPathIsSelected(bool isPathSelected)
+        {
+            if (isPathSelected)
+            {
+                ExportOrderPdf();
+                ExportOrderBase64();
+                MessageBoxService.ShowInformation("Информация о заказе " +
+                    "успешно сохранена в базу данных, а также " +
+                    $"по пути {folderBrowserDialog.SelectedPath} " +
+                    $"в формате .pdf и .txt!");
+            }
+            else
+            {
+                MessageBoxService.ShowInformation("Заказ успешно " +
+                  "сохранён в базу данных " +
+                  "без отчётности!");
+            }
+        }
+
+        private void ExportOrderBase64()
+        {
+            string urlEncodeText = $"https://wsrussia.ru/" +
+                $"?data=base64({orderBase64String})";
+            File.WriteAllText(Path.Combine(
+                folderBrowserDialog.SelectedPath,
+                "заказ" + ".txt"),
+                urlEncodeText,
+                encoding: System.Text.Encoding.UTF8);
+        }
+
+        private void ExportOrderPdf()
+        {
+            IDrawingContext drawingContext = new WordDrawingContext();
+            OrderContentDrawer contentDrawer =
+                new OrderContentDrawer(drawingContext,
+                                       folderBrowserDialog.SelectedPath,
+                                       Order);
+            new OrderPdfExporter(contentDrawer).Export();
+        }
+
+        private void CreateNameValueCollectionOfOrder()
+        {
+            orderBase64String = System.Web.HttpUtility.ParseQueryString(string.Empty);
+            foreach (System.Reflection.PropertyInfo property in Order.GetType()
+                .GetProperties())
+            {
+                orderBase64String.Add("дата_заказа",
+                                      _order.Date.ToString("yyyy-MM-dd_hh:mm:ss"));
+                orderBase64String.Add("номер_заказа",
+                                      _order.Id.ToString());
+                orderBase64String.Add("номер_пробирки",
+                                      _order.BarcodeOfPatient.Barcode);
+                orderBase64String.Add("номер_страхового полиса",
+                                      _order.Patient.InsurancePolicyNumber
+                                      ?? "Не указан");
+                orderBase64String.Add("фио",
+                                      _order.Patient.FullName);
+                orderBase64String.Add("дата_рождения",
+                                      _order.Patient.BirthDate.ToString("yyyy-MM-dd"));
+                orderBase64String.Add("перечень_услуг",
+                                      string.Join(", ", _order.AppliedService.ToList()
+                                      .Select(s => s.Service.Name)));
+                orderBase64String.Add("стоимость",
+                                      _order.AppliedService.Sum(s => s.Service.Price)
+                                      .ToString("N2"));
+            }
+        }
+
+        private void CreateNewBarcodeAndAssignItToOrder()
+        {
+            Order.BarcodeOfPatient = new BarcodeOfPatient
+            {
+                DateTime = DateTime.Now,
+                Barcode = TubeId
+            };
+        }
+
+        private void InsertValuesIntoOrder()
+        {
+            OrderServices
+                            .Select(orderService =>
+                            {
+                                return ConvertServiceToAppliedService(orderService);
+                            })
+                            .ToList()
+                            .ForEach(Order.AppliedService.Add);
+            Order.Patient = SelectedPatient;
+            Order.Date = DateTime.Now;
+            Order.StatusOfOrder = Context.StatusOfOrder
+                .First(status => status.Name == "В обработке");
+        }
+
+        private AppliedService ConvertServiceToAppliedService(Service orderService)
+        {
+            return new AppliedService
+            {
+                AnalyzerId = _context.Analyzer.First().Id,
+                Result = 0,
+                ServiceId = orderService.Id,
+                FinishedDateTime = DateTime.Now + TimeSpan.FromDays(1),
+                IsAccepted = false,
+                StatusId = _context.StatusOfAppliedService
+                .First(statusOfAppliedService => statusOfAppliedService.Name
+                .StartsWith("В обработке")).Id,
+                UserId = User.Id,
+                PatientId = SelectedPatient.Id
+            };
+        }
+
         private void AddNewService(string serviceName)
         {
-            if (Context.Service.Any(service => service.Name.ToLower().Contains(serviceName)))
+            if (IsServiceAlreadyExists(serviceName))
             {
                 MessageBoxService.ShowError("Не удалось добавить " +
                     "новую услугу в базу данных. " +
@@ -536,7 +653,7 @@ namespace LaboratoryAppMVVM.ViewModels
                 _ = Context.SaveChanges();
                 MessageBoxService.ShowInformation("Услуга " +
                     "успешно добавлена!");
-                AllServicesList.Add(newService);
+                AllServices.Add(newService);
                 IsAddServicePanelVisible = false;
             }
             catch (Exception ex)
@@ -547,13 +664,20 @@ namespace LaboratoryAppMVVM.ViewModels
             }
         }
 
+        private bool IsServiceAlreadyExists(string serviceName)
+        {
+            return Context.Service.Any(service => service.Name.ToLower()
+            .Contains(serviceName));
+        }
+
         private void FilterAllPatients()
         {
             List<Patient> currentPatients = Context.Patient.ToList();
             if (!string.IsNullOrWhiteSpace(SearchPatientText))
             {
                 currentPatients = currentPatients
-                    .Where(new AllPropertiesSearcher(SearchPatientText).Search<Patient>())
+                    .Where(new AllPropertiesSearcher(SearchPatientText)
+                    .Search<Patient>())
                     .ToList();
             }
             currentPatients = currentPatients
@@ -561,7 +685,7 @@ namespace LaboratoryAppMVVM.ViewModels
                 .Where(p => _levenshteinDistanceCalculator.Calculate(
                 p.FullName.ToLower(),
                 SearchPatientText.ToLower()) < 4)).ToList();
-            PatientsList = currentPatients;
+            Patients = currentPatients;
             SelectedPatient = currentPatients.FirstOrDefault();
         }
 
@@ -571,7 +695,8 @@ namespace LaboratoryAppMVVM.ViewModels
             if (!string.IsNullOrWhiteSpace(SearchServiceText))
             {
                 currentServices = currentServices
-                    .Where(new AllPropertiesSearcher(SearchServiceText).Search<Service>())
+                    .Where(new AllPropertiesSearcher(SearchServiceText)
+                    .Search<Service>())
                     .ToList();
             }
             currentServices = currentServices
@@ -580,11 +705,11 @@ namespace LaboratoryAppMVVM.ViewModels
                     p.Name.ToLower(),
                     SearchServiceText.ToLower()) < 4))
                 .ToList();
-            AllServicesList.Clear();
-            AllServicesList = new ObservableCollection<Service>
+            AllServices.Clear();
+            AllServices = new ObservableCollection<Service>
                 (
                 currentServices
-                .Where(service => !OrderServicesList.Select(orderService => orderService.Id)
+                .Where(service => !OrderServices.Select(orderService => orderService.Id)
                 .Contains(service.Id))
                 .ToList()
                 );
@@ -593,22 +718,8 @@ namespace LaboratoryAppMVVM.ViewModels
 
         private void GetBarcodeForScanner()
         {
-            DeviceManager deviceManager = new DeviceManager();
-            DeviceInfo scanner = null;
-
-            for (int i = 1;
-                     i < deviceManager.DeviceInfos.Count;
-                     i++)
-            {
-                if (deviceManager.DeviceInfos[i].Type
-                    != WiaDeviceType.ScannerDeviceType)
-                {
-                    continue;
-                }
-
-                scanner = deviceManager.DeviceInfos[i];
-            }
-
+            deviceManager = new DeviceManager();
+            FindFirstAvailableScanner();
             if (scanner == null)
             {
                 MessageBoxService.ShowError("Сканеры " +
@@ -620,16 +731,34 @@ namespace LaboratoryAppMVVM.ViewModels
                 return;
             }
 
+            ParseTubeIdFromScanner();
+        }
+
+        private void ParseTubeIdFromScanner()
+        {
             Device device = scanner.Connect();
             Item item = device.Items[1];
             ImageFile imageFile = (ImageFile)item
                 .Transfer(FormatID.wiaFormatPNG);
             string barcode = ParseCodeFromImageFile(imageFile);
             TubeId = barcode.Replace("\r", "");
-
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "Method will be extended later.")]
+        private void FindFirstAvailableScanner()
+        {
+            for (int i = 1; i < deviceManager.DeviceInfos.Count; i++)
+            {
+                if (deviceManager.DeviceInfos[i].Type != WiaDeviceType.ScannerDeviceType)
+                {
+                    continue;
+                }
+                scanner = deviceManager.DeviceInfos[i];
+            }
+        }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style",
+            "IDE0060:Remove unused parameter",
+            Justification = "Method will be extended later.")]
         private string ParseCodeFromImageFile(ImageFile imageFile)
         {
             return $"{new Random().Next(100)}"

@@ -68,7 +68,7 @@
                     <TextBlock Style="{StaticResource CommonBlock}"
                                Text="Укажите ФИО пациента: "></TextBlock>
                     <ComboBox Width="200"
-                              ItemsSource="{Binding PatientsList}"
+                              ItemsSource="{Binding Patients}"
                               SelectedItem="{Binding SelectedPatient}"
                               DisplayMemberPath="FullName"
                               Name="ComboPatient"></ComboBox>
@@ -100,7 +100,7 @@
                                        Style="{StaticResource CommonBlock}"
                                        Width="200"></TextBlock>
                             <TextBox Text="{Binding SearchServiceText, UpdateSourceTrigger=PropertyChanged}"></TextBox>
-                                <ItemsControl ItemsSource="{Binding AllServicesList}">
+                                <ItemsControl ItemsSource="{Binding AllServices}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
                                             <GroupBox Header="{Binding Name}">
@@ -118,7 +118,7 @@
                               Margin="5"
                               Width="300">
                         <ScrollViewer>
-                            <ItemsControl ItemsSource="{Binding OrderServicesList}"
+                            <ItemsControl ItemsSource="{Binding OrderServices}"
                                           Name="ItemsControlServices">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
