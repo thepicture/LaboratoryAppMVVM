@@ -9,7 +9,6 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Runtime.Serialization.Json;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 
@@ -29,21 +28,31 @@ namespace LaboratoryAppMVVM.ViewModels
         private ResearchStatus _status;
         private bool _isWaitingForResearchCompletion = false;
 
-        public AnalyzerViewModel(ViewModelNavigationStore viewModelNavigationStore,
-                                 Analyzer analyzer,
-                                 IMessageService messageBoxService,
-                                 LaboratoryDatabaseEntities context)
+        public AnalyzerViewModel(Analyzer analyzer,
+                                 LaboratoryResearcherViewModel parentViewModel)
         {
-            _viewModelNavigationStore = viewModelNavigationStore;
+            _viewModelNavigationStore = parentViewModel.NavigationStore;
             Analyzer = analyzer;
-            _context = context;
-            MessageBoxService = messageBoxService;
+            _context = parentViewModel.Context;
+            MessageBoxService = parentViewModel.MessageBoxService;
             DispatcherTimer dispatcherTimer = new DispatcherTimer
             {
                 Interval = TimeSpan.FromSeconds(timerTimeout)
             };
             dispatcherTimer.Tick += OnUpdateServiceValue;
             dispatcherTimer.Start();
+            parentViewModel.SessionEnd += OnSessionEnd;
+        }
+
+        private void OnSessionEnd()
+        {
+            foreach (System.Windows.Window window in App.Current.Windows)
+            {
+                if (window.Content == this)
+                {
+                    window.Close();
+                }
+            }
         }
 
         private void OnUpdateServiceValue(object sender, EventArgs e)

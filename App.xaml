@@ -43,7 +43,6 @@
         <Style TargetType="Viewbox">
             <Setter Property="Margin" Value="5"></Setter>
         </Style>
-
         <Grid Style="{StaticResource BackgroundGrid}"
               x:Key="TitleGrid">
             <Grid.Effect>
