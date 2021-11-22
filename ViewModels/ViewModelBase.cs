@@ -10,7 +10,6 @@ namespace LaboratoryAppMVVM.ViewModels
         private string _title = "";
         private IMessageService _messageBoxService;
 
-
         public string Title
         {
             get => _title; set
