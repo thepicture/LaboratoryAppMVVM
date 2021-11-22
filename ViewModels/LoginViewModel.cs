@@ -7,20 +7,22 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using System.Windows.Media.Imaging;
 
 namespace LaboratoryAppMVVM.ViewModels
 {
     public class LoginViewModel : ViewModelBase
     {
+        private const int prohibitedToLoginTimeout = 10;
         private readonly ViewModelNavigationStore _navigationStore;
         private readonly ILoginService<User, ViewModelNavigationStore> _loginService;
         private string _loginText = "nmably1";
         private string _passwordText = "123";
-        private RelayCommand _authorizeCommand;
-        private RelayCommand _exitAppCommand;
-        private RelayCommand _regenerateCaptchaCommand;
-        private RelayCommand _checkCaptchaCommand;
+        private ICommand _authorizeCommand;
+        private ICommand _exitAppCommand;
+        private ICommand _regenerateCaptchaCommand;
+        private ICommand _checkCaptchaCommand;
         private LaboratoryDatabaseEntities _context;
         private readonly ICaptchaService _captchaService;
         private List<ListViewCaptchaLetter> _captchaLetters;
@@ -61,7 +63,7 @@ namespace LaboratoryAppMVVM.ViewModels
             }
         }
 
-        public RelayCommand AuthorizeCommand
+        public ICommand AuthorizeCommand
         {
             get
             {
@@ -73,7 +75,7 @@ namespace LaboratoryAppMVVM.ViewModels
             }
         }
 
-        public RelayCommand ExitAppCommand
+        public ICommand ExitAppCommand
         {
             get
             {
@@ -107,7 +109,7 @@ namespace LaboratoryAppMVVM.ViewModels
             }
         }
 
-        public RelayCommand RegenerateCaptchaCommand
+        public ICommand RegenerateCaptchaCommand
         {
             get
             {
@@ -119,13 +121,16 @@ namespace LaboratoryAppMVVM.ViewModels
                             CaptchaLetters = _captchaService.GetCaptchaList(3, 4)
                             .Cast<ListViewCaptchaLetter>()
                             .ToList();
-                            NoiseImage = _noiseGenerator.Generate(new System.Windows.Size(200, 40));
+                            NoiseImage = _noiseGenerator
+                            .Generate(new System.Windows.Size(
+                                200,
+                                40));
                         });
                 }
                 return _regenerateCaptchaCommand;
             }
         }
-        public RelayCommand CheckCaptchaCommand
+        public ICommand CheckCaptchaCommand
         {
             get
             {
@@ -133,7 +138,9 @@ namespace LaboratoryAppMVVM.ViewModels
                 {
                     _checkCaptchaCommand = new RelayCommand(param =>
                     {
-                        if ((param as string) == string.Join("", _captchaLetters.Select(c => c.Letter)))
+                        if ((param as string) == string.Join(
+                            "",
+                            _captchaLetters.Select(c => c.Letter)))
                         {
                             IsCaptchaEnabled = false;
                         }
@@ -149,9 +156,11 @@ namespace LaboratoryAppMVVM.ViewModels
 
         private async void BlockSystemInput()
         {
-            MessageBoxService.ShowError("Вам запрещён вход на 10 секунд");
+            MessageBoxService.ShowError("Вам запрещён вход на "
+                                        + prohibitedToLoginTimeout
+                                        + " секунд");
             IsInterfaceNotBlocked = false;
-            await Task.Delay(TimeSpan.FromSeconds(10));
+            await Task.Delay(TimeSpan.FromSeconds(prohibitedToLoginTimeout));
             IsInterfaceNotBlocked = true;
         }
 
@@ -212,9 +221,14 @@ namespace LaboratoryAppMVVM.ViewModels
             IsLoggingIn = false;
             if (currentUser != null)
             {
-                MessageBoxService.ShowInformation($"Авторизация успешна. " +
-                    $"Добро пожаловать, {currentUser.TypeOfUser.Name} {currentUser.Name}!");
-                _navigationStore.CurrentViewModel = _loginService.LoginInAndGetLoginType(currentUser, _navigationStore)();
+                MessageBoxService
+                    .ShowInformation($"Авторизация успешна. "
+                                     + $"Добро пожаловать, "
+                                     + $"{currentUser.TypeOfUser.Name} "
+                                     + $"{currentUser.Name}!");
+                _navigationStore.CurrentViewModel = _loginService.LoginInAndGetLoginType(
+                    currentUser,
+                    _navigationStore)();
             }
             else
             {
@@ -223,7 +237,7 @@ namespace LaboratoryAppMVVM.ViewModels
                     "Пожалуйста, проверьте введённые данные " +
                     "и попробуйте авторизоваться ещё раз");
                 IsCaptchaEnabled = true;
-                RegenerateCaptchaCommand.Execute();
+                RegenerateCaptchaCommand.Execute(null);
             }
         }
     }
