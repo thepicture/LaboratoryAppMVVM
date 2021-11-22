@@ -15,7 +15,7 @@ namespace LaboratoryAppMVVM.ViewModels
         private List<AppliedService> _appliedServices;
         private LaboratoryDatabaseEntities _context;
         private readonly HaveTimeServiceBase _sessionTimer;
-        private ICommand _navigateToCreateOrEditOrderCommand;
+        private System.Windows.Input.ICommand _navigateToCreateOrEditOrderCommand;
         public TimeSpan CurrentTimeOfSession => _sessionTimer.TotalTimeLeft;
 
         public LaboratoryAssistantViewModel(ViewModelNavigationStore navigationStore,
@@ -79,13 +79,13 @@ namespace LaboratoryAppMVVM.ViewModels
             }
         }
 
-        public ICommand NavigateToCreateOrEditOrderCommand
+        public System.Windows.Input.ICommand NavigateToCreateOrEditOrderCommand
         {
             get
             {
                 if (_navigateToCreateOrEditOrderCommand == null)
                 {
-                    _navigateToCreateOrEditOrderCommand = new RelayCommand(param =>
+                    _navigateToCreateOrEditOrderCommand = new Commands.RelayCommand(param =>
                     {
                         _navigationStore.CurrentViewModel =
                         new CreateOrEditOrderViewModel(_navigationStore,

@@ -39,12 +39,12 @@
                                Text="{Binding User.TypeOfUser.Name, StringFormat={}Роль: {0}}"
                                Grid.Row="2"></TextBlock>
                     </StackPanel>
-                    <TextBlock Text="{Binding CurrentTimeOfSession, StringFormat=hh\\:mm\\:ss}"
+                    <TextBlock Text="{Binding CurrentTimeOfSession}"
                                HorizontalAlignment="Center"></TextBlock>
                 </StackPanel>
             </Border>
         </Grid>
-        <DataGrid ItemsSource="{Binding AnalyzersList}"
+        <DataGrid ItemsSource="{Binding Analyzers}"
                   AutoGenerateColumns="False"
                   IsReadOnly="True"
                   Grid.Column="1">

@@ -5,17 +5,25 @@ using LaboratoryAppMVVM.Services;
 using LaboratoryAppMVVM.Stores;
 using System;
 using System.Collections.Generic;
+using System.Windows.Input;
 
 namespace LaboratoryAppMVVM.ViewModels
 {
     public class LaboratoryResearcherViewModel : ViewModelBase
     {
         private readonly IWindowService _laboratoryWindowService;
-        private List<Analyzer> _analyzersList;
+        private List<Analyzer> _analyzers;
         private LaboratoryDatabaseEntities _context;
         private readonly LaboratoryHaveTimeService _sessionTimer;
-        public TimeSpan CurrentTimeOfSession => _sessionTimer.TotalTimeLeft;
-        private RelayCommand _openAnalyzerViewModelCommand;
+        public string CurrentTimeOfSession
+        {
+            get
+            {
+                return _sessionTimer.TotalTimeLeft.ToString("hh\\:mm");
+            }
+        }
+
+        private ICommand _openAnalyzerViewModelCommand;
         public event Action SessionEnd;
 
         public LaboratoryResearcherViewModel(ViewModelNavigationStore navigationStore,
@@ -27,7 +35,9 @@ namespace LaboratoryAppMVVM.ViewModels
             Title = "Страница лаборанта-исследователя";
             User = user;
             MessageBoxService = new MessageBoxService();
-            _sessionTimer = new LaboratoryHaveTimeService(TimeSpan.FromMinutes(10), MessageBoxService, NavigationStore);
+            _sessionTimer = new LaboratoryHaveTimeService(TimeSpan.FromMinutes(10),
+                                                          MessageBoxService,
+                                                          NavigationStore);
             _sessionTimer.TickChanged += OnTickChanged;
             _sessionTimer.Start();
             NavigationStore.CurrentViewModelChanged += OnCurrentViewModelChanged;
@@ -44,20 +54,20 @@ namespace LaboratoryAppMVVM.ViewModels
             SessionEnd?.Invoke();
         }
 
-        public List<Analyzer> AnalyzersList
+        public List<Analyzer> Analyzers
         {
             get
             {
-                if (_analyzersList == null)
+                if (_analyzers == null)
                 {
-                    _analyzersList = new List<Analyzer>(Context.Analyzer);
+                    _analyzers = new List<Analyzer>(Context.Analyzer);
                 }
-                return _analyzersList;
+                return _analyzers;
             }
 
             set
             {
-                _analyzersList = value;
+                _analyzers = value;
                 OnPropertyChanged();
             }
         }
@@ -80,7 +90,7 @@ namespace LaboratoryAppMVVM.ViewModels
             }
         }
 
-        public RelayCommand OpenAnalyzerViewModelCommand
+        public ICommand OpenAnalyzerViewModelCommand
         {
             get
             {
