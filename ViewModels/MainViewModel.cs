@@ -1,6 +1,7 @@
 ﻿using LaboratoryAppMVVM.Commands;
 using LaboratoryAppMVVM.Services;
 using LaboratoryAppMVVM.Stores;
+using System.Windows.Input;
 
 namespace LaboratoryAppMVVM.ViewModels
 {
@@ -8,8 +9,14 @@ namespace LaboratoryAppMVVM.ViewModels
     {
         protected ViewModelNavigationStore _viewModelNavigationStore;
         private bool _isNotOnLoginPage;
-        private RelayCommand _navigateToLoginPageCommand;
-        public ViewModelBase CurrentViewModel => _viewModelNavigationStore.CurrentViewModel;
+        private ICommand _navigateToLoginPageCommand;
+        public ViewModelBase CurrentViewModel
+        {
+            get
+            {
+                return _viewModelNavigationStore.CurrentViewModel;
+            }
+        }
 
         public bool IsNotOnLoginPage
         {
@@ -20,34 +27,46 @@ namespace LaboratoryAppMVVM.ViewModels
             }
         }
 
-        public RelayCommand NavigateToLoginPageCommand
+        public ICommand NavigateToLoginPageCommand
         {
             get
             {
                 if (_navigateToLoginPageCommand == null)
                 {
                     _navigateToLoginPageCommand =
-                        new RelayCommand(param =>
-                        {
-                            if (MessageBoxService.ShowQuestion("Вы действительно хотите завершить сессию?"))
-                            {
-
-                                _viewModelNavigationStore.CurrentViewModel
-                                                        = new LoginViewModel(_viewModelNavigationStore,
-                                                                             MessageBoxService,
-                                                                             new LaboratoryLoginService());
-                            }
-                        });
+                        new RelayCommand(param => NavigateToLoginPage());
                 }
                 return _navigateToLoginPageCommand;
             }
         }
 
-        public MainViewModel(ViewModelNavigationStore viewModelNavigationStore, IMessageService messageBoxService)
+        private void NavigateToLoginPage()
+        {
+
+            if (IsUserValidatesQuestion())
+            {
+                _viewModelNavigationStore
+                .CurrentViewModel =
+                new LoginViewModel(_viewModelNavigationStore,
+                    MessageBoxService,
+                    new LaboratoryLoginService());
+            }
+        }
+
+        private bool IsUserValidatesQuestion()
+        {
+            return MessageBoxService
+                        .ShowQuestion("Вы действительно " +
+                        "хотите завершить сессию?");
+        }
+
+        public MainViewModel(ViewModelNavigationStore viewModelNavigationStore,
+                             IMessageService messageBoxService)
         {
             MessageBoxService = messageBoxService;
             _viewModelNavigationStore = viewModelNavigationStore;
-            viewModelNavigationStore.CurrentViewModelChanged += OnCurrentViewModelChanged;
+            viewModelNavigationStore
+                .CurrentViewModelChanged += OnCurrentViewModelChanged;
         }
 
         private void OnCurrentViewModelChanged()
