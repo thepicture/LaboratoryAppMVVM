@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 
 namespace LaboratoryAppMVVM.Models.Exceptions
 {
-    public class PdfExportException : Exception
+    public class PdfExportException : ExportException
     {
         public PdfExportException()
         {

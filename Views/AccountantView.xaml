@@ -15,32 +15,47 @@
             <Border BorderBrush="Black"
                     BorderThickness="2"
                     HorizontalAlignment="Center">
+                <StackPanel>
+                    <Image Stretch="Uniform">
+                        <Image.Source>
+                            <Binding Path="User.UserImage">
+                                <Binding.TargetNullValue>
+                                    <ImageSource>
+                                        /Resources/picture.png
+                                    </ImageSource>
+                                </Binding.TargetNullValue>
+                            </Binding>
+                        </Image.Source>
+                    </Image>
                     <StackPanel>
-                        <Image Stretch="Uniform">
-                            <Image.Source>
-                                <Binding Path="User.UserImage">
-                                    <Binding.TargetNullValue>
-                                        <ImageSource>
-                                            /Resources/picture.png
-                                        </ImageSource>
-                                    </Binding.TargetNullValue>
-                                </Binding>
-                            </Image.Source>
-                        </Image>
-                        <StackPanel>
-                            <TextBlock HorizontalAlignment="Center"
+                        <TextBlock HorizontalAlignment="Center"
                                Text="{Binding User.Name}"
                                Style="{StaticResource CommonBlock}"
                                FontWeight="Bold"></TextBlock>
-                            <TextBlock HorizontalAlignment="Center"
+                        <TextBlock HorizontalAlignment="Center"
                                Text="{Binding User.TypeOfUser.Name, StringFormat={}Роль: {0}}"
                                Grid.Row="2"></TextBlock>
-                        </StackPanel>
-                        <StackPanel>
-                            <Button Content="Сформировать счёт страховой компании"
-                                    Width="250"></Button>
-                        </StackPanel>
                     </StackPanel>
+                    <StackPanel>
+                        <TextBlock Text="Начало периода"
+                                   Style="{StaticResource CommonBlock}"></TextBlock>
+                        <DatePicker Margin="5"
+                                    SelectedDate="{Binding FromPeriod, UpdateSourceTrigger=PropertyChanged}"
+                                    IsTodayHighlighted="True"></DatePicker>
+                        <TextBlock Text="Конец периода"
+                                   Style="{StaticResource CommonBlock}"></TextBlock>
+                        <DatePicker Margin="5"
+                                    SelectedDate="{Binding ToPeriod, UpdateSourceTrigger=PropertyChanged}"
+                                    IsTodayHighlighted="True"></DatePicker>
+                        <TextBlock Text="{Binding DateValidationErrors}"
+                                   TextWrapping="Wrap"></TextBlock>
+                        <Button Content="Сформировать счёт страховой компании"
+                                Width="250"
+                                IsEnabled="{Binding IsCorrectPeriod}"
+                                Command="{Binding CreateInsuranceCompaniesReportCommand}">
+                        </Button>
+                    </StackPanel>
+                </StackPanel>
             </Border>
         </Grid>
         <DataGrid ItemsSource="{Binding AppliedServices}"

@@ -7,10 +7,5 @@ namespace LaboratoryAppMVVM.Models.Exports
         public OrderPdfExporter(ContentDrawer<Order> contentDrawer) : base(contentDrawer)
         {
         }
-
-        public override void Export()
-        {
-            base.Export();
-        }
     }
 }

@@ -17,7 +17,7 @@ namespace LaboratoryAppMVVM.ViewModels
         private const int prohibitedToLoginTimeout = 10;
         private readonly ViewModelNavigationStore _navigationStore;
         private readonly ILoginService<User, ViewModelNavigationStore> _loginService;
-        private string _loginText = "nmably1";
+        private string _loginText = "srobken8";
         private string _passwordText = "123";
         private ICommand _authorizeCommand;
         private ICommand _exitAppCommand;
