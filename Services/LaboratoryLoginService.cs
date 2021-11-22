@@ -7,19 +7,34 @@ namespace LaboratoryAppMVVM.Services
 {
     public class LaboratoryLoginService : ILoginService<User, ViewModelNavigationStore>
     {
-        public Func<ViewModelBase> LoginInAndGetLoginType(User user,
-                                                          ViewModelNavigationStore navigationStore)
+        public Func<ViewModelBase> LoginInAndGetLoginType(
+            User user,
+            ViewModelNavigationStore navigationStore)
         {
             switch (user.TypeOfUser.Name)
             {
                 case "Лаборант":
-                    return new Func<ViewModelBase>(() => new LaboratoryAssistantViewModel(navigationStore, user));
+                    return new Func<ViewModelBase>(() =>
+                    {
+                        return new LaboratoryAssistantViewModel(navigationStore, user);
+                    });
                 case "Лаборант-исследователь":
-                    return new Func<ViewModelBase>(() => new LaboratoryResearcherViewModel(navigationStore, user, new LaboratoryWindowService()));
+                    return new Func<ViewModelBase>(() =>
+                    {
+                        return new LaboratoryResearcherViewModel(navigationStore,
+                            user,
+                            new LaboratoryWindowService());
+                    });
                 case "Бухгалтер":
-                    return new Func<ViewModelBase>(() => new AccountantViewModel(navigationStore, user));
+                    return new Func<ViewModelBase>(() =>
+                    {
+                        return new AccountantViewModel(navigationStore, user);
+                    });
                 case "Администратор":
-                    return new Func<ViewModelBase>(() => new AdminViewModel(navigationStore, user));
+                    return new Func<ViewModelBase>(() =>
+                    {
+                        return new AdminViewModel(navigationStore, user);
+                    });
                 default:
                     return null;
             }
