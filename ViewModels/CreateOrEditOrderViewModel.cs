@@ -42,7 +42,7 @@ namespace LaboratoryAppMVVM.ViewModels
         private bool _isAddServicePanelVisible = false;
         private RelayCommand _showAddServiceFieldCommand;
         private string _searchServiceText = "";
-        private readonly LevenshteinDistanceCalculator _levenshteinDistanceCalculator;
+        private readonly ICalculator _levenshteinDistanceCalculator;
         private RelayCommand _createOrderCommand;
         private string barcodeText;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog;
@@ -682,7 +682,7 @@ namespace LaboratoryAppMVVM.ViewModels
             }
             currentPatients = currentPatients
                 .Union(Context.Patient.ToList()
-                .Where(p => _levenshteinDistanceCalculator.Calculate(
+                .Where(p => (int)_levenshteinDistanceCalculator.Calculate(
                 p.FullName.ToLower(),
                 SearchPatientText.ToLower()) < 4)).ToList();
             Patients = currentPatients;
@@ -701,7 +701,7 @@ namespace LaboratoryAppMVVM.ViewModels
             }
             currentServices = currentServices
                 .Union(Context.Service.ToList()
-                .Where(p => _levenshteinDistanceCalculator.Calculate(
+                .Where(p => (int)_levenshteinDistanceCalculator.Calculate(
                     p.Name.ToLower(),
                     SearchServiceText.ToLower()) < 4))
                 .ToList();
