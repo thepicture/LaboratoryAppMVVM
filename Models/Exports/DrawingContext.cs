@@ -4,7 +4,7 @@ namespace LaboratoryAppMVVM.Models.Exports
 {
     /// <summary>
     /// Defines a method to get a drawing context. 
-    /// Can release unmanaged resources.
+    /// Should release unmanaged resources.
     /// </summary>
     /// <typeparam name="TContext"></typeparam>
     public interface IDrawingContext : IDisposable

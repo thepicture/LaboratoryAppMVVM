@@ -8,8 +8,7 @@ using System.Linq;
 
 namespace LaboratoryAppMVVM.Models.Exports
 {
-    public class InsuranceCompanyContentDrawer
-        : ContentDrawer<InsuranceCompany>
+    public class InsuranceCompanyContentDrawer : ContentDrawer
     {
         private readonly ICollection<InsuranceCompany> _insuranceCompanies;
         private readonly DateTime _from;

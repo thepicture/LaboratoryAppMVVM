@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace LaboratoryAppMVVM.Models.Exports
 {
-    class OrderContentDrawer : ContentDrawer<Order>
+    public class OrderContentDrawer : ContentDrawer
     {
         private readonly Order _order;
 

@@ -75,7 +75,10 @@ namespace LaboratoryAppMVVM.ViewModels
 
         private void CheckIfPeriodIsCorrect()
         {
-            if (AreNotCorrectPeriodValues())
+            IsCorrectPeriod = FromPeriod != null
+                  && ToPeriod != null
+                  && FromPeriod <= ToPeriod;
+            if (!IsCorrectPeriod)
             {
                 DateValidationErrors = "Укажите корректный период выше";
             }
@@ -124,7 +127,9 @@ namespace LaboratoryAppMVVM.ViewModels
 
         public bool IsCorrectPeriod
         {
-            get => _isCorrectPeriod; set
+            get => _isCorrectPeriod;
+
+            set
             {
                 _isCorrectPeriod = value;
                 OnPropertyChanged();
@@ -164,7 +169,7 @@ namespace LaboratoryAppMVVM.ViewModels
                 _reportInsuranceCompanies,
                 FromPeriod,
                 ToPeriod);
-            new InsuranceCompanyCsvPdfExporter(drawer).Export();
+            new Exporter(drawer).Export();
             DateValidationErrors = "Отчёт успешно сформирован по пути " +
                 _folderBrowserDialog.SelectedPath + "!";
         }

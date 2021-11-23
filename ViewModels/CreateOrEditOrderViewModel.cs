@@ -223,7 +223,7 @@ namespace LaboratoryAppMVVM.ViewModels
         private void SaveBarcodeToSystem(string tempBarCodePath)
         {
             BarcodeContentDrawer contentDrawer = DrawContent(tempBarCodePath);
-            new BarcodePdfExporter(contentDrawer).Export();
+            new Exporter(contentDrawer).Export();
 
             MessageBoxService.ShowInformation("Документ " +
                 "успешно сохранён по пути " +
@@ -560,7 +560,7 @@ namespace LaboratoryAppMVVM.ViewModels
                 new OrderContentDrawer(drawingContext,
                                        folderBrowserDialog.SelectedPath,
                                        Order);
-            new OrderPdfExporter(contentDrawer).Export();
+            new Exporter(contentDrawer).Export();
         }
 
         private void CreateNameValueCollectionOfOrder()

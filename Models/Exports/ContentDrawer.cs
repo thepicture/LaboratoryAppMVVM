@@ -8,7 +8,7 @@
     /// used for drawing.
     /// This class cannot be instantiated.
     /// </summary>
-    public abstract class ContentDrawer<T> : ICanSaveResource
+    public abstract class ContentDrawer : ICanSaveResource
     {
         protected readonly IDrawingContext _drawingContext;
         protected readonly string _saveFolderPath;

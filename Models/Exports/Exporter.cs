@@ -5,11 +5,11 @@
     /// for exporting data 
     /// from one representation to another.
     /// </summary>
-    public abstract class Exporter<TContext>
+    public class Exporter
     {
-        protected readonly ContentDrawer<TContext> _contentDrawer;
+        protected readonly ContentDrawer _contentDrawer;
 
-        protected Exporter(ContentDrawer<TContext> contentDrawer)
+        public Exporter(ContentDrawer contentDrawer)
         {
             _contentDrawer = contentDrawer;
         }

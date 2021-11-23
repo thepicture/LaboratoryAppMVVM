@@ -6,7 +6,7 @@ using System.IO;
 
 namespace LaboratoryAppMVVM.Models.Exports
 {
-    class BarcodeContentDrawer : ContentDrawer<Barcode>
+    public class BarcodeContentDrawer : ContentDrawer
     {
         private readonly Barcode _barcode;
 
