@@ -1,24 +1,28 @@
-﻿using LaboratoryAppMVVM.Models.Entities;
+﻿using LaboratoryAppMVVM.Commands;
+using LaboratoryAppMVVM.Models.Entities;
+using LaboratoryAppMVVM.Services;
 using LaboratoryAppMVVM.Stores;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Input;
 
 namespace LaboratoryAppMVVM.ViewModels
 {
     public class AdminViewModel : ViewModelBase
     {
-        private readonly ViewModelNavigationStore navigationStore;
+        private readonly ViewModelNavigationStore _navigationStore;
         private List<HistoryOfLogin> _userLoginHistories;
         private List<Service> _services;
         private string _userLoginText = string.Empty;
         private LaboratoryDatabaseEntities _context;
         private List<string> _sortTypes;
         private string _currentSortType;
+        private ICommand _navigateToQualityControlPageCommand;
 
         public AdminViewModel(ViewModelNavigationStore navigationStore, User user)
         {
-            this.navigationStore = navigationStore;
+            _navigationStore = navigationStore;
             Title = "Страница администратора";
             User = user;
         }
@@ -119,6 +123,24 @@ namespace LaboratoryAppMVVM.ViewModels
                 _currentSortType = value;
                 FilterUserLoginHistory();
                 OnPropertyChanged();
+            }
+        }
+
+        public ICommand NavigateToQualityControlPageCommand
+        {
+            get
+            {
+                if (_navigateToQualityControlPageCommand == null)
+                {
+                    _navigateToQualityControlPageCommand = new RelayCommand(param =>
+                      {
+                          _navigationStore.CurrentViewModel =
+                          new QualityControlViewModel(_navigationStore,
+                                                      this,
+                                                      new MessageBoxService());
+                      });
+                }
+                return _navigateToQualityControlPageCommand;
             }
         }
 

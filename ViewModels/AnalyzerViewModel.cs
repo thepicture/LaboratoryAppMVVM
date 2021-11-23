@@ -34,7 +34,7 @@ namespace LaboratoryAppMVVM.ViewModels
             _viewModelNavigationStore = parentViewModel.NavigationStore;
             Analyzer = analyzer;
             _context = parentViewModel.Context;
-            MessageBoxService = parentViewModel.MessageBoxService;
+            MessageService = parentViewModel.MessageService;
             DispatcherTimer dispatcherTimer = new DispatcherTimer
             {
                 Interval = TimeSpan.FromSeconds(timerTimeout)
@@ -123,7 +123,7 @@ namespace LaboratoryAppMVVM.ViewModels
                     {
                         _viewModelNavigationStore.CurrentViewModel =
                         new LoginViewModel(_viewModelNavigationStore,
-                                           MessageBoxService,
+                                           MessageService,
                                            new LaboratoryLoginService());
                     });
                 }
@@ -237,13 +237,13 @@ namespace LaboratoryAppMVVM.ViewModels
         {
             if (ex.Status == WebExceptionStatus.Success)
             {
-                MessageBoxService.ShowError("Произошла ошибка, " +
+                MessageService.ShowError("Произошла ошибка, " +
                     "но запрос обработан. " +
                     "Ошибка: " + ex.Message);
             }
             else
             {
-                MessageBoxService.ShowError("Произошла ошибка " +
+                MessageService.ShowError("Произошла ошибка " +
                     "при отправке услуги. Вероятно, прошло 30 секунд " +
                     "с момента попытки отправки услуги " +
                     "на исследование. " +

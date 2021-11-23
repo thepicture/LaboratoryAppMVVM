@@ -19,7 +19,7 @@ namespace LaboratoryAppMVVM.ViewModels
             }
         }
 
-        public IMessageService MessageBoxService
+        public IMessageService MessageService
         {
             get => _messageBoxService; set
             {

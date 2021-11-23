@@ -46,6 +46,9 @@
                 <DataTemplate DataType="{x:Type viewmodels:AddPatientViewModel}">
                     <views:AddPatientView></views:AddPatientView>
                 </DataTemplate>
+                <DataTemplate DataType="{x:Type viewmodels:QualityControlViewModel}">
+                    <views:QualityControlPage></views:QualityControlPage>
+                </DataTemplate>
             </ContentControl.Resources>
         </ContentControl>
     </Grid>

@@ -60,7 +60,7 @@ namespace LaboratoryAppMVVM.ViewModels
             User = user;
             Order = order;
             _laboratoryAssistantViewModel = laboratoryAssistantViewModel;
-            MessageBoxService = messageBoxService;
+            MessageService = messageBoxService;
             _levenshteinDistanceCalculator = new LevenshteinDistanceCalculator();
         }
 
@@ -166,7 +166,7 @@ namespace LaboratoryAppMVVM.ViewModels
             }
             catch (PdfExportException ex)
             {
-                MessageBoxService.ShowError("Не удалось " +
+                MessageService.ShowError("Не удалось " +
                     "сохранить штрих-код. " +
                     "Пожалуйста, попробуйте сохранить " +
                     "файл ещё раз. " +
@@ -225,7 +225,7 @@ namespace LaboratoryAppMVVM.ViewModels
             BarcodeContentDrawer contentDrawer = DrawContent(tempBarCodePath);
             new Exporter(contentDrawer).Export();
 
-            MessageBoxService.ShowInformation("Документ " +
+            MessageService.ShowInformation("Документ " +
                 "успешно сохранён по пути " +
                 folderBrowserDialog.SelectedPath +
                 "Путь скопирован в буфер обмена");
@@ -297,7 +297,7 @@ namespace LaboratoryAppMVVM.ViewModels
                         new RelayCommand(param => _navigationStore.CurrentViewModel =
                             new AddPatientViewModel(
                                 _navigationStore,
-                                MessageBoxService,
+                                MessageService,
                                 this
                                 )
                             );
@@ -517,7 +517,7 @@ namespace LaboratoryAppMVVM.ViewModels
             }
             catch (Exception ex)
             {
-                MessageBoxService.ShowError("Не удалось сформировать " +
+                MessageService.ShowError("Не удалось сформировать " +
                     "заказ. Пожалуйста, попробуйте ещё раз. " +
                   "Ошибка: " + ex.Message);
             }
@@ -529,14 +529,14 @@ namespace LaboratoryAppMVVM.ViewModels
             {
                 ExportOrderPdf();
                 ExportOrderBase64();
-                MessageBoxService.ShowInformation("Информация о заказе " +
+                MessageService.ShowInformation("Информация о заказе " +
                     "успешно сохранена в базу данных, а также " +
                     $"по пути {folderBrowserDialog.SelectedPath} " +
                     $"в формате .pdf и .txt!");
             }
             else
             {
-                MessageBoxService.ShowInformation("Заказ успешно " +
+                MessageService.ShowInformation("Заказ успешно " +
                   "сохранён в базу данных " +
                   "без отчётности!");
             }
@@ -636,7 +636,7 @@ namespace LaboratoryAppMVVM.ViewModels
         {
             if (IsServiceAlreadyExists(serviceName))
             {
-                MessageBoxService.ShowError("Не удалось добавить " +
+                MessageService.ShowError("Не удалось добавить " +
                     "новую услугу в базу данных. " +
                     "Такая услуга уже существует. " +
                     "Пожалуйста, используйте поиск " +
@@ -651,14 +651,14 @@ namespace LaboratoryAppMVVM.ViewModels
             try
             {
                 _ = Context.SaveChanges();
-                MessageBoxService.ShowInformation("Услуга " +
+                MessageService.ShowInformation("Услуга " +
                     "успешно добавлена!");
                 AllServices.Add(newService);
                 IsAddServicePanelVisible = false;
             }
             catch (Exception ex)
             {
-                MessageBoxService.ShowError("Не удалось добавить услугу. " +
+                MessageService.ShowError("Не удалось добавить услугу. " +
                     "Пожалуйста, попробуйте ещё раз. " +
                     "Ошибка: " + ex.Message);
             }
@@ -722,7 +722,7 @@ namespace LaboratoryAppMVVM.ViewModels
             FindFirstAvailableScanner();
             if (scanner == null)
             {
-                MessageBoxService.ShowError("Сканеры " +
+                MessageService.ShowError("Сканеры " +
                     "не обнаружены " +
                     "на вашей рабочей системе. " +
                     "Пожалуйста, проверьте " +

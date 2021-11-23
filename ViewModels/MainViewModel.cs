@@ -48,14 +48,14 @@ namespace LaboratoryAppMVVM.ViewModels
                 _viewModelNavigationStore
                 .CurrentViewModel =
                 new LoginViewModel(_viewModelNavigationStore,
-                    MessageBoxService,
+                    MessageService,
                     new LaboratoryLoginService());
             }
         }
 
         private bool IsUserValidatesQuestion()
         {
-            return MessageBoxService
+            return MessageService
                         .ShowQuestion("Вы действительно " +
                         "хотите завершить сессию?");
         }
@@ -63,7 +63,7 @@ namespace LaboratoryAppMVVM.ViewModels
         public MainViewModel(ViewModelNavigationStore viewModelNavigationStore,
                              IMessageService messageBoxService)
         {
-            MessageBoxService = messageBoxService;
+            MessageService = messageBoxService;
             _viewModelNavigationStore = viewModelNavigationStore;
             viewModelNavigationStore
                 .CurrentViewModelChanged += OnCurrentViewModelChanged;

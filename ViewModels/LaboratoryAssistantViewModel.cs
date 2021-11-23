@@ -24,9 +24,9 @@ namespace LaboratoryAppMVVM.ViewModels
             _navigationStore = navigationStore;
             User = user;
             Title = "Страница лаборанта";
-            MessageBoxService = new MessageBoxService();
+            MessageService = new MessageBoxService();
             _sessionTimer = new LaboratoryHaveTimeService(TimeSpan.FromMinutes(10),
-                                                          MessageBoxService,
+                                                          MessageService,
                                                           _navigationStore);
             _sessionTimer.TickChanged += OnTickChanged;
             _sessionTimer.Start();
@@ -91,7 +91,7 @@ namespace LaboratoryAppMVVM.ViewModels
                         new CreateOrEditOrderViewModel(_navigationStore,
                                                        User,
                                                        param as Order,
-                                                       MessageBoxService,
+                                                       MessageService,
                                                        this);
                     });
                 }

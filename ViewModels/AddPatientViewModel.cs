@@ -26,7 +26,7 @@ namespace LaboratoryAppMVVM.ViewModels
                                    CreateOrEditOrderViewModel createOrEditOrderViewModel)
         {
             _navigationStore = navigationStore;
-            MessageBoxService = messageBoxService;
+            MessageService = messageBoxService;
             _createOrEditOrderViewModel = createOrEditOrderViewModel;
             Title = "Добавление нового пациента";
         }
@@ -115,12 +115,12 @@ namespace LaboratoryAppMVVM.ViewModels
             try
             {
                 _ = Context.SaveChanges();
-                MessageBoxService.ShowInformation("Пациент " +
+                MessageService.ShowInformation("Пациент " +
                     "успешно сохранён!");
             }
             catch (Exception ex)
             {
-                MessageBoxService.ShowError("Не удалось сохранить " +
+                MessageService.ShowError("Не удалось сохранить " +
                     "пациента. Пожалуйста, попробуйте ещё раз. " +
                     "Ошибка: " + ex.Message);
             }

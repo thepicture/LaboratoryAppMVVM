@@ -17,7 +17,7 @@ namespace LaboratoryAppMVVM.ViewModels
         private const int prohibitedToLoginTimeout = 10;
         private readonly ViewModelNavigationStore _navigationStore;
         private readonly ILoginService<User, ViewModelNavigationStore> _loginService;
-        private string _loginText = "srobken8";
+        private string _loginText = "admin";
         private string _passwordText = "123";
         private ICommand _authorizeCommand;
         private ICommand _exitAppCommand;
@@ -35,7 +35,7 @@ namespace LaboratoryAppMVVM.ViewModels
                               IMessageService messageBoxService,
                               ILoginService<User, ViewModelNavigationStore> loginService)
         {
-            MessageBoxService = messageBoxService;
+            MessageService = messageBoxService;
             _navigationStore = navigationStore;
             _loginService = loginService;
             Title = "Авторизация";
@@ -156,7 +156,7 @@ namespace LaboratoryAppMVVM.ViewModels
 
         private async void BlockSystemInput()
         {
-            MessageBoxService.ShowError("Вам запрещён вход на "
+            MessageService.ShowError("Вам запрещён вход на "
                                         + prohibitedToLoginTimeout
                                         + " секунд");
             IsInterfaceNotBlocked = false;
@@ -204,7 +204,7 @@ namespace LaboratoryAppMVVM.ViewModels
 
         private void TryToExitApp()
         {
-            if (MessageBoxService.ShowQuestion("Вы действительно хотите "
+            if (MessageService.ShowQuestion("Вы действительно хотите "
                                                + "выйти из приложения?"))
             {
                 App.Current.Shutdown();
@@ -221,7 +221,7 @@ namespace LaboratoryAppMVVM.ViewModels
             IsLoggingIn = false;
             if (currentUser != null)
             {
-                MessageBoxService
+                MessageService
                     .ShowInformation($"Авторизация успешна. "
                                      + $"Добро пожаловать, "
                                      + $"{currentUser.TypeOfUser.Name} "
@@ -232,7 +232,7 @@ namespace LaboratoryAppMVVM.ViewModels
             }
             else
             {
-                MessageBoxService.ShowError("Неуспешная авторизация. " +
+                MessageService.ShowError("Неуспешная авторизация. " +
                     "Неверный логин и/или пароль. " +
                     "Пожалуйста, проверьте введённые данные " +
                     "и попробуйте авторизоваться ещё раз");

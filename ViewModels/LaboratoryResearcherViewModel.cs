@@ -34,9 +34,9 @@ namespace LaboratoryAppMVVM.ViewModels
             _laboratoryWindowService = laboratoryWindowService;
             Title = "Страница лаборанта-исследователя";
             User = user;
-            MessageBoxService = new MessageBoxService();
+            MessageService = new MessageBoxService();
             _sessionTimer = new LaboratoryHaveTimeService(TimeSpan.FromMinutes(10),
-                                                          MessageBoxService,
+                                                          MessageService,
                                                           NavigationStore);
             _sessionTimer.TickChanged += OnTickChanged;
             _sessionTimer.Start();
