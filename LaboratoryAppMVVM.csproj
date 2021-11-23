@@ -198,11 +198,14 @@
     <Compile Include="Models\Exports\ICanSaveResource.cs" />
     <Compile Include="Models\Exports\OrderContentDrawer.cs" />
     <Compile Include="Models\Exports\WordDrawingContext.cs" />
+    <Compile Include="Models\DateTimeIsInPeriodValidator.cs" />
+    <Compile Include="Models\DateTimeValidator.cs" />
     <Compile Include="Models\HttpClasses\IGettable.cs" />
     <Compile Include="Models\HttpClasses\JsonResearchStatusGetter.cs" />
     <Compile Include="Models\HttpClasses\CustomTimeoutWebClient.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Models\IValidator.cs" />
     <Compile Include="Models\IPropertiesSearcher.cs" />
     <Compile Include="Models\Generators\IRenderTargetBitmapGenerator.cs" />
     <Compile Include="Models\LevenshteinDistanceCalculator.cs" />

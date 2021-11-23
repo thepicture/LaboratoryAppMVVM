@@ -1,7 +1,7 @@
 ﻿using LaboratoryAppMVVM.Commands;
+using LaboratoryAppMVVM.Models;
 using LaboratoryAppMVVM.Models.Entities;
 using LaboratoryAppMVVM.Models.Exports;
-using LaboratoryAppMVVM.Stores;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,11 +21,15 @@ namespace LaboratoryAppMVVM.ViewModels
         private bool _isCorrectPeriod = false;
         private FolderBrowserDialog _folderBrowserDialog;
         private List<InsuranceCompany> _reportInsuranceCompanies;
+        private IValidator _dateTimeValidator;
+        private IValidator _dateTimeIsInPeriodValidator;
 
         public AccountantViewModel(User user)
         {
             Title = "Страница бухгалтера";
             User = user;
+            _dateTimeValidator = new DateTimeValidator();
+            _dateTimeIsInPeriodValidator = new DateTimeIsInPeriodValidator();
         }
 
         public ICollection<AppliedService> AppliedServices
@@ -75,9 +79,7 @@ namespace LaboratoryAppMVVM.ViewModels
 
         private void CheckIfPeriodIsCorrect()
         {
-            IsCorrectPeriod = FromPeriod != null
-                  && ToPeriod != null
-                  && FromPeriod <= ToPeriod;
+            IsCorrectPeriod = _dateTimeValidator.IsValidated(FromPeriod, ToPeriod);
             if (!IsCorrectPeriod)
             {
                 DateValidationErrors = "Укажите корректный период выше";
@@ -86,13 +88,6 @@ namespace LaboratoryAppMVVM.ViewModels
             {
                 DateValidationErrors = "";
             }
-        }
-
-        private bool AreNotCorrectPeriodValues()
-        {
-            return FromPeriod != null
-                && ToPeriod != null
-                && FromPeriod <= ToPeriod;
         }
 
         public DateTime ToPeriod
@@ -181,8 +176,9 @@ namespace LaboratoryAppMVVM.ViewModels
 
         private Func<AppliedService, bool> ServicesInPeriod()
         {
-            return s => s.FinishedDateTime <= ToPeriod
-                        && s.FinishedDateTime >= FromPeriod;
+            return s => _dateTimeIsInPeriodValidator.IsValidated(FromPeriod,
+                                                                 ToPeriod,
+                                                                 s.FinishedDateTime);
         }
     }
 }
