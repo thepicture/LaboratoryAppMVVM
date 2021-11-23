@@ -72,7 +72,8 @@ namespace LaboratoryAppMVVM.Models.Exports
                                                     + "по всем пациентам";
                 worksheet.Cells[2][startRowIndex] = company.Patient
                     .Sum(p => p.AppliedService.Sum(s => s.Service.Price)) + " руб.";
-                Range rangeBorders = worksheet.Range[worksheet.Cells[1][newCompanyStartIndex],
+                Range rangeBorders = worksheet
+                    .Range[worksheet.Cells[1][newCompanyStartIndex],
                                                      worksheet.Cells[2][startRowIndex]];
                 rangeBorders.Cells.Borders.LineStyle = XlLineStyle.xlContinuous;
                 rangeBorders.Font.Size = 8;
@@ -106,7 +107,8 @@ namespace LaboratoryAppMVVM.Models.Exports
             string fullPathToPdf = Path.Combine(_saveFolderPath, nameOfFilePdf);
             ((_drawingContext.GetContext() as Workbook)
                 .Sheets[1] as Worksheet)
-                .ExportAsFixedFormat(Type: XlFixedFormatType.xlTypePDF, Filename: fullPathToPdf);
+                .ExportAsFixedFormat(Type: XlFixedFormatType.xlTypePDF,
+                                     Filename: fullPathToPdf);
         }
 
         public string GetFileName()

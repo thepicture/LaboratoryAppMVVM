@@ -12,7 +12,6 @@ namespace LaboratoryAppMVVM.ViewModels
 {
     public class AccountantViewModel : ViewModelBase
     {
-        private readonly ViewModelNavigationStore _viewModelNavigationStore;
         private ICollection<AppliedService> _appliedServices;
         private ICommand _createInsuranceCompaniesReportCommand;
         private DateTime _fromPeriod = DateTime.Now;
@@ -20,11 +19,11 @@ namespace LaboratoryAppMVVM.ViewModels
         private string _dateValidationErrors = "";
         private LaboratoryDatabaseEntities _context;
         private bool _isCorrectPeriod = false;
+        private FolderBrowserDialog _folderBrowserDialog;
+        private List<InsuranceCompany> _reportInsuranceCompanies;
 
-        public AccountantViewModel(ViewModelNavigationStore viewModelNavigationStore,
-                                   User user)
+        public AccountantViewModel(User user)
         {
-            _viewModelNavigationStore = viewModelNavigationStore;
             Title = "Страница бухгалтера";
             User = user;
         }
@@ -76,18 +75,21 @@ namespace LaboratoryAppMVVM.ViewModels
 
         private void CheckIfPeriodIsCorrect()
         {
-            IsCorrectPeriod = FromPeriod != null
-                && ToPeriod != null
-                && FromPeriod <= ToPeriod;
-            if (!IsCorrectPeriod)
+            if (AreNotCorrectPeriodValues())
             {
-                DateValidationErrors = "Укажите "
-                                       + "корректный период выше";
+                DateValidationErrors = "Укажите корректный период выше";
             }
             else
             {
                 DateValidationErrors = "";
             }
+        }
+
+        private bool AreNotCorrectPeriodValues()
+        {
+            return FromPeriod != null
+                && ToPeriod != null
+                && FromPeriod <= ToPeriod;
         }
 
         public DateTime ToPeriod
@@ -131,30 +133,40 @@ namespace LaboratoryAppMVVM.ViewModels
 
         private void CreateInsuranceCompanyReport()
         {
-            FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
-            ICollection<InsuranceCompany> allCompanies = Context
-                .InsuranceCompany
-                .ToList();
-            ICollection<InsuranceCompany> insuranceCompanies = allCompanies
-                .Where(c => c.Patient.Any(PatientsWithServicesInPeriod()))
-                .ToList();
-            if (insuranceCompanies.Count == 0)
+            PrepareInsuranceCompaniesInPeriod();
+            if (_reportInsuranceCompanies.Count == 0)
             {
                 DateValidationErrors = "За указанный период компаний не найдено";
                 return;
             }
-            if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
+            if (_folderBrowserDialog.ShowDialog() == DialogResult.OK)
             {
-                ExcelDrawingContext drawingContext = new ExcelDrawingContext();
-                var drawer = new InsuranceCompanyContentDrawer(drawingContext,
-                    folderBrowserDialog.SelectedPath,
-                    insuranceCompanies,
-                    FromPeriod,
-                    ToPeriod);
-                new InsuranceCompanyCsvPdfExporter(drawer).Export();
-                DateValidationErrors = "Отчёт успешно сформирован по пути " +
-                    folderBrowserDialog.SelectedPath + "!";
+                ExportInsuranceCompanyReport();
             }
+        }
+
+        private void PrepareInsuranceCompaniesInPeriod()
+        {
+            _folderBrowserDialog = new FolderBrowserDialog();
+            ICollection<InsuranceCompany> allCompanies = Context
+                .InsuranceCompany
+                .ToList();
+            _reportInsuranceCompanies = allCompanies
+                .Where(c => c.Patient.Any(PatientsWithServicesInPeriod()))
+                .ToList();
+        }
+
+        private void ExportInsuranceCompanyReport()
+        {
+            ExcelDrawingContext drawingContext = new ExcelDrawingContext();
+            var drawer = new InsuranceCompanyContentDrawer(drawingContext,
+                _folderBrowserDialog.SelectedPath,
+                _reportInsuranceCompanies,
+                FromPeriod,
+                ToPeriod);
+            new InsuranceCompanyCsvPdfExporter(drawer).Export();
+            DateValidationErrors = "Отчёт успешно сформирован по пути " +
+                _folderBrowserDialog.SelectedPath + "!";
         }
 
         private Func<Patient, bool> PatientsWithServicesInPeriod()

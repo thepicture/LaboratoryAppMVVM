@@ -28,7 +28,7 @@ namespace LaboratoryAppMVVM.Services
                 case "Бухгалтер":
                     return new Func<ViewModelBase>(() =>
                     {
-                        return new AccountantViewModel(navigationStore, user);
+                        return new AccountantViewModel(user);
                     });
                 case "Администратор":
                     return new Func<ViewModelBase>(() =>
