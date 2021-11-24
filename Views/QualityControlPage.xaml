@@ -13,6 +13,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
             <RowDefinition Height="6*" />
         </Grid.RowDefinitions>
         <StackPanel>
@@ -37,7 +38,16 @@
                       ItemsSource="{Binding ExportTypes}"></ComboBox>
             </WrapPanel>
         </StackPanel>
-        <ContentControl Grid.Row="1"
+        <StackPanel Grid.Row="1">
+            <TextBlock FontWeight="Bold"
+                       Style="{StaticResource CommonBlock}"
+                       Text="{Binding MeanDeviation, StringFormat={}Ср. отклонение          {0:N2}}">
+            </TextBlock>
+            <TextBlock FontWeight="Bold"
+                       Style="{StaticResource CommonBlock}"
+                       Text="{Binding VariationCoefficient, StringFormat={}Коэф. вариации          {0:N2} %}"></TextBlock>
+        </StackPanel>
+        <ContentControl Grid.Row="2"
                         Content="{Binding CurrentChart, UpdateSourceTrigger=PropertyChanged}">
         </ContentControl>
     </Grid>

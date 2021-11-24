@@ -5,7 +5,6 @@ using LaboratoryAppMVVM.Stores;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Controls;
 using System.Windows.Forms.DataVisualization.Charting;
 using System.Windows.Forms.Integration;
 using System.Windows.Input;
@@ -25,6 +24,8 @@ namespace LaboratoryAppMVVM.ViewModels
         private LaboratoryDatabaseEntities _context;
         private ICollection<KeyValuePair> _keyValues;
         private WindowsFormsHost _currentChart;
+        private double _meanDeviation = 0;
+        private double _variationCoefficient = 0;
 
         public QualityControlViewModel(ViewModelNavigationStore navigationStore,
                                        ViewModelBase viewModelToGoBack,
@@ -60,24 +61,100 @@ namespace LaboratoryAppMVVM.ViewModels
             {
                 _currentService = value;
                 UpdateChart();
+                if (_currentService.AppliedService.Count != 0)
+                {
+                    MeanDeviation = GetMeanQuadrantDeviation();
+                    VariationCoefficient = GetMeanQuadrantDeviation()
+                                           / GetMeanValueOfService()
+                                           * 100;
+                }
+                else
+                {
+                    MeanDeviation = 0;
+                    VariationCoefficient = 0;
+                }
                 OnPropertyChanged();
             }
         }
 
         private void UpdateChart()
         {
+            if (CurrentService.AppliedService.Count == 0)
+            {
+                return;
+            }
+            double meanResultsValue = GetMeanValueOfService();
+            double positive1S = meanResultsValue + (GetMeanQuadrantDeviation() * 1);
+            double positive2S = meanResultsValue + (GetMeanQuadrantDeviation() * 2);
+            double positive3S = meanResultsValue + (GetMeanQuadrantDeviation() * 3);
+
+            double negative1S = meanResultsValue - (GetMeanQuadrantDeviation() * 1);
+            double negative2S = meanResultsValue - (GetMeanQuadrantDeviation() * 2);
+            double negative3S = meanResultsValue - (GetMeanQuadrantDeviation() * 3);
+
             Chart chart = new Chart();
             ChartArea chartArea = new ChartArea("ServiceArea");
+            chartArea.AxisX.IsLabelAutoFit = false;
+            chartArea.AxisX.LabelStyle.Angle = -45;
+            chartArea.AxisX.Interval = 3;
+
+            _ = new Axis(chartArea, AxisName.Y2);
             chart.ChartAreas.Add(chartArea);
             chart.Legends.Add(new Legend());
-            Series series = new Series(CurrentService.Name);
-            series.ChartType = SeriesChartType.Line;
-            foreach(AppliedService appliedService in CurrentService.AppliedService)
+            Series seriesLimit = new Series(CurrentService.Name)
             {
-                series.Points.AddXY(appliedService.FinishedDateTime.ToString("yyyy-MM-dd hh:mm:ss"), appliedService.Result);
+                ChartType = SeriesChartType.Line,
+                MarkerStyle = MarkerStyle.Cross,
+                YAxisType = AxisType.Primary
+            };
+
+            chartArea.AxisY2.Enabled = AxisEnabled.True;
+
+            chartArea.AxisY2.Minimum = Convert.ToDouble(negative3S);
+            chartArea.AxisY2.Maximum = Convert.ToDouble(meanResultsValue + (GetMeanQuadrantDeviation() * 4));
+            chartArea.AxisY2.Interval = GetMeanQuadrantDeviation();
+            chartArea.AxisY2.CustomLabels.Add(new CustomLabel(positive3S, meanResultsValue + (GetMeanQuadrantDeviation() * 4), "+3s", 0, LabelMarkStyle.None));
+            chartArea.AxisY2.CustomLabels.Add(new CustomLabel(positive2S, positive3S, "+2s", 0, LabelMarkStyle.None));
+            chartArea.AxisY2.CustomLabels.Add(new CustomLabel(positive1S, positive2S, "+1s", 0, LabelMarkStyle.None));
+            chartArea.AxisY2.CustomLabels.Add(new CustomLabel(GetMeanValueOfService(), positive1S, "x", 0, LabelMarkStyle.None));
+            chartArea.AxisY2.CustomLabels.Add(new CustomLabel(negative1S, GetMeanValueOfService(), "-1s", 0, LabelMarkStyle.None));
+            chartArea.AxisY2.CustomLabels.Add(new CustomLabel(negative2S, negative1S, "-2s", 0, LabelMarkStyle.None));
+            chartArea.AxisY2.CustomLabels.Add(new CustomLabel(negative3S, negative2S, "-3s", 0, LabelMarkStyle.None));
+
+            chartArea.AxisY.Minimum = Convert.ToDouble(negative3S);
+            chartArea.AxisY.Maximum = Convert.ToDouble(meanResultsValue + (GetMeanQuadrantDeviation() * 4));
+            chartArea.AxisY.Interval = GetMeanQuadrantDeviation();
+            chartArea.AxisY.CustomLabels.Add(new CustomLabel(positive3S, meanResultsValue + (GetMeanQuadrantDeviation() * 4), positive3S.ToString(), 0, LabelMarkStyle.None));
+            chartArea.AxisY.CustomLabels.Add(new CustomLabel(positive2S, positive3S, positive2S.ToString(), 0, LabelMarkStyle.None));
+            chartArea.AxisY.CustomLabels.Add(new CustomLabel(positive1S, positive2S, positive1S.ToString(), 0, LabelMarkStyle.None));
+            chartArea.AxisY.CustomLabels.Add(new CustomLabel(GetMeanValueOfService(), positive1S, GetMeanValueOfService().ToString(), 0, LabelMarkStyle.None));
+            chartArea.AxisY.CustomLabels.Add(new CustomLabel(negative1S, GetMeanValueOfService(), negative1S.ToString(), 0, LabelMarkStyle.None));
+            chartArea.AxisY.CustomLabels.Add(new CustomLabel(negative2S, negative1S, negative2S.ToString(), 0, LabelMarkStyle.None));
+            chartArea.AxisY.CustomLabels.Add(new CustomLabel(negative3S, negative2S, negative3S.ToString(), 0, LabelMarkStyle.None));
+
+            foreach (AppliedService appliedService in CurrentService.AppliedService)
+            {
+                _ = seriesLimit.Points.AddXY(appliedService.FinishedDateTime.ToString("yyyy-MM-dd hh:mm:ss"), appliedService.Result);
             }
-            chart.Series.Add(series);
+            chart.Series.Add(seriesLimit);
             CurrentChart.Child = chart;
+        }
+
+        private double GetMeanQuadrantDeviation()
+        {
+            double meanValueOfService = GetMeanValueOfService();
+            double meanQuadrantDeviation = 0;
+            foreach (AppliedService appliedService in CurrentService.AppliedService)
+            {
+                meanQuadrantDeviation += Math.Pow(meanValueOfService - appliedService.Result, 2);
+            }
+            meanQuadrantDeviation /= CurrentService.AppliedService.Count;
+            return meanQuadrantDeviation;
+        }
+
+        private double GetMeanValueOfService()
+        {
+            return CurrentService.AppliedService.Sum(s => s.Result) / CurrentService.AppliedService.Count;
         }
 
         public ICollection<string> ExportTypes
@@ -172,6 +249,23 @@ namespace LaboratoryAppMVVM.ViewModels
             set
             {
                 _currentChart = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public double MeanDeviation
+        {
+            get => _meanDeviation; set
+            {
+                _meanDeviation = value;
+                OnPropertyChanged();
+            }
+        }
+        public double VariationCoefficient
+        {
+            get => _variationCoefficient; set
+            {
+                _variationCoefficient = value;
                 OnPropertyChanged();
             }
         }
