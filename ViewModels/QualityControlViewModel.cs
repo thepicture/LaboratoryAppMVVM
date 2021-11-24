@@ -26,20 +26,14 @@ namespace LaboratoryAppMVVM.ViewModels
         private ICommand _exportCommand;
         private LaboratoryDatabaseEntities _context;
         private ICollection<KeyValuePair> _keyValues;
-        private WindowsFormsHost _currentChart;
+        private WindowsFormsHost _windowsFormsHost;
         private double _meanDeviation = 0;
         private double _variationCoefficient = 0;
         private string _currentRepresentationForm;
         private ICollection<string> _representationForms;
         private bool _isChartForm = true;
-        private double _meanResultsValue;
-        private double _positive1S;
-        private double _positive2S;
-        private double _positive3S;
-        private double _negative1S;
-        private double _negative2S;
-        private double _negative3S;
         private Chart chart;
+        private QualityControl _qualityControl;
 
         public QualityControlViewModel(ViewModelNavigationStore navigationStore,
                                        ViewModelBase viewModelToGoBack,
@@ -77,9 +71,12 @@ namespace LaboratoryAppMVVM.ViewModels
                 UpdateChart();
                 if (_currentService.AppliedService.Count != 0)
                 {
-                    MeanDeviation = GetMeanQuadrantDeviation();
-                    VariationCoefficient = GetMeanQuadrantDeviation()
-                                           / GetMeanValueOfService()
+                    CurrentQualityControl = new QualityControl(_currentService);
+                    MeanDeviation = CurrentQualityControl.GetMeanQuadrantDeviation();
+                    VariationCoefficient = CurrentQualityControl
+                        .GetMeanQuadrantDeviation()
+                                           / CurrentQualityControl
+                                           .GetMeanValueOfService()
                                            * 100;
                 }
                 else
@@ -97,14 +94,7 @@ namespace LaboratoryAppMVVM.ViewModels
             {
                 return;
             }
-            _meanResultsValue = GetMeanValueOfService();
-            _positive1S = _meanResultsValue + (GetMeanQuadrantDeviation() * 1);
-            _positive2S = _meanResultsValue + (GetMeanQuadrantDeviation() * 2);
-            _positive3S = _meanResultsValue + (GetMeanQuadrantDeviation() * 3);
-
-            _negative1S = _meanResultsValue - (GetMeanQuadrantDeviation() * 1);
-            _negative2S = _meanResultsValue - (GetMeanQuadrantDeviation() * 2);
-            _negative3S = _meanResultsValue - (GetMeanQuadrantDeviation() * 3);
+            CurrentQualityControl = new QualityControl(CurrentService);
 
             Chart = new Chart();
             ChartArea chartArea = new ChartArea("ServiceArea");
@@ -124,51 +114,107 @@ namespace LaboratoryAppMVVM.ViewModels
 
             chartArea.AxisY2.Enabled = AxisEnabled.True;
 
-            chartArea.AxisY2.Minimum = Convert.ToDouble(_negative3S);
-            chartArea.AxisY2.Maximum = Convert.ToDouble(_meanResultsValue + (GetMeanQuadrantDeviation() * 4));
-            chartArea.AxisY2.Interval = GetMeanQuadrantDeviation();
-            chartArea.AxisY2.CustomLabels.Add(new CustomLabel(_positive3S, _meanResultsValue + (GetMeanQuadrantDeviation() * 4), "+3s", 0, LabelMarkStyle.None));
-            chartArea.AxisY2.CustomLabels.Add(new CustomLabel(_positive2S, _positive3S, "+2s", 0, LabelMarkStyle.None));
-            chartArea.AxisY2.CustomLabels.Add(new CustomLabel(_positive1S, _positive2S, "+1s", 0, LabelMarkStyle.None));
-            chartArea.AxisY2.CustomLabels.Add(new CustomLabel(GetMeanValueOfService(), _positive1S, "x", 0, LabelMarkStyle.None));
-            chartArea.AxisY2.CustomLabels.Add(new CustomLabel(_negative1S, GetMeanValueOfService(), "-1s", 0, LabelMarkStyle.None));
-            chartArea.AxisY2.CustomLabels.Add(new CustomLabel(_negative2S, _negative1S, "-2s", 0, LabelMarkStyle.None));
-            chartArea.AxisY2.CustomLabels.Add(new CustomLabel(_negative3S, _negative2S, "-3s", 0, LabelMarkStyle.None));
+            chartArea.AxisY2.Minimum =
+                chartArea.AxisY.Minimum = CurrentQualityControl.GetStatisticLimit(-3);
+            chartArea.AxisY2.Maximum =
+                chartArea.AxisY.Maximum = CurrentQualityControl.GetStatisticLimit(4);
+            chartArea.AxisY2.Interval =
+                chartArea.AxisY.Interval =
+                CurrentQualityControl.GetMeanQuadrantDeviation();
+            chartArea.AxisY2.CustomLabels.Add(new CustomLabel(
+                CurrentQualityControl.GetStatisticLimit(3),
+                CurrentQualityControl.GetStatisticLimit(4),
+                "+3s",
+                0,
+                LabelMarkStyle.None));
+            chartArea.AxisY2.CustomLabels.Add(new CustomLabel(
+                CurrentQualityControl.GetStatisticLimit(2),
+                CurrentQualityControl.GetStatisticLimit(3),
+                "+2s",
+                0,
+                LabelMarkStyle.None));
+            chartArea.AxisY2.CustomLabels.Add(new CustomLabel(
+                CurrentQualityControl.GetStatisticLimit(1),
+                CurrentQualityControl.GetStatisticLimit(2),
+                "+1s",
+                0,
+                LabelMarkStyle.None));
+            chartArea.AxisY2.CustomLabels.Add(new CustomLabel(
+                CurrentQualityControl.GetMeanValueOfService(),
+                CurrentQualityControl.GetStatisticLimit(1),
+                "x",
+                0,
+                LabelMarkStyle.None));
+            chartArea.AxisY2.CustomLabels.Add(new CustomLabel(
+                CurrentQualityControl.GetStatisticLimit(-1),
+                CurrentQualityControl.GetMeanValueOfService(),
+                "-1s",
+                0,
+                LabelMarkStyle.None));
+            chartArea.AxisY2.CustomLabels.Add(new CustomLabel(
+                CurrentQualityControl.GetStatisticLimit(-2),
+                CurrentQualityControl.GetStatisticLimit(-1),
+                "-2s",
+                0,
+                LabelMarkStyle.None));
+            chartArea.AxisY2.CustomLabels.Add(new CustomLabel(
+                CurrentQualityControl.GetStatisticLimit(-3),
+                CurrentQualityControl.GetStatisticLimit(-2),
+                "-3s",
+                0,
+                LabelMarkStyle.None));
 
-            chartArea.AxisY.Minimum = Convert.ToDouble(_negative3S);
-            chartArea.AxisY.Maximum = Convert.ToDouble(_meanResultsValue + (GetMeanQuadrantDeviation() * 4));
-            chartArea.AxisY.Interval = GetMeanQuadrantDeviation();
-            chartArea.AxisY.CustomLabels.Add(new CustomLabel(_positive3S, _meanResultsValue + (GetMeanQuadrantDeviation() * 4), _positive3S.ToString(), 0, LabelMarkStyle.None));
-            chartArea.AxisY.CustomLabels.Add(new CustomLabel(_positive2S, _positive3S, _positive2S.ToString(), 0, LabelMarkStyle.None));
-            chartArea.AxisY.CustomLabels.Add(new CustomLabel(_positive1S, _positive2S, _positive1S.ToString(), 0, LabelMarkStyle.None));
-            chartArea.AxisY.CustomLabels.Add(new CustomLabel(GetMeanValueOfService(), _positive1S, GetMeanValueOfService().ToString(), 0, LabelMarkStyle.None));
-            chartArea.AxisY.CustomLabels.Add(new CustomLabel(_negative1S, GetMeanValueOfService(), _negative1S.ToString(), 0, LabelMarkStyle.None));
-            chartArea.AxisY.CustomLabels.Add(new CustomLabel(_negative2S, _negative1S, _negative2S.ToString(), 0, LabelMarkStyle.None));
-            chartArea.AxisY.CustomLabels.Add(new CustomLabel(_negative3S, _negative2S, _negative3S.ToString(), 0, LabelMarkStyle.None));
+            chartArea.AxisY.CustomLabels.Add(new CustomLabel(
+                CurrentQualityControl.GetStatisticLimit(3),
+                CurrentQualityControl.GetStatisticLimit(4),
+                CurrentQualityControl.GetStatisticLimit(3).ToString(),
+                0,
+                LabelMarkStyle.None));
+            chartArea.AxisY.CustomLabels.Add(new CustomLabel(
+                CurrentQualityControl.GetStatisticLimit(2),
+                CurrentQualityControl.GetStatisticLimit(3),
+                CurrentQualityControl.GetStatisticLimit(2).ToString(),
+                0,
+                LabelMarkStyle.None));
+            chartArea.AxisY.CustomLabels.Add(new CustomLabel(
+                CurrentQualityControl.GetStatisticLimit(1),
+                CurrentQualityControl.GetStatisticLimit(2),
+                CurrentQualityControl.GetStatisticLimit(1).ToString(),
+                0,
+                LabelMarkStyle.None));
+            chartArea.AxisY.CustomLabels.Add(new CustomLabel(
+                CurrentQualityControl.GetMeanValueOfService(),
+                CurrentQualityControl.GetStatisticLimit(1),
+                CurrentQualityControl.GetMeanValueOfService().ToString(),
+                0,
+                LabelMarkStyle.None));
+            chartArea.AxisY.CustomLabels.Add(new CustomLabel(
+                CurrentQualityControl.GetStatisticLimit(-1),
+                CurrentQualityControl.GetMeanValueOfService(),
+                CurrentQualityControl.GetStatisticLimit(-1).ToString(),
+                0,
+                LabelMarkStyle.None));
+            chartArea.AxisY.CustomLabels.Add(new CustomLabel(
+                CurrentQualityControl.GetStatisticLimit(-2),
+                CurrentQualityControl.GetStatisticLimit(-1),
+                CurrentQualityControl.GetStatisticLimit(-2).ToString(),
+                0,
+                LabelMarkStyle.None));
+            chartArea.AxisY.CustomLabels.Add(new CustomLabel(
+                CurrentQualityControl.GetStatisticLimit(-3),
+                CurrentQualityControl.GetStatisticLimit(-2),
+                CurrentQualityControl.GetStatisticLimit(-3).ToString(),
+                0,
+                LabelMarkStyle.None));
 
             foreach (AppliedService appliedService in CurrentService.AppliedService)
             {
-                _ = seriesLimit.Points.AddXY(appliedService.FinishedDateTime.ToString("yyyy-MM-dd hh:mm:ss"), appliedService.Result);
+                _ = seriesLimit.Points.AddXY(
+                    appliedService.FinishedDateTime.ToString("yyyy-MM-dd hh:mm:ss"),
+                    appliedService.Result);
             }
             Chart.Series.Add(seriesLimit);
-            CurrentChart.Child = Chart;
-        }
-
-        private double GetMeanQuadrantDeviation()
-        {
-            double meanValueOfService = GetMeanValueOfService();
-            double meanQuadrantDeviation = 0;
-            foreach (AppliedService appliedService in CurrentService.AppliedService)
-            {
-                meanQuadrantDeviation += Math.Pow(meanValueOfService - appliedService.Result, 2);
-            }
-            meanQuadrantDeviation /= CurrentService.AppliedService.Count;
-            return meanQuadrantDeviation;
-        }
-
-        private double GetMeanValueOfService()
-        {
-            return CurrentService.AppliedService.Sum(s => s.Result) / CurrentService.AppliedService.Count;
+            WindowsFormsHost.Child = Chart;
         }
 
         public ICollection<string> ExportTypes
@@ -249,20 +295,20 @@ namespace LaboratoryAppMVVM.ViewModels
             }
         }
 
-        public WindowsFormsHost CurrentChart
+        public WindowsFormsHost WindowsFormsHost
         {
             get
             {
-                if (_currentChart == null)
+                if (_windowsFormsHost == null)
                 {
-                    _currentChart = new WindowsFormsHost();
+                    _windowsFormsHost = new WindowsFormsHost();
                 }
-                return _currentChart;
+                return _windowsFormsHost;
             }
 
             set
             {
-                _currentChart = value;
+                _windowsFormsHost = value;
                 OnPropertyChanged();
             }
         }
@@ -345,6 +391,15 @@ namespace LaboratoryAppMVVM.ViewModels
             }
         }
 
+        public QualityControl CurrentQualityControl
+        {
+            get => _qualityControl; set
+            {
+                _qualityControl = value;
+                OnPropertyChanged();
+            }
+        }
+
         private void ExportPresentation()
         {
             switch (CurrentExportType)
@@ -364,10 +419,43 @@ namespace LaboratoryAppMVVM.ViewModels
                     }
                     break;
                 case "только таблица":
+                    if (CurrentService.AppliedService.Count == 0)
+                    {
+                        MessageService.ShowError("Экспорт невозможен, " +
+                            "так как у услуги нет связанных с ней " +
+                            "завершённых услуг. Необходима по крайней мере " +
+                            "одна запись завершённой услуги. Добавьте услугу " +
+                            "и попробуйте ещё раз");
+                    }
+                    else
+                    {
+                        ExportTableToPdf();
+                    }
                     break;
                 case "график и таблица":
+                    if (chart == null || CurrentService.AppliedService.Count == 0)
+                    {
+                        MessageService.ShowError("Экспорт невозможен, " +
+                          "так как у услуги нет связанных с ней " +
+                          "завершённых услуг или график недоступен. Необходима " +
+                          "по крайней мере " +
+                          "одна запись завершённой услуги. Добавьте услугу " +
+                          "и попробуйте ещё раз. Если это не даст эффекта, " +
+                          "попробуйте поменять текущую услугу на другую " +
+                          "и обратно");
+                    }
+                    else
+                    {
+                        ExportChartToPdf();
+                        ExportTableToPdf();
+                    }
                     break;
             }
+        }
+
+        private void ExportTableToPdf()
+        {
+            throw new NotImplementedException();
         }
 
         private void ExportChartToPdf()
@@ -379,7 +467,7 @@ namespace LaboratoryAppMVVM.ViewModels
                 {
                     chart.SaveImage(buffer, ChartImageFormat.Png);
                     WordDrawingContext wordDrawingContext = new WordDrawingContext();
-                    QualityControlChartDrawer qualityControlChartDrawer 
+                    QualityControlChartDrawer qualityControlChartDrawer
                         = new QualityControlChartDrawer(
                             wordDrawingContext,
                             folderBrowserDialog.SelectedPath,

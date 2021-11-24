@@ -56,7 +56,7 @@
                        Text="{Binding VariationCoefficient, StringFormat={}Коэф. вариации          {0:N2} %}"></TextBlock>
         </StackPanel>
         <ContentControl Grid.Row="2"
-                        Content="{Binding CurrentChart, UpdateSourceTrigger=PropertyChanged}">
+                        Content="{Binding WindowsFormsHost, UpdateSourceTrigger=PropertyChanged}">
             <ContentControl.Style>
             <Style TargetType="ContentControl">
                 <Style.Triggers>
