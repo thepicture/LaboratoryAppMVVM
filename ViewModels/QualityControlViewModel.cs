@@ -3,7 +3,6 @@ using LaboratoryAppMVVM.Models.Entities;
 using LaboratoryAppMVVM.Models.Exports;
 using LaboratoryAppMVVM.Services;
 using LaboratoryAppMVVM.Stores;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -34,6 +33,7 @@ namespace LaboratoryAppMVVM.ViewModels
         private bool _isChartForm = true;
         private Chart chart;
         private QualityControl _qualityControl;
+        private string _selectedSavePath;
 
         public QualityControlViewModel(ViewModelNavigationStore navigationStore,
                                        ViewModelBase viewModelToGoBack,
@@ -74,10 +74,7 @@ namespace LaboratoryAppMVVM.ViewModels
                     CurrentQualityControl = new QualityControl(_currentService);
                     MeanDeviation = CurrentQualityControl.GetMeanQuadrantDeviation();
                     VariationCoefficient = CurrentQualityControl
-                        .GetMeanQuadrantDeviation()
-                                           / CurrentQualityControl
-                                           .GetMeanValueOfService()
-                                           * 100;
+                        .GetVariationCoefficient();
                 }
                 else
                 {
@@ -400,8 +397,24 @@ namespace LaboratoryAppMVVM.ViewModels
             }
         }
 
+        public string SelectedSavePath
+        {
+            get => _selectedSavePath; set
+            {
+                _selectedSavePath = value;
+                OnPropertyChanged();
+            }
+        }
+
         private void ExportPresentation()
         {
+            FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
+            if (folderBrowserDialog.ShowDialog() != DialogResult.OK)
+            {
+                return;
+            }
+            SelectedSavePath = folderBrowserDialog.SelectedPath;
+
             switch (CurrentExportType)
             {
                 case "только график":
@@ -450,30 +463,34 @@ namespace LaboratoryAppMVVM.ViewModels
                         ExportTableToPdf();
                     }
                     break;
+                default:
+                    break;
             }
         }
 
         private void ExportTableToPdf()
         {
-            throw new NotImplementedException();
+            WordDrawingContext wordDrawingContext = new WordDrawingContext();
+            QualityControlTableDrawer drawer
+                = new QualityControlTableDrawer(
+                    wordDrawingContext,
+                    SelectedSavePath,
+                    new QualityControl(CurrentService));
+            new Exporter(drawer).Export();
         }
 
         private void ExportChartToPdf()
         {
-            using (var buffer = new MemoryStream())
+            using (MemoryStream buffer = new MemoryStream())
             {
-                FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
-                if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
-                {
-                    chart.SaveImage(buffer, ChartImageFormat.Png);
-                    WordDrawingContext wordDrawingContext = new WordDrawingContext();
-                    QualityControlChartDrawer qualityControlChartDrawer
-                        = new QualityControlChartDrawer(
-                            wordDrawingContext,
-                            folderBrowserDialog.SelectedPath,
-                            buffer);
-                    new Exporter(qualityControlChartDrawer).Export();
-                }
+                chart.SaveImage(buffer, ChartImageFormat.Png);
+                WordDrawingContext wordDrawingContext = new WordDrawingContext();
+                QualityControlChartDrawer qualityControlChartDrawer
+                    = new QualityControlChartDrawer(
+                        wordDrawingContext,
+                        SelectedSavePath,
+                        buffer);
+                new Exporter(qualityControlChartDrawer).Export();
             }
         }
     }
