@@ -1,10 +1,13 @@
 ﻿using LaboratoryAppMVVM.Commands;
 using LaboratoryAppMVVM.Models.Entities;
+using LaboratoryAppMVVM.Models.Exports;
 using LaboratoryAppMVVM.Services;
 using LaboratoryAppMVVM.Stores;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using System.Windows.Forms.Integration;
 using System.Windows.Input;
@@ -36,14 +39,15 @@ namespace LaboratoryAppMVVM.ViewModels
         private double _negative1S;
         private double _negative2S;
         private double _negative3S;
+        private Chart chart;
 
         public QualityControlViewModel(ViewModelNavigationStore navigationStore,
                                        ViewModelBase viewModelToGoBack,
-                                       IMessageService messageBoxService)
+                                       IMessageService messageService)
         {
             _navigationStore = navigationStore;
             _viewModelToGoBack = viewModelToGoBack;
-            MessageService = messageBoxService;
+            MessageService = messageService;
             Title = "Страница контроля качества";
         }
 
@@ -102,15 +106,15 @@ namespace LaboratoryAppMVVM.ViewModels
             _negative2S = _meanResultsValue - (GetMeanQuadrantDeviation() * 2);
             _negative3S = _meanResultsValue - (GetMeanQuadrantDeviation() * 3);
 
-            Chart chart = new Chart();
+            Chart = new Chart();
             ChartArea chartArea = new ChartArea("ServiceArea");
             chartArea.AxisX.IsLabelAutoFit = false;
             chartArea.AxisX.LabelStyle.Angle = -45;
             chartArea.AxisX.Interval = 3;
 
             _ = new Axis(chartArea, AxisName.Y2);
-            chart.ChartAreas.Add(chartArea);
-            chart.Legends.Add(new Legend());
+            Chart.ChartAreas.Add(chartArea);
+            Chart.Legends.Add(new Legend());
             Series seriesLimit = new Series(CurrentService.Name)
             {
                 ChartType = SeriesChartType.Line,
@@ -146,8 +150,8 @@ namespace LaboratoryAppMVVM.ViewModels
             {
                 _ = seriesLimit.Points.AddXY(appliedService.FinishedDateTime.ToString("yyyy-MM-dd hh:mm:ss"), appliedService.Result);
             }
-            chart.Series.Add(seriesLimit);
-            CurrentChart.Child = chart;
+            Chart.Series.Add(seriesLimit);
+            CurrentChart.Child = Chart;
         }
 
         private double GetMeanQuadrantDeviation()
@@ -230,7 +234,7 @@ namespace LaboratoryAppMVVM.ViewModels
             {
                 if (_exportCommand == null)
                 {
-                    _exportCommand = new RelayCommand(param => ExportChart());
+                    _exportCommand = new RelayCommand(param => ExportPresentation());
                 }
                 return _exportCommand;
             }
@@ -332,9 +336,57 @@ namespace LaboratoryAppMVVM.ViewModels
             }
         }
 
-        private void ExportChart()
+        public Chart Chart
         {
+            get => chart; set
+            {
+                chart = value;
+                OnPropertyChanged();
+            }
+        }
 
+        private void ExportPresentation()
+        {
+            switch (CurrentExportType)
+            {
+                case "только график":
+                    if (chart == null)
+                    {
+                        MessageService.ShowError("Экспорт неуспешен, потому что "
+                                                 + "график недоступен. "
+                                                 + "Пожалуйста, измените услугу в "
+                                                 + "соответствующем выпадающем списке "
+                                                 + "и попробуйте ещё раз");
+                    }
+                    else
+                    {
+                        ExportChartToPdf();
+                    }
+                    break;
+                case "только таблица":
+                    break;
+                case "график и таблица":
+                    break;
+            }
+        }
+
+        private void ExportChartToPdf()
+        {
+            using (var buffer = new MemoryStream())
+            {
+                FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
+                if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
+                {
+                    chart.SaveImage(buffer, ChartImageFormat.Png);
+                    WordDrawingContext wordDrawingContext = new WordDrawingContext();
+                    QualityControlChartDrawer qualityControlChartDrawer 
+                        = new QualityControlChartDrawer(
+                            wordDrawingContext,
+                            folderBrowserDialog.SelectedPath,
+                            buffer);
+                    new Exporter(qualityControlChartDrawer).Export();
+                }
+            }
         }
     }
 }
