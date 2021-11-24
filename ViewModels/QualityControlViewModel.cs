@@ -26,6 +26,16 @@ namespace LaboratoryAppMVVM.ViewModels
         private WindowsFormsHost _currentChart;
         private double _meanDeviation = 0;
         private double _variationCoefficient = 0;
+        private string _currentRepresentationForm;
+        private ICollection<string> _representationForms;
+        private bool _isChartForm = true;
+        private double _meanResultsValue;
+        private double _positive1S;
+        private double _positive2S;
+        private double _positive3S;
+        private double _negative1S;
+        private double _negative2S;
+        private double _negative3S;
 
         public QualityControlViewModel(ViewModelNavigationStore navigationStore,
                                        ViewModelBase viewModelToGoBack,
@@ -83,14 +93,14 @@ namespace LaboratoryAppMVVM.ViewModels
             {
                 return;
             }
-            double meanResultsValue = GetMeanValueOfService();
-            double positive1S = meanResultsValue + (GetMeanQuadrantDeviation() * 1);
-            double positive2S = meanResultsValue + (GetMeanQuadrantDeviation() * 2);
-            double positive3S = meanResultsValue + (GetMeanQuadrantDeviation() * 3);
+            _meanResultsValue = GetMeanValueOfService();
+            _positive1S = _meanResultsValue + (GetMeanQuadrantDeviation() * 1);
+            _positive2S = _meanResultsValue + (GetMeanQuadrantDeviation() * 2);
+            _positive3S = _meanResultsValue + (GetMeanQuadrantDeviation() * 3);
 
-            double negative1S = meanResultsValue - (GetMeanQuadrantDeviation() * 1);
-            double negative2S = meanResultsValue - (GetMeanQuadrantDeviation() * 2);
-            double negative3S = meanResultsValue - (GetMeanQuadrantDeviation() * 3);
+            _negative1S = _meanResultsValue - (GetMeanQuadrantDeviation() * 1);
+            _negative2S = _meanResultsValue - (GetMeanQuadrantDeviation() * 2);
+            _negative3S = _meanResultsValue - (GetMeanQuadrantDeviation() * 3);
 
             Chart chart = new Chart();
             ChartArea chartArea = new ChartArea("ServiceArea");
@@ -110,27 +120,27 @@ namespace LaboratoryAppMVVM.ViewModels
 
             chartArea.AxisY2.Enabled = AxisEnabled.True;
 
-            chartArea.AxisY2.Minimum = Convert.ToDouble(negative3S);
-            chartArea.AxisY2.Maximum = Convert.ToDouble(meanResultsValue + (GetMeanQuadrantDeviation() * 4));
+            chartArea.AxisY2.Minimum = Convert.ToDouble(_negative3S);
+            chartArea.AxisY2.Maximum = Convert.ToDouble(_meanResultsValue + (GetMeanQuadrantDeviation() * 4));
             chartArea.AxisY2.Interval = GetMeanQuadrantDeviation();
-            chartArea.AxisY2.CustomLabels.Add(new CustomLabel(positive3S, meanResultsValue + (GetMeanQuadrantDeviation() * 4), "+3s", 0, LabelMarkStyle.None));
-            chartArea.AxisY2.CustomLabels.Add(new CustomLabel(positive2S, positive3S, "+2s", 0, LabelMarkStyle.None));
-            chartArea.AxisY2.CustomLabels.Add(new CustomLabel(positive1S, positive2S, "+1s", 0, LabelMarkStyle.None));
-            chartArea.AxisY2.CustomLabels.Add(new CustomLabel(GetMeanValueOfService(), positive1S, "x", 0, LabelMarkStyle.None));
-            chartArea.AxisY2.CustomLabels.Add(new CustomLabel(negative1S, GetMeanValueOfService(), "-1s", 0, LabelMarkStyle.None));
-            chartArea.AxisY2.CustomLabels.Add(new CustomLabel(negative2S, negative1S, "-2s", 0, LabelMarkStyle.None));
-            chartArea.AxisY2.CustomLabels.Add(new CustomLabel(negative3S, negative2S, "-3s", 0, LabelMarkStyle.None));
+            chartArea.AxisY2.CustomLabels.Add(new CustomLabel(_positive3S, _meanResultsValue + (GetMeanQuadrantDeviation() * 4), "+3s", 0, LabelMarkStyle.None));
+            chartArea.AxisY2.CustomLabels.Add(new CustomLabel(_positive2S, _positive3S, "+2s", 0, LabelMarkStyle.None));
+            chartArea.AxisY2.CustomLabels.Add(new CustomLabel(_positive1S, _positive2S, "+1s", 0, LabelMarkStyle.None));
+            chartArea.AxisY2.CustomLabels.Add(new CustomLabel(GetMeanValueOfService(), _positive1S, "x", 0, LabelMarkStyle.None));
+            chartArea.AxisY2.CustomLabels.Add(new CustomLabel(_negative1S, GetMeanValueOfService(), "-1s", 0, LabelMarkStyle.None));
+            chartArea.AxisY2.CustomLabels.Add(new CustomLabel(_negative2S, _negative1S, "-2s", 0, LabelMarkStyle.None));
+            chartArea.AxisY2.CustomLabels.Add(new CustomLabel(_negative3S, _negative2S, "-3s", 0, LabelMarkStyle.None));
 
-            chartArea.AxisY.Minimum = Convert.ToDouble(negative3S);
-            chartArea.AxisY.Maximum = Convert.ToDouble(meanResultsValue + (GetMeanQuadrantDeviation() * 4));
+            chartArea.AxisY.Minimum = Convert.ToDouble(_negative3S);
+            chartArea.AxisY.Maximum = Convert.ToDouble(_meanResultsValue + (GetMeanQuadrantDeviation() * 4));
             chartArea.AxisY.Interval = GetMeanQuadrantDeviation();
-            chartArea.AxisY.CustomLabels.Add(new CustomLabel(positive3S, meanResultsValue + (GetMeanQuadrantDeviation() * 4), positive3S.ToString(), 0, LabelMarkStyle.None));
-            chartArea.AxisY.CustomLabels.Add(new CustomLabel(positive2S, positive3S, positive2S.ToString(), 0, LabelMarkStyle.None));
-            chartArea.AxisY.CustomLabels.Add(new CustomLabel(positive1S, positive2S, positive1S.ToString(), 0, LabelMarkStyle.None));
-            chartArea.AxisY.CustomLabels.Add(new CustomLabel(GetMeanValueOfService(), positive1S, GetMeanValueOfService().ToString(), 0, LabelMarkStyle.None));
-            chartArea.AxisY.CustomLabels.Add(new CustomLabel(negative1S, GetMeanValueOfService(), negative1S.ToString(), 0, LabelMarkStyle.None));
-            chartArea.AxisY.CustomLabels.Add(new CustomLabel(negative2S, negative1S, negative2S.ToString(), 0, LabelMarkStyle.None));
-            chartArea.AxisY.CustomLabels.Add(new CustomLabel(negative3S, negative2S, negative3S.ToString(), 0, LabelMarkStyle.None));
+            chartArea.AxisY.CustomLabels.Add(new CustomLabel(_positive3S, _meanResultsValue + (GetMeanQuadrantDeviation() * 4), _positive3S.ToString(), 0, LabelMarkStyle.None));
+            chartArea.AxisY.CustomLabels.Add(new CustomLabel(_positive2S, _positive3S, _positive2S.ToString(), 0, LabelMarkStyle.None));
+            chartArea.AxisY.CustomLabels.Add(new CustomLabel(_positive1S, _positive2S, _positive1S.ToString(), 0, LabelMarkStyle.None));
+            chartArea.AxisY.CustomLabels.Add(new CustomLabel(GetMeanValueOfService(), _positive1S, GetMeanValueOfService().ToString(), 0, LabelMarkStyle.None));
+            chartArea.AxisY.CustomLabels.Add(new CustomLabel(_negative1S, GetMeanValueOfService(), _negative1S.ToString(), 0, LabelMarkStyle.None));
+            chartArea.AxisY.CustomLabels.Add(new CustomLabel(_negative2S, _negative1S, _negative2S.ToString(), 0, LabelMarkStyle.None));
+            chartArea.AxisY.CustomLabels.Add(new CustomLabel(_negative3S, _negative2S, _negative3S.ToString(), 0, LabelMarkStyle.None));
 
             foreach (AppliedService appliedService in CurrentService.AppliedService)
             {
@@ -266,6 +276,58 @@ namespace LaboratoryAppMVVM.ViewModels
             get => _variationCoefficient; set
             {
                 _variationCoefficient = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string CurrentRepresentationForm
+        {
+            get => _currentRepresentationForm; set
+            {
+                _currentRepresentationForm = value;
+                switch (_currentRepresentationForm)
+                {
+                    case "графиком":
+                        IsChartForm = true;
+                        break;
+                    case "таблицей":
+                        IsChartForm = false;
+                        break;
+                    default:
+                        break;
+
+                }
+                OnPropertyChanged();
+            }
+        }
+        public ICollection<string> RepresentationForms
+        {
+            get
+            {
+                if (_representationForms == null)
+                {
+                    _representationForms = new List<string>
+                    {
+                        "графиком",
+                        "таблицей"
+                    };
+                    CurrentRepresentationForm = _representationForms.First();
+                }
+                return _representationForms;
+            }
+
+            set
+            {
+                _representationForms = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsChartForm
+        {
+            get => _isChartForm; set
+            {
+                _isChartForm = value;
                 OnPropertyChanged();
             }
         }
