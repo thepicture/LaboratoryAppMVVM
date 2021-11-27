@@ -40,10 +40,10 @@
                                Grid.Row="2"></TextBlock>
                     </StackPanel>
                     <StackPanel>
-                        <Button Content="Построить отчёт контроля качества"
+                        <Button Content="Окно отчёта контроля качества"
                                 Width="250"
                                 Command="{Binding NavigateToQualityControlPageCommand}"></Button>
-                        <Button Content="Построить отчёт по оказанными услугам"
+                        <Button Content="Окно отчёта об оказанных услугах"
                                 Width="250"
                                 Command="{Binding NavigateToAppliedServiceReportPageCommand}"></Button>
                     </StackPanel>

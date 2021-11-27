@@ -27,7 +27,7 @@
                            VerticalAlignment="Center"></TextBlock>
                 <DatePicker Width="200"
                             Margin="5"
-                            SelectedDate="{Binding FromPeriod}"></DatePicker>
+                            SelectedDate="{Binding FromPeriod, UpdateSourceTrigger=PropertyChanged}"></DatePicker>
             </StackPanel>
             <StackPanel Orientation="Horizontal"
                         HorizontalAlignment="Right">
@@ -36,12 +36,30 @@
                            VerticalAlignment="Center"></TextBlock>
                 <DatePicker Width="200"
                             Margin="5"
-                            SelectedDate="{Binding ToPeriod}"></DatePicker>
+                            SelectedDate="{Binding ToPeriod, UpdateSourceTrigger=PropertyChanged}"></DatePicker>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
-            <Button Content="Сгенерировать отчёт"></Button>
-            <Button Content="Вернуться назад"></Button>
+                <Button Content="Сгенерировать отчёт">
+                    <Button.Style>
+                        <Style TargetType="Button"
+                               BasedOn="{StaticResource {x:Type Button}}">
+                            <Setter Property="IsEnabled" Value="False" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}, Path=DataContext.ValidationErrors.Length}"
+                                             Value="0">
+                                    <Setter Property="IsEnabled" Value="True" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+                <Button Content="Вернуться назад"
+                    Command="{Binding NavigateToAdminViewModelCommand}"></Button>
             </StackPanel>
+            <TextBlock Foreground="Red"
+                           HorizontalAlignment="Center"
+                           Text="{Binding ValidationErrors}"
+                           Style="{StaticResource CommonBlock}"></TextBlock>
         </StackPanel>
     </Viewbox>
 </UserControl>

@@ -1,10 +1,9 @@
 ﻿using LaboratoryAppMVVM.Commands;
+using LaboratoryAppMVVM.Models;
 using LaboratoryAppMVVM.Services;
 using LaboratoryAppMVVM.Stores;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Windows.Input;
 
 namespace LaboratoryAppMVVM.ViewModels
@@ -14,6 +13,7 @@ namespace LaboratoryAppMVVM.ViewModels
         private readonly ViewModelNavigationStore _navigationStore;
         private readonly AdminViewModel _adminViewModel;
         private readonly MessageBoxService _messageBoxService;
+        private string _validationErrors = " ";
 
         public AppliedServiceReportViewModel(ViewModelNavigationStore navigationStore,
                                              AdminViewModel adminViewModel,
@@ -23,6 +23,7 @@ namespace LaboratoryAppMVVM.ViewModels
             _adminViewModel = adminViewModel;
             _messageBoxService = messageBoxService;
             Title = "Отчёт по оказанным услугам";
+            _dateTimeValidator = new DateTimeValidator();
         }
 
         private RelayCommand navigateToAdminViewModelCommand;
@@ -86,18 +87,42 @@ namespace LaboratoryAppMVVM.ViewModels
             get => _fromPeriod; set
             {
                 _fromPeriod = value;
+                CheckIfPeriodIsCorrect();
                 OnPropertyChanged();
             }
         }
 
         private System.DateTime? _toPeriod = System.DateTime.Today;
+        private readonly IValidator _dateTimeValidator;
 
         public System.DateTime? ToPeriod
         {
             get => _toPeriod; set
             {
                 _toPeriod = value;
+                CheckIfPeriodIsCorrect();
                 OnPropertyChanged();
+            }
+        }
+
+        public string ValidationErrors
+        {
+            get => _validationErrors; set
+            {
+                _validationErrors = value;
+                OnPropertyChanged();
+            }
+        }
+        private void CheckIfPeriodIsCorrect()
+        {
+            bool IsCorrectPeriod = _dateTimeValidator.IsValidated(FromPeriod, ToPeriod);
+            if (!IsCorrectPeriod)
+            {
+                ValidationErrors = "Укажите корректный период выше";
+            }
+            else
+            {
+                ValidationErrors = "";
             }
         }
     }
