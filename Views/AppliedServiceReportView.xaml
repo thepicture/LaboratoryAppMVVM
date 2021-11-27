@@ -39,7 +39,8 @@
                             SelectedDate="{Binding ToPeriod, UpdateSourceTrigger=PropertyChanged}"></DatePicker>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
-                <Button Content="Сгенерировать отчёт">
+                <Button Content="Сгенерировать отчёт"
+                        Command="{Binding GenerateReportCommand}">
                     <Button.Style>
                         <Style TargetType="Button"
                                BasedOn="{StaticResource {x:Type Button}}">

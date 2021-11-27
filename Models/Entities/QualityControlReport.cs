@@ -4,11 +4,11 @@ using System.Linq;
 
 namespace LaboratoryAppMVVM.Models.Entities
 {
-    public class QualityControl
+    public class QualityControlReport
     {
         private readonly Service _service;
 
-        public QualityControl(Service service)
+        public QualityControlReport(Service service)
         {
             _service = service;
         }

@@ -32,7 +32,7 @@ namespace LaboratoryAppMVVM.ViewModels
         private ICollection<string> _representationForms;
         private bool _isChartForm = true;
         private Chart chart;
-        private QualityControl _qualityControl;
+        private QualityControlReport _qualityControl;
         private string _selectedSavePath;
 
         public QualityControlViewModel(ViewModelNavigationStore navigationStore,
@@ -71,7 +71,7 @@ namespace LaboratoryAppMVVM.ViewModels
                 UpdateChart();
                 if (_currentService.AppliedService.Count != 0)
                 {
-                    CurrentQualityControl = new QualityControl(_currentService);
+                    CurrentQualityControl = new QualityControlReport(_currentService);
                     MeanDeviation = CurrentQualityControl.GetMeanQuadrantDeviation();
                     VariationCoefficient = CurrentQualityControl
                         .GetVariationCoefficient();
@@ -91,7 +91,7 @@ namespace LaboratoryAppMVVM.ViewModels
             {
                 return;
             }
-            CurrentQualityControl = new QualityControl(CurrentService);
+            CurrentQualityControl = new QualityControlReport(CurrentService);
 
             Chart = new Chart();
             ChartArea chartArea = new ChartArea("ServiceArea");
@@ -388,7 +388,7 @@ namespace LaboratoryAppMVVM.ViewModels
             }
         }
 
-        public QualityControl CurrentQualityControl
+        public QualityControlReport CurrentQualityControl
         {
             get => _qualityControl; set
             {
@@ -475,7 +475,7 @@ namespace LaboratoryAppMVVM.ViewModels
                 = new QualityControlTableDrawer(
                     wordDrawingContext,
                     SelectedSavePath,
-                    new QualityControl(CurrentService));
+                    new QualityControlReport(CurrentService));
             new Exporter(drawer).Export();
         }
 

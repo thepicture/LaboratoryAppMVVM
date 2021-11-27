@@ -17,11 +17,10 @@ namespace LaboratoryAppMVVM.Models.Entities
             {
                 if (service.AppliedService.Count == 0)
                 {
-                    _ = MeanResultOfServicePerPeriod.Append(Tuple.Create(service, .0));
+                    MeanResultOfServicePerPeriod = MeanResultOfServicePerPeriod.Append(Tuple.Create(service, .0));
                 }
                 else
                 {
-
                     double meanResult = service.AppliedService.Where(s =>
                     {
                         return _validator.IsValidated(
@@ -29,12 +28,8 @@ namespace LaboratoryAppMVVM.Models.Entities
                                             _toPeriod,
                                             s.FinishedDateTime);
                     }).Select(s => s.Result).Sum() /
-                            service.AppliedService.Where(s => _validator.IsValidated(
-                                                                       _fromPeriod,
-                                                                       _toPeriod,
-                                                                       s.FinishedDateTime))
-                            .Count();
-                    _ = MeanResultOfServicePerPeriod.Append(Tuple.Create(service, meanResult));
+                            (_toPeriod - _fromPeriod).Days;
+                    MeanResultOfServicePerPeriod = MeanResultOfServicePerPeriod.Append(Tuple.Create(service, meanResult));
                 }
             }
             return MeanResultOfServicePerPeriod;
@@ -48,14 +43,14 @@ namespace LaboratoryAppMVVM.Models.Entities
             {
                 if (service.AppliedService.Count == 0)
                 {
-                    _ = MeanPatientsPerDayOfServices.Append(Tuple.Create(service, 0));
+                    MeanPatientsPerDayOfServices = MeanPatientsPerDayOfServices.Append(Tuple.Create(service, 0));
                 }
                 else
                 {
 
-                    int meanResult = GetPatientsCount() /
-                            Convert.ToInt32((_toPeriod - _fromPeriod).TotalDays);
-                    _ = MeanPatientsPerDayOfServices.Append(Tuple.Create(service,
+                    int meanResult = Convert.ToInt32(Math.Floor(GetPatientsCount() /
+                            (_toPeriod - _fromPeriod).TotalDays));
+                    MeanPatientsPerDayOfServices = MeanPatientsPerDayOfServices.Append(Tuple.Create(service,
                         meanResult));
                 }
             }

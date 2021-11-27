@@ -192,7 +192,8 @@ namespace LaboratoryAppMVVM.ViewModels
                 (
                     _navigationStore,
                     this,
-                    new MessageBoxService()
+                    new MessageBoxService(),
+                    Context
                 );
         }
     }

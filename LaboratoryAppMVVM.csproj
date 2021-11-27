@@ -87,7 +87,8 @@
     </ApplicationDefinition>
     <Compile Include="Models\Entities\AppliedServiceReport.cs" />
     <Compile Include="Models\Entities\KeyValuePair.cs" />
-    <Compile Include="Models\Entities\QualityControl.cs" />
+    <Compile Include="Models\Entities\QualityControlReport.cs" />
+    <Compile Include="Models\Exports\AppliedServiceChartDrawer.cs" />
     <Compile Include="Models\Exports\QualityControlChartDrawer.cs" />
     <Compile Include="Models\Exports\QualityControlTableDrawer.cs" />
     <Compile Include="ViewModels\AppliedServiceReportViewModel.cs" />

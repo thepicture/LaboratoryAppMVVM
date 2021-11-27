@@ -8,11 +8,11 @@ namespace LaboratoryAppMVVM.Models.Exports
 {
     public class QualityControlTableDrawer : ContentDrawer
     {
-        private readonly QualityControl _qualityControl;
+        private readonly QualityControlReport _qualityControl;
 
         public QualityControlTableDrawer(IDrawingContext drawingContext,
                                          string saveFolderPath,
-                                         QualityControl qualityControl)
+                                         QualityControlReport qualityControl)
             : base(drawingContext, saveFolderPath)
         {
             _qualityControl = qualityControl;
