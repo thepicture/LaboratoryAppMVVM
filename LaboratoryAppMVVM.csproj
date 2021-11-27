@@ -85,6 +85,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Models\Entities\AppliedServiceReport.cs" />
     <Compile Include="Models\Entities\KeyValuePair.cs" />
     <Compile Include="Models\Entities\QualityControl.cs" />
     <Compile Include="Models\Exports\QualityControlChartDrawer.cs" />
