@@ -414,54 +414,28 @@ namespace LaboratoryAppMVVM.ViewModels
                 return;
             }
             SelectedSavePath = folderBrowserDialog.SelectedPath;
-
+            if (chart == null || CurrentService.AppliedService.Count == 0)
+            {
+                MessageService.ShowError("Экспорт невозможен, " +
+                  "так как у услуги нет связанных с ней " +
+                  "завершённых услуг или график недоступен. Необходима " +
+                  "по крайней мере " +
+                  "одна запись завершённой услуги. Добавьте услугу " +
+                  "и попробуйте ещё раз. Если это не даст эффекта, " +
+                  "попробуйте поменять текущую услугу на другую " +
+                  "и обратно");
+            }
             switch (CurrentExportType)
             {
                 case "только график":
-                    if (chart == null)
-                    {
-                        MessageService.ShowError("Экспорт неуспешен, потому что "
-                                                 + "график недоступен. "
-                                                 + "Пожалуйста, измените услугу в "
-                                                 + "соответствующем выпадающем списке "
-                                                 + "и попробуйте ещё раз");
-                    }
-                    else
-                    {
-                        ExportChartToPdf();
-                    }
+                    ExportChartToPdf();
                     break;
                 case "только таблица":
-                    if (CurrentService.AppliedService.Count == 0)
-                    {
-                        MessageService.ShowError("Экспорт невозможен, " +
-                            "так как у услуги нет связанных с ней " +
-                            "завершённых услуг. Необходима по крайней мере " +
-                            "одна запись завершённой услуги. Добавьте услугу " +
-                            "и попробуйте ещё раз");
-                    }
-                    else
-                    {
-                        ExportTableToPdf();
-                    }
+                    ExportTableToPdf();
                     break;
                 case "график и таблица":
-                    if (chart == null || CurrentService.AppliedService.Count == 0)
-                    {
-                        MessageService.ShowError("Экспорт невозможен, " +
-                          "так как у услуги нет связанных с ней " +
-                          "завершённых услуг или график недоступен. Необходима " +
-                          "по крайней мере " +
-                          "одна запись завершённой услуги. Добавьте услугу " +
-                          "и попробуйте ещё раз. Если это не даст эффекта, " +
-                          "попробуйте поменять текущую услугу на другую " +
-                          "и обратно");
-                    }
-                    else
-                    {
-                        ExportChartToPdf();
-                        ExportTableToPdf();
-                    }
+                    ExportChartToPdf();
+                    ExportTableToPdf();
                     break;
                 default:
                     break;
@@ -470,27 +444,22 @@ namespace LaboratoryAppMVVM.ViewModels
 
         private void ExportTableToPdf()
         {
-            WordDrawingContext wordDrawingContext = new WordDrawingContext();
-            QualityControlTableDrawer drawer
-                = new QualityControlTableDrawer(
-                    wordDrawingContext,
-                    SelectedSavePath,
-                    new QualityControlReport(CurrentService));
-            new Exporter(drawer).Export();
+            using (var exporter = new QualityControlTableOrChartPdfExporter(_qualityControl,
+                 _selectedSavePath,
+                 Chart,
+                 CurrentService))
+            {
+                exporter.ExportAsTable();
+            }
         }
 
         private void ExportChartToPdf()
         {
-            using (MemoryStream buffer = new MemoryStream())
+            using (var exporter = new QualityControlTableOrChartPdfExporter(_qualityControl,
+                 _selectedSavePath,
+                 Chart))
             {
-                chart.SaveImage(buffer, ChartImageFormat.Png);
-                WordDrawingContext wordDrawingContext = new WordDrawingContext();
-                QualityControlChartDrawer qualityControlChartDrawer
-                    = new QualityControlChartDrawer(
-                        wordDrawingContext,
-                        SelectedSavePath,
-                        buffer);
-                new Exporter(qualityControlChartDrawer).Export();
+                exporter.ExportAsChart();
             }
         }
     }

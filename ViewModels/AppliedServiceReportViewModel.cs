@@ -2,26 +2,26 @@
 using LaboratoryAppMVVM.Models;
 using LaboratoryAppMVVM.Models.Entities;
 using LaboratoryAppMVVM.Models.Exports;
+using LaboratoryAppMVVM.Modelss.Exports;
 using LaboratoryAppMVVM.Services;
 using LaboratoryAppMVVM.Stores;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
-using System.Windows.Forms.Integration;
 using System.Windows.Input;
 
 namespace LaboratoryAppMVVM.ViewModels
 {
     public class AppliedServiceReportViewModel : ViewModelBase
     {
+        private const string correctPeriodMessage = "Укажите корректный период выше";
         private readonly ViewModelNavigationStore _navigationStore;
         private readonly AdminViewModel _adminViewModel;
-        private readonly MessageBoxService _messageBoxService;
         private readonly LaboratoryDatabaseEntities _context;
-        private string _validationErrors = " ";
+        private string _validationErrors = correctPeriodMessage;
+        private TableOrChartExporter _exporter;
 
         public AppliedServiceReportViewModel(ViewModelNavigationStore navigationStore,
                                              AdminViewModel adminViewModel,
@@ -30,7 +30,7 @@ namespace LaboratoryAppMVVM.ViewModels
         {
             _navigationStore = navigationStore;
             _adminViewModel = adminViewModel;
-            _messageBoxService = messageBoxService;
+            MessageService = messageBoxService;
             Title = "Отчёт по оказанным услугам";
             _dateTimeValidator = new DateTimeValidator();
             _context = context;
@@ -46,7 +46,8 @@ namespace LaboratoryAppMVVM.ViewModels
             {
                 if (navigateToAdminViewModelCommand == null)
                 {
-                    navigateToAdminViewModelCommand = new RelayCommand(NavigateToAdminViewModel);
+                    navigateToAdminViewModelCommand =
+                        new RelayCommand(NavigateToAdminViewModel);
                 }
 
                 return navigateToAdminViewModelCommand;
@@ -90,9 +91,9 @@ namespace LaboratoryAppMVVM.ViewModels
             }
         }
 
-        private System.DateTime _fromPeriod = System.DateTime.Today;
+        private DateTime _fromPeriod = DateTime.Today;
 
-        public System.DateTime FromPeriod
+        public DateTime FromPeriod
         {
             get => _fromPeriod; set
             {
@@ -102,10 +103,10 @@ namespace LaboratoryAppMVVM.ViewModels
             }
         }
 
-        private System.DateTime _toPeriod = System.DateTime.Today;
+        private DateTime _toPeriod = DateTime.Today;
         private readonly IValidator _dateTimeValidator;
 
-        public System.DateTime ToPeriod
+        public DateTime ToPeriod
         {
             get => _toPeriod; set
             {
@@ -127,14 +128,9 @@ namespace LaboratoryAppMVVM.ViewModels
         private void CheckIfPeriodIsCorrect()
         {
             bool IsCorrectPeriod = _dateTimeValidator.IsValidated(FromPeriod, ToPeriod);
-            if (!IsCorrectPeriod)
-            {
-                ValidationErrors = "Укажите корректный период выше";
-            }
-            else
-            {
-                ValidationErrors = "";
-            }
+            ValidationErrors = !IsCorrectPeriod
+                ? correctPeriodMessage
+                : string.Empty;
         }
 
         private RelayCommand generateReportCommand;
@@ -171,7 +167,8 @@ namespace LaboratoryAppMVVM.ViewModels
 
             _chart.ChartAreas.Add(chartArea);
             _chart.Legends.Add(new Legend());
-            Series seriesPatientsPerDay = new Series("Количество пациентов в день по каждой услуге")
+            Series seriesPatientsPerDay = new Series("Количество пациентов " +
+                "в день по каждой услуге")
             {
                 ChartType = SeriesChartType.Line,
                 MarkerStyle = MarkerStyle.Cross,
@@ -185,13 +182,15 @@ namespace LaboratoryAppMVVM.ViewModels
             }
             _chart.Series.Add(seriesPatientsPerDay);
 
-            Series seriesMeanResultOfServices = new Series("Средний результат каждого исследования в день по выбранному периоду")
+            Series seriesMeanResultOfServices = new Series("Средний результат " +
+                "каждого исследования в день по выбранному периоду")
             {
                 ChartType = SeriesChartType.Line,
                 MarkerStyle = MarkerStyle.Cross,
             };
 
-            foreach (Tuple<Service, double> tuple in _report.GetMeanResultOfServicesPerPeriod())
+            foreach (Tuple<Service, double> tuple
+                in _report.GetMeanResultOfServicesPerPeriod())
             {
                 _ = seriesPatientsPerDay.Points.AddXY(
                     tuple.Item1.Name,
@@ -234,9 +233,9 @@ namespace LaboratoryAppMVVM.ViewModels
         private void ShowCantAccessChartError()
         {
             MessageService.ShowError("Экспорт неуспешен, потому что "
-                                                             + "график недоступен. "
-                                                             + "Пожалуйста, перезайдите на страницу"
-                                                             + "и попробуйте ещё раз");
+                                     + "график недоступен. "
+                                     + "Пожалуйста, перезайдите на страницу"
+                                     + "и попробуйте ещё раз");
         }
 
         private void ExportTableToPdf()
@@ -246,17 +245,11 @@ namespace LaboratoryAppMVVM.ViewModels
 
         private void ExportChartToPdf()
         {
-            using (MemoryStream buffer = new MemoryStream())
+            using (_exporter = new AppliedServiceTableOrChartPdfExporter(_report,
+                 _selectedSavePath,
+                 _chart))
             {
-                _chart.SaveImage(buffer, ChartImageFormat.Png);
-                WordDrawingContext wordDrawingContext = new WordDrawingContext();
-                AppliedServiceChartDrawer drawer
-                    = new AppliedServiceChartDrawer(
-                        wordDrawingContext,
-                        _selectedSavePath,
-                        buffer,
-                        _report);
-                new Exporter(drawer).Export();
+                _exporter.ExportAsChart();
             }
         }
     }

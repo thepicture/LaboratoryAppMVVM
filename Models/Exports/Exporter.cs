@@ -5,7 +5,7 @@
     /// for exporting data 
     /// from one representation to another.
     /// </summary>
-    public class Exporter
+    public class Exporter : IExporter
     {
         protected readonly ContentDrawer _contentDrawer;
 

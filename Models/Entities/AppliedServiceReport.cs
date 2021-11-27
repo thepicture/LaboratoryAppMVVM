@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace LaboratoryAppMVVM.Models.Entities
 {
-    public class AppliedServiceReport
+    public class AppliedServiceReport : Report
     {
         private readonly LaboratoryDatabaseEntities _context;
         private readonly DateTime _fromPeriod;

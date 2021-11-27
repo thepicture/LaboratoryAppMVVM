@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace LaboratoryAppMVVM.Models.Entities
 {
-    public class QualityControlReport
+    public class QualityControlReport : Report
     {
         private readonly Service _service;
 

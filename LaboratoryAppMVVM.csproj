@@ -88,7 +88,14 @@
     <Compile Include="Models\Entities\AppliedServiceReport.cs" />
     <Compile Include="Models\Entities\KeyValuePair.cs" />
     <Compile Include="Models\Entities\QualityControlReport.cs" />
+    <Compile Include="Models\Entities\Report.cs" />
     <Compile Include="Models\Exports\AppliedServiceChartDrawer.cs" />
+    <Compile Include="Models\Exports\AppliedServiceTableOrChartPdfExporter.cs" />
+    <Compile Include="Models\Exports\QualityControlTableOrChartPdfExporter.cs" />
+    <Compile Include="Models\Exports\TableOrChartExporter.cs" />
+    <Compile Include="Models\Exports\IExporter.cs" />
+    <Compile Include="Models\Exports\IChartExporter.cs" />
+    <Compile Include="Models\Exports\ITableExporter.cs" />
     <Compile Include="Models\Exports\QualityControlChartDrawer.cs" />
     <Compile Include="Models\Exports\QualityControlTableDrawer.cs" />
     <Compile Include="ViewModels\AppliedServiceReportViewModel.cs" />
