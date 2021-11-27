@@ -89,6 +89,10 @@
     <Compile Include="Models\Entities\QualityControl.cs" />
     <Compile Include="Models\Exports\QualityControlChartDrawer.cs" />
     <Compile Include="Models\Exports\QualityControlTableDrawer.cs" />
+    <Compile Include="ViewModels\AppliedServiceReportViewModel.cs" />
+    <Compile Include="Views\AppliedServiceReportView.xaml.cs">
+      <DependentUpon>AppliedServiceReportView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\QualityControlPage.xaml.cs">
       <DependentUpon>QualityControlPage.xaml</DependentUpon>
     </Compile>
@@ -105,6 +109,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\AnalyzerView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\AppliedServiceReportView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -167,5 +167,33 @@ namespace LaboratoryAppMVVM.ViewModels
                     break;
             }
         }
+
+        private RelayCommand navigateToAppliedServiceReportPageCommand;
+
+        public ICommand NavigateToAppliedServiceReportPageCommand
+        {
+            get
+            {
+                if (navigateToAppliedServiceReportPageCommand == null)
+                {
+                    navigateToAppliedServiceReportPageCommand = new RelayCommand
+                        (
+                            NavigateToAppliedServiceReportPage
+                        );
+                }
+
+                return navigateToAppliedServiceReportPageCommand;
+            }
+        }
+
+        private void NavigateToAppliedServiceReportPage(object commandParameter)
+        {
+            _navigationStore.CurrentViewModel = new AppliedServiceReportViewModel
+                (
+                    _navigationStore,
+                    this,
+                    new MessageBoxService()
+                );
+        }
     }
 }

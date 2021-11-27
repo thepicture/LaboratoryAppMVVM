@@ -49,6 +49,9 @@
                 <DataTemplate DataType="{x:Type viewmodels:QualityControlViewModel}">
                     <views:QualityControlPage></views:QualityControlPage>
                 </DataTemplate>
+                <DataTemplate DataType="{x:Type viewmodels:AppliedServiceReportViewModel}">
+                    <views:AppliedServiceReportView></views:AppliedServiceReportView>
+                </DataTemplate>
             </ContentControl.Resources>
         </ContentControl>
     </Grid>

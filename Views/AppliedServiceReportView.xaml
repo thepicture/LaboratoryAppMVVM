@@ -1,0 +1,47 @@
+﻿<UserControl x:Class="LaboratoryAppMVVM.Views.AppliedServiceReportView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:LaboratoryAppMVVM.Views" xmlns:viewmodels="clr-namespace:LaboratoryAppMVVM.ViewModels" 
+      d:DataContext="{d:DesignInstance Type=viewmodels:AppliedServiceReportViewModel}"
+      mc:Ignorable="d" 
+      d:DesignHeight="450"
+      d:DesignWidth="800">
+    <Viewbox>
+        <StackPanel HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Margin="20">
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Right">
+                <TextBlock Text="Сгенерировать отчёт как "
+                           Style="{StaticResource CommonBlock}"></TextBlock>
+                <ComboBox Width="200"
+                          ItemsSource="{Binding ExportTypes}"
+                          SelectedItem="{Binding CurrentExportType}"></ComboBox>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Right">
+                <TextBlock Text="Начиная с периода"
+                           Style="{StaticResource CommonBlock}"
+                           VerticalAlignment="Center"></TextBlock>
+                <DatePicker Width="200"
+                            Margin="5"
+                            SelectedDate="{Binding FromPeriod}"></DatePicker>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Right">
+                <TextBlock Text="и заканчивая "
+                           Style="{StaticResource CommonBlock}"
+                           VerticalAlignment="Center"></TextBlock>
+                <DatePicker Width="200"
+                            Margin="5"
+                            SelectedDate="{Binding ToPeriod}"></DatePicker>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+            <Button Content="Сгенерировать отчёт"></Button>
+            <Button Content="Вернуться назад"></Button>
+            </StackPanel>
+        </StackPanel>
+    </Viewbox>
+</UserControl>
