@@ -91,6 +91,7 @@
     <Compile Include="Models\Entities\Report.cs" />
     <Compile Include="Models\Exports\AppliedServiceChartDrawer.cs" />
     <Compile Include="Models\Exports\AppliedServicePresentationExporter.cs" />
+    <Compile Include="Models\Exports\AppliedServiceTableDrawer.cs" />
     <Compile Include="Models\Exports\AppliedServiceTableOrChartPdfExporter.cs" />
     <Compile Include="Models\Exports\PresentationExporter.cs" />
     <Compile Include="Models\Exports\QualityControlPresentationExporter.cs" />

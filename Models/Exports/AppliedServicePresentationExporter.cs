@@ -25,7 +25,12 @@ namespace LaboratoryAppMVVM.Models.Exports
 
         public override void ExportTableToPdf()
         {
-            throw new NotImplementedException();
+            using (var exporter = new AppliedServiceTableOrChartPdfExporter(_report,
+                 _selectedSavePath,
+                 Chart))
+            {
+                exporter.ExportAsTable();
+            }
         }
     }
 }

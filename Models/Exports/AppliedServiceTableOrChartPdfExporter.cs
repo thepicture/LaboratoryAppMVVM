@@ -26,7 +26,11 @@ namespace LaboratoryAppMVVM.Models.Exports
 
         public override void ExportAsTable()
         {
-            throw new System.NotImplementedException();
+            WordDrawingContext wordDrawingContext = new WordDrawingContext();
+            Drawer = new AppliedServiceTableDrawer(
+                    wordDrawingContext,
+                    FolderPath,
+                    Report as AppliedServiceReport);
         }
     }
 }

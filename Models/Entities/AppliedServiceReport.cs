@@ -10,6 +10,11 @@ namespace LaboratoryAppMVVM.Models.Entities
         private readonly DateTime _fromPeriod;
         private readonly DateTime _toPeriod;
         private readonly IValidator _validator;
+
+        public DateTime FromPeriod => _fromPeriod;
+
+        public DateTime ToPeriod => _toPeriod;
+
         public IEnumerable<Tuple<Service, double>> GetMeanResultOfServicesPerPeriod()
         {
             IEnumerable<Tuple<Service, double>> MeanResultOfServicePerPeriod = new List<Tuple<Service, double>>();
@@ -24,11 +29,11 @@ namespace LaboratoryAppMVVM.Models.Entities
                     double meanResult = service.AppliedService.Where(s =>
                     {
                         return _validator.IsValidated(
-                                            _fromPeriod,
-                                            _toPeriod,
+                                            FromPeriod,
+                                            ToPeriod,
                                             s.FinishedDateTime);
                     }).Select(s => s.Result).Sum() /
-                            (_toPeriod - _fromPeriod).Days;
+                            (ToPeriod - FromPeriod).Days;
                     MeanResultOfServicePerPeriod = MeanResultOfServicePerPeriod.Append(Tuple.Create(service, meanResult));
                 }
             }
@@ -49,7 +54,7 @@ namespace LaboratoryAppMVVM.Models.Entities
                 {
 
                     int meanResult = Convert.ToInt32(Math.Floor(GetPatientsCount() /
-                            (_toPeriod - _fromPeriod).TotalDays));
+                            (ToPeriod - FromPeriod).TotalDays));
                     MeanPatientsPerDayOfServices = MeanPatientsPerDayOfServices.Append(Tuple.Create(service,
                         meanResult));
                 }
@@ -62,8 +67,8 @@ namespace LaboratoryAppMVVM.Models.Entities
             return _context
                             .AppliedService
                             .ToList()
-                            .Where(s => _validator.IsValidated(_fromPeriod,
-                                                               _toPeriod,
+                            .Where(s => _validator.IsValidated(FromPeriod,
+                                                               ToPeriod,
                                                                s.FinishedDateTime));
         }
 
