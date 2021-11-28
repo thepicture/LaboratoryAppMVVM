@@ -2,13 +2,11 @@
 using LaboratoryAppMVVM.Models;
 using LaboratoryAppMVVM.Models.Entities;
 using LaboratoryAppMVVM.Models.Exports;
-using LaboratoryAppMVVM.Modelss.Exports;
 using LaboratoryAppMVVM.Services;
 using LaboratoryAppMVVM.Stores;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using System.Windows.Input;
 
@@ -21,7 +19,6 @@ namespace LaboratoryAppMVVM.ViewModels
         private readonly AdminViewModel _adminViewModel;
         private readonly LaboratoryDatabaseEntities _context;
         private string _validationErrors = correctPeriodMessage;
-        private TableOrChartExporter _exporter;
 
         public AppliedServiceReportViewModel(ViewModelNavigationStore navigationStore,
                                              AdminViewModel adminViewModel,
@@ -136,7 +133,7 @@ namespace LaboratoryAppMVVM.ViewModels
         private RelayCommand generateReportCommand;
         private Chart _chart;
         private AppliedServiceReport _report;
-        private string _selectedSavePath;
+        private AppliedServicePresentationExporter _exporter;
 
         public ICommand GenerateReportCommand
         {
@@ -197,60 +194,10 @@ namespace LaboratoryAppMVVM.ViewModels
                     tuple.Item2);
             }
             _chart.Series.Add(seriesMeanResultOfServices);
-            ExportPresentation();
-        }
-
-        private void ExportPresentation()
-        {
-            FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
-            if (folderBrowserDialog.ShowDialog() != DialogResult.OK)
-            {
-                return;
-            }
-            _selectedSavePath = folderBrowserDialog.SelectedPath;
-            if (_chart == null)
-            {
-                ShowCantAccessChartError();
-                return;
-            }
-            switch (CurrentExportType)
-            {
-                case "только график":
-                    ExportChartToPdf();
-                    break;
-                case "только таблица":
-                    ExportTableToPdf();
-                    break;
-                case "график и таблица":
-                    ExportChartToPdf();
-                    ExportTableToPdf();
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        private void ShowCantAccessChartError()
-        {
-            MessageService.ShowError("Экспорт неуспешен, потому что "
-                                     + "график недоступен. "
-                                     + "Пожалуйста, перезайдите на страницу"
-                                     + "и попробуйте ещё раз");
-        }
-
-        private void ExportTableToPdf()
-        {
-            throw new NotImplementedException();
-        }
-
-        private void ExportChartToPdf()
-        {
-            using (_exporter = new AppliedServiceTableOrChartPdfExporter(_report,
-                 _selectedSavePath,
-                 _chart))
-            {
-                _exporter.ExportAsChart();
-            }
+            _exporter = new AppliedServicePresentationExporter(_report,
+                                                          _chart,
+                                                          CurrentExportType);
+            _exporter.Export();
         }
     }
 }

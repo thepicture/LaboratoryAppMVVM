@@ -277,7 +277,15 @@ namespace LaboratoryAppMVVM.ViewModels
             {
                 if (_exportCommand == null)
                 {
-                    _exportCommand = new RelayCommand(param => ExportPresentation());
+                    _exportCommand = new RelayCommand(param =>
+                    {
+                        PresentationExporter exporter = new QualityControlPresentationExporter(
+                            _qualityControl,
+                            Chart,
+                            CurrentExportType,
+                            CurrentService);
+                        exporter.Export();
+                    });
                 }
                 return _exportCommand;
             }
@@ -403,63 +411,6 @@ namespace LaboratoryAppMVVM.ViewModels
             {
                 _selectedSavePath = value;
                 OnPropertyChanged();
-            }
-        }
-
-        private void ExportPresentation()
-        {
-            FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
-            if (folderBrowserDialog.ShowDialog() != DialogResult.OK)
-            {
-                return;
-            }
-            SelectedSavePath = folderBrowserDialog.SelectedPath;
-            if (chart == null || CurrentService.AppliedService.Count == 0)
-            {
-                MessageService.ShowError("Экспорт невозможен, " +
-                  "так как у услуги нет связанных с ней " +
-                  "завершённых услуг или график недоступен. Необходима " +
-                  "по крайней мере " +
-                  "одна запись завершённой услуги. Добавьте услугу " +
-                  "и попробуйте ещё раз. Если это не даст эффекта, " +
-                  "попробуйте поменять текущую услугу на другую " +
-                  "и обратно");
-            }
-            switch (CurrentExportType)
-            {
-                case "только график":
-                    ExportChartToPdf();
-                    break;
-                case "только таблица":
-                    ExportTableToPdf();
-                    break;
-                case "график и таблица":
-                    ExportChartToPdf();
-                    ExportTableToPdf();
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        private void ExportTableToPdf()
-        {
-            using (var exporter = new QualityControlTableOrChartPdfExporter(_qualityControl,
-                 _selectedSavePath,
-                 Chart,
-                 CurrentService))
-            {
-                exporter.ExportAsTable();
-            }
-        }
-
-        private void ExportChartToPdf()
-        {
-            using (var exporter = new QualityControlTableOrChartPdfExporter(_qualityControl,
-                 _selectedSavePath,
-                 Chart))
-            {
-                exporter.ExportAsChart();
             }
         }
     }
