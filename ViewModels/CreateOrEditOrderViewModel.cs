@@ -21,6 +21,12 @@ namespace LaboratoryAppMVVM.ViewModels
 {
     public class CreateOrEditOrderViewModel : ViewModelBase
     {
+        private const int barcodeStartNumber = 100000;
+        private const int barcodeEndNumber = 999999 + 1;
+        private const int maxValueForBarcodeId = 100;
+        private const int maxLevenshteinDistance = 4;
+        private const int barcodeWidth = 200;
+        private const int bacodeHeight = 40;
         private readonly ViewModelNavigationStore _navigationStore;
         private readonly ViewModelBase _laboratoryAssistantViewModel;
         private Order _order;
@@ -195,8 +201,13 @@ namespace LaboratoryAppMVVM.ViewModels
             .BaseDirectory, "tempBarcode.png");
             _barcodeText = $"{TubeId}" +
                                 $"{DateTime.Now:ddMMyyyy}" +
-                                $"{new Random().Next(100000, 999999 + 1)}";
+                                $"{GetBarcodeNumber()}";
             return tempBarCodePath;
+        }
+
+        private static int GetBarcodeNumber()
+        {
+            return new Random().Next(barcodeStartNumber, barcodeEndNumber);
         }
 
         private void SaveBarcodeToPdfFile(string tempBarCodePath)
@@ -242,7 +253,7 @@ namespace LaboratoryAppMVVM.ViewModels
         private void GenerateBarcodeBitmap(string tempBarCodePath)
         {
             BarcodeBitmap = new BarcodeImageGenerator(_barcodeText)
-                            .Generate(new Size(200, 40));
+                            .Generate(new Size(barcodeWidth, bacodeHeight));
             PngBitmapEncoder encoder = new PngBitmapEncoder();
             encoder.Frames.Add(BitmapFrame.Create(BarcodeBitmap));
             using (FileStream stream = new FileStream(
@@ -616,7 +627,7 @@ namespace LaboratoryAppMVVM.ViewModels
             return new AppliedService
             {
                 AnalyzerId = _context.Analyzer.First().Id,
-                Result = 0,
+                Result = default,
                 ServiceId = orderService.Id,
                 FinishedDateTime = DateTime.Now + TimeSpan.FromDays(1),
                 IsAccepted = false,
@@ -680,7 +691,7 @@ namespace LaboratoryAppMVVM.ViewModels
                 .Union(Context.Patient.ToList()
                 .Where(p => (int)_levenshteinDistanceCalculator.Calculate(
                 p.FullName.ToLower(),
-                SearchPatientText.ToLower()) < 4)).ToList();
+                SearchPatientText.ToLower()) < maxLevenshteinDistance)).ToList();
             Patients = currentPatients;
             SelectedPatient = currentPatients.FirstOrDefault();
         }
@@ -699,7 +710,7 @@ namespace LaboratoryAppMVVM.ViewModels
                 .Union(Context.Service.ToList()
                 .Where(p => (int)_levenshteinDistanceCalculator.Calculate(
                     p.Name.ToLower(),
-                    SearchServiceText.ToLower()) < 4))
+                    SearchServiceText.ToLower()) < maxLevenshteinDistance))
                 .ToList();
             AllServices.Clear();
             AllServices = new ObservableCollection<Service>
@@ -744,7 +755,8 @@ namespace LaboratoryAppMVVM.ViewModels
         {
             for (int i = 1; i < _deviceManager.DeviceInfos.Count; i++)
             {
-                if (_deviceManager.DeviceInfos[i].Type != WiaDeviceType.ScannerDeviceType)
+                if (_deviceManager.DeviceInfos[i].Type
+                    != WiaDeviceType.ScannerDeviceType)
                 {
                     continue;
                 }
@@ -757,9 +769,9 @@ namespace LaboratoryAppMVVM.ViewModels
             Justification = "Method will be extended later.")]
         private string ParseCodeFromImageFile(ImageFile imageFile)
         {
-            return $"{new Random().Next(100)}"
+            return $"{new Random().Next(maxValueForBarcodeId)}"
                 + $"{DateTime.Now:ddMMyyyy}"
-                + $"{new Random().Next(100000, 999999 + 1)}";
+                + $"{new Random().Next(GetBarcodeNumber())}";
         }
     }
 }

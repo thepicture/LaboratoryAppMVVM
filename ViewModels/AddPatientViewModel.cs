@@ -21,9 +21,10 @@ namespace LaboratoryAppMVVM.ViewModels
         private InsuranceCompany _selectedInsuranceCompany;
         private TypeOfInsurancePolicy _selectedPolicyType;
 
-        public AddPatientViewModel(ViewModelNavigationStore navigationStore,
-                                   IMessageService messageBoxService,
-                                   CreateOrEditOrderViewModel createOrEditOrderViewModel)
+        public AddPatientViewModel(
+            ViewModelNavigationStore navigationStore,
+            IMessageService messageBoxService,
+            CreateOrEditOrderViewModel createOrEditOrderViewModel)
         {
             _navigationStore = navigationStore;
             MessageService = messageBoxService;

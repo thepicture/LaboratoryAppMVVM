@@ -4,9 +4,10 @@ using System.Reflection;
 namespace LaboratoryAppMVVM.Models
 {
     /// <summary>
-    /// Class for searching search text in any properties of the instance.
+    /// Implements methods for 
+    /// searching search text 
+    /// in any properties of the instance.
     /// </summary>
-    /// <typeparam name="T">The type of the class.</typeparam>
     public class AllPropertiesSearcher : IPropertiesSearcher
     {
         private readonly string _searchText;

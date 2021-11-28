@@ -11,11 +11,12 @@ namespace LaboratoryAppMVVM.ViewModels
 {
     public class LaboratoryAssistantViewModel : ViewModelBase
     {
+        private const int timeoutBeforeSessionEnd = 10;
         private readonly ViewModelNavigationStore _navigationStore;
         private List<AppliedService> _appliedServices;
         private LaboratoryDatabaseEntities _context;
         private readonly HaveTimeServiceBase _sessionTimer;
-        private System.Windows.Input.ICommand _navigateToCreateOrEditOrderCommand;
+        private ICommand _navigateToCreateOrEditOrderCommand;
         public TimeSpan CurrentTimeOfSession => _sessionTimer.TotalTimeLeft;
 
         public LaboratoryAssistantViewModel(ViewModelNavigationStore navigationStore,
@@ -25,9 +26,10 @@ namespace LaboratoryAppMVVM.ViewModels
             User = user;
             Title = "Страница лаборанта";
             MessageService = new MessageBoxService();
-            _sessionTimer = new LaboratoryHaveTimeService(TimeSpan.FromMinutes(10),
-                                                          MessageService,
-                                                          _navigationStore);
+            _sessionTimer = new LaboratoryHaveTimeService(
+                TimeSpan.FromMinutes(timeoutBeforeSessionEnd),
+                MessageService,
+                _navigationStore);
             _sessionTimer.TickChanged += OnTickChanged;
             _sessionTimer.Start();
             _navigationStore.CurrentViewModelChanged += OnCurrentViewModelChanged;
@@ -40,7 +42,9 @@ namespace LaboratoryAppMVVM.ViewModels
 
         private void OnCurrentViewModelChanged()
         {
-            DisposerOnTypeEqual<LoginViewModel>.Dispose(_sessionTimer, _navigationStore);
+            DisposerOnTypeEqual<LoginViewModel>.Dispose(
+                _sessionTimer,
+                _navigationStore);
         }
 
         public List<AppliedService> AppliedServices
@@ -79,13 +83,13 @@ namespace LaboratoryAppMVVM.ViewModels
             }
         }
 
-        public System.Windows.Input.ICommand NavigateToCreateOrEditOrderCommand
+        public ICommand NavigateToCreateOrEditOrderCommand
         {
             get
             {
                 if (_navigateToCreateOrEditOrderCommand == null)
                 {
-                    _navigateToCreateOrEditOrderCommand = new Commands.RelayCommand(param =>
+                    _navigateToCreateOrEditOrderCommand = new RelayCommand(param =>
                     {
                         _navigationStore.CurrentViewModel =
                         new CreateOrEditOrderViewModel(_navigationStore,

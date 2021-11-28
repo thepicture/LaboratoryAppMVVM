@@ -15,6 +15,10 @@ namespace LaboratoryAppMVVM.ViewModels
     public class LoginViewModel : ViewModelBase
     {
         private const int prohibitedToLoginTimeout = 10;
+        private const int minCaptchaLettersCount = 3;
+        private const int maxCaptchaLettersCount = 4;
+        private const int captchaWidth = 200;
+        private const int captchaHeight = 40;
         private readonly ViewModelNavigationStore _navigationStore;
         private readonly ILoginService<User, ViewModelNavigationStore> _loginService;
         private string _loginText = "admin";
@@ -31,16 +35,19 @@ namespace LaboratoryAppMVVM.ViewModels
         private RenderTargetBitmap _noiseImage;
         private readonly NoiseGenerator _noiseGenerator;
         private bool _isLoggingIn;
-        public LoginViewModel(ViewModelNavigationStore navigationStore,
-                              IMessageService messageBoxService,
-                              ILoginService<User, ViewModelNavigationStore> loginService)
+        public LoginViewModel(
+            ViewModelNavigationStore navigationStore,
+            IMessageService messageBoxService,
+            ILoginService<User, ViewModelNavigationStore> loginService)
         {
             MessageService = messageBoxService;
             _navigationStore = navigationStore;
             _loginService = loginService;
             Title = "Авторизация";
             _captchaService = new SimpleCaptchaService();
-            CaptchaLetters = _captchaService.GetCaptchaList(3, 4)
+            CaptchaLetters = _captchaService.GetCaptchaList(
+                minCaptchaLettersCount,
+                maxCaptchaLettersCount)
                  .Cast<ListViewCaptchaLetter>()
                  .ToList();
             _noiseGenerator = new NoiseGenerator();
@@ -118,13 +125,15 @@ namespace LaboratoryAppMVVM.ViewModels
                     _regenerateCaptchaCommand =
                         new RelayCommand(param =>
                         {
-                            CaptchaLetters = _captchaService.GetCaptchaList(3, 4)
+                            CaptchaLetters = _captchaService.GetCaptchaList(
+                                minCaptchaLettersCount,
+                                maxCaptchaLettersCount)
                             .Cast<ListViewCaptchaLetter>()
                             .ToList();
                             NoiseImage = _noiseGenerator
                             .Generate(new System.Windows.Size(
-                                200,
-                                40));
+                                captchaWidth,
+                                captchaHeight));
                         });
                 }
                 return _regenerateCaptchaCommand;
@@ -156,7 +165,7 @@ namespace LaboratoryAppMVVM.ViewModels
 
         private async void BlockSystemInput()
         {
-            MessageService.ShowError("Вам запрещён вход на "
+            MessageService.ShowError("Авторизация запрещена на "
                                         + prohibitedToLoginTimeout
                                         + " секунд");
             IsInterfaceNotBlocked = false;
@@ -226,7 +235,8 @@ namespace LaboratoryAppMVVM.ViewModels
                                      + $"Добро пожаловать, "
                                      + $"{currentUser.TypeOfUser.Name} "
                                      + $"{currentUser.Name}!");
-                _navigationStore.CurrentViewModel = _loginService.LoginInAndGetLoginType(
+                _navigationStore.CurrentViewModel = _loginService
+                    .LoginInAndGetLoginType(
                     currentUser,
                     _navigationStore)();
             }

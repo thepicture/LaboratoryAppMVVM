@@ -144,7 +144,10 @@ namespace LaboratoryAppMVVM.ViewModels
             {
                 if (_generateReportCommand == null)
                 {
-                    _generateReportCommand = new RelayCommand((param) => Task.Run(() => GenerateReport()));
+                    _generateReportCommand = new RelayCommand((param) =>
+                    {
+                        Task.Run(() => GenerateReport());
+                    });
                 }
 
                 return _generateReportCommand;

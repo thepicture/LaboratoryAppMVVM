@@ -158,10 +158,14 @@ namespace LaboratoryAppMVVM.ViewModels
             switch (SortTypes.IndexOf(CurrentSortType))
             {
                 case 1:
-                    UserLoginHistories = UserLoginHistories.OrderBy(history => history.DateTime).ToList();
+                    UserLoginHistories = UserLoginHistories
+                        .OrderBy(history => history.DateTime)
+                        .ToList();
                     break;
                 case 2:
-                    UserLoginHistories = UserLoginHistories.OrderByDescending(history => history.DateTime).ToList();
+                    UserLoginHistories = UserLoginHistories
+                        .OrderByDescending(history => history.DateTime)
+                        .ToList();
                     break;
                 default:
                     break;

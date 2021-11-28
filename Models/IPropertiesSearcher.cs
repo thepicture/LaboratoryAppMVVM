@@ -5,7 +5,8 @@ namespace LaboratoryAppMVVM.Models
     public interface IPropertiesSearcher
     {
         /// <summary>
-        /// Searches in properties of the instance 
+        /// Searches in properties 
+        /// of the class <typeparamref name="T"/>
         /// for the given search text.
         /// </summary>
         /// <param name="text">The search text.</param>

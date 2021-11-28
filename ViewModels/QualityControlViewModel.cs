@@ -16,6 +16,8 @@ namespace LaboratoryAppMVVM.ViewModels
 {
     public class QualityControlViewModel : ViewModelBase
     {
+        private const int labelStyleAngle = -45;
+        private const int axisXInterval = 3;
         private readonly ViewModelNavigationStore _navigationStore;
         private readonly ViewModelBase _viewModelToGoBack;
         private ICollection<Service> _services;
@@ -97,8 +99,8 @@ namespace LaboratoryAppMVVM.ViewModels
             Chart = new Chart();
             ChartArea chartArea = new ChartArea("ServiceArea");
             chartArea.AxisX.IsLabelAutoFit = false;
-            chartArea.AxisX.LabelStyle.Angle = -45;
-            chartArea.AxisX.Interval = 3;
+            chartArea.AxisX.LabelStyle.Angle = labelStyleAngle;
+            chartArea.AxisX.Interval = axisXInterval;
 
             _ = new Axis(chartArea, AxisName.Y2);
             Chart.ChartAreas.Add(chartArea);
@@ -113,9 +115,11 @@ namespace LaboratoryAppMVVM.ViewModels
             chartArea.AxisY2.Enabled = AxisEnabled.True;
 
             chartArea.AxisY2.Minimum =
-                chartArea.AxisY.Minimum = CurrentQualityControl.GetStatisticLimit(-3);
+                chartArea.AxisY.Minimum = CurrentQualityControl
+                .GetStatisticLimit(-3);
             chartArea.AxisY2.Maximum =
-                chartArea.AxisY.Maximum = CurrentQualityControl.GetStatisticLimit(4);
+                chartArea.AxisY.Maximum = CurrentQualityControl
+                .GetStatisticLimit(4);
             chartArea.AxisY2.Interval =
                 chartArea.AxisY.Interval =
                 CurrentQualityControl.GetMeanQuadrantDeviation();
@@ -123,86 +127,86 @@ namespace LaboratoryAppMVVM.ViewModels
                 CurrentQualityControl.GetStatisticLimit(3),
                 CurrentQualityControl.GetStatisticLimit(4),
                 "+3s",
-                0,
+                labelRow: 0,
                 LabelMarkStyle.None));
             chartArea.AxisY2.CustomLabels.Add(new CustomLabel(
                 CurrentQualityControl.GetStatisticLimit(2),
                 CurrentQualityControl.GetStatisticLimit(3),
                 "+2s",
-                0,
+                labelRow: 0,
                 LabelMarkStyle.None));
             chartArea.AxisY2.CustomLabels.Add(new CustomLabel(
                 CurrentQualityControl.GetStatisticLimit(1),
                 CurrentQualityControl.GetStatisticLimit(2),
                 "+1s",
-                0,
+                labelRow: 0,
                 LabelMarkStyle.None));
             chartArea.AxisY2.CustomLabels.Add(new CustomLabel(
                 CurrentQualityControl.GetMeanValueOfService(),
                 CurrentQualityControl.GetStatisticLimit(1),
                 "x",
-                0,
+                labelRow: 0,
                 LabelMarkStyle.None));
             chartArea.AxisY2.CustomLabels.Add(new CustomLabel(
                 CurrentQualityControl.GetStatisticLimit(-1),
                 CurrentQualityControl.GetMeanValueOfService(),
                 "-1s",
-                0,
+                labelRow: 0,
                 LabelMarkStyle.None));
             chartArea.AxisY2.CustomLabels.Add(new CustomLabel(
                 CurrentQualityControl.GetStatisticLimit(-2),
                 CurrentQualityControl.GetStatisticLimit(-1),
                 "-2s",
-                0,
+                labelRow: 0,
                 LabelMarkStyle.None));
             chartArea.AxisY2.CustomLabels.Add(new CustomLabel(
                 CurrentQualityControl.GetStatisticLimit(-3),
                 CurrentQualityControl.GetStatisticLimit(-2),
                 "-3s",
-                0,
+                labelRow: 0,
                 LabelMarkStyle.None));
 
             chartArea.AxisY.CustomLabels.Add(new CustomLabel(
                 CurrentQualityControl.GetStatisticLimit(3),
                 CurrentQualityControl.GetStatisticLimit(4),
                 CurrentQualityControl.GetStatisticLimit(3).ToString(),
-                0,
+                labelRow: 0,
                 LabelMarkStyle.None));
             chartArea.AxisY.CustomLabels.Add(new CustomLabel(
                 CurrentQualityControl.GetStatisticLimit(2),
                 CurrentQualityControl.GetStatisticLimit(3),
                 CurrentQualityControl.GetStatisticLimit(2).ToString(),
-                0,
+                labelRow: 0,
                 LabelMarkStyle.None));
             chartArea.AxisY.CustomLabels.Add(new CustomLabel(
                 CurrentQualityControl.GetStatisticLimit(1),
                 CurrentQualityControl.GetStatisticLimit(2),
                 CurrentQualityControl.GetStatisticLimit(1).ToString(),
-                0,
+                labelRow: 0,
                 LabelMarkStyle.None));
             chartArea.AxisY.CustomLabels.Add(new CustomLabel(
                 CurrentQualityControl.GetMeanValueOfService(),
                 CurrentQualityControl.GetStatisticLimit(1),
                 CurrentQualityControl.GetMeanValueOfService().ToString(),
-                0,
+                labelRow: 0,
                 LabelMarkStyle.None));
             chartArea.AxisY.CustomLabels.Add(new CustomLabel(
                 CurrentQualityControl.GetStatisticLimit(-1),
                 CurrentQualityControl.GetMeanValueOfService(),
                 CurrentQualityControl.GetStatisticLimit(-1).ToString(),
-                0,
+                labelRow: 0,
                 LabelMarkStyle.None));
             chartArea.AxisY.CustomLabels.Add(new CustomLabel(
                 CurrentQualityControl.GetStatisticLimit(-2),
                 CurrentQualityControl.GetStatisticLimit(-1),
                 CurrentQualityControl.GetStatisticLimit(-2).ToString(),
-                0,
+                labelRow: 0,
                 LabelMarkStyle.None));
             chartArea.AxisY.CustomLabels.Add(new CustomLabel(
                 CurrentQualityControl.GetStatisticLimit(-3),
                 CurrentQualityControl.GetStatisticLimit(-2),
                 CurrentQualityControl.GetStatisticLimit(-3).ToString(),
-                0,
+                labelRow: 0,
                 LabelMarkStyle.None));
 
             foreach (AppliedService appliedService in CurrentService.AppliedService)
@@ -291,7 +295,8 @@ namespace LaboratoryAppMVVM.ViewModels
         {
             Thread thread = new Thread(new ThreadStart(() =>
              {
-                 PresentationExporter exporter = new QualityControlPresentationExporter(
+                 PresentationExporter exporter =
+                 new QualityControlPresentationExporter(
                     _qualityControl,
                     chart,
                     CurrentExportType,

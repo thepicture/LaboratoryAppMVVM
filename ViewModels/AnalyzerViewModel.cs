@@ -18,7 +18,6 @@ namespace LaboratoryAppMVVM.ViewModels
     {
         private const int timerTimeout = 5;
         private readonly ViewModelNavigationStore _viewModelNavigationStore;
-        private readonly LaboratoryDatabaseEntities _context;
         private Analyzer _analyzer;
         private ObservableCollection<AppliedService> _notAcceptedServices;
         private bool _isNotOnLoginPage = false;
@@ -33,7 +32,6 @@ namespace LaboratoryAppMVVM.ViewModels
         {
             _viewModelNavigationStore = parentViewModel.NavigationStore;
             Analyzer = analyzer;
-            _context = parentViewModel.Context;
             MessageService = parentViewModel.MessageService;
             DispatcherTimer dispatcherTimer = new DispatcherTimer
             {

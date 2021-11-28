@@ -11,17 +11,13 @@ namespace LaboratoryAppMVVM.ViewModels
 {
     public class LaboratoryResearcherViewModel : ViewModelBase
     {
+        private const int timeoutBeforeSessionEnd = 10;
         private readonly IWindowService _laboratoryWindowService;
         private List<Analyzer> _analyzers;
         private LaboratoryDatabaseEntities _context;
         private readonly LaboratoryHaveTimeService _sessionTimer;
-        public string CurrentTimeOfSession
-        {
-            get
-            {
-                return _sessionTimer.TotalTimeLeft.ToString("hh\\:mm");
-            }
-        }
+        public string CurrentTimeOfSession => _sessionTimer.TotalTimeLeft
+            .ToString("hh\\:mm");
 
         private ICommand _openAnalyzerViewModelCommand;
         public event Action SessionEnd;
@@ -35,9 +31,10 @@ namespace LaboratoryAppMVVM.ViewModels
             Title = "Страница лаборанта-исследователя";
             User = user;
             MessageService = new MessageBoxService();
-            _sessionTimer = new LaboratoryHaveTimeService(TimeSpan.FromMinutes(10),
-                                                          MessageService,
-                                                          NavigationStore);
+            _sessionTimer = new LaboratoryHaveTimeService(
+                TimeSpan.FromMinutes(timeoutBeforeSessionEnd),
+                MessageService,
+                NavigationStore);
             _sessionTimer.TickChanged += OnTickChanged;
             _sessionTimer.Start();
             NavigationStore.CurrentViewModelChanged += OnCurrentViewModelChanged;

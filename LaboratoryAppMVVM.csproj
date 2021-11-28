@@ -325,6 +325,7 @@
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>LaboratoryBaseModel.Designer.cs</LastGenOutput>
     </EntityDeploy>
+    <None Include=".editorconfig" />
     <None Include="Models\Entities\LaboratoryBaseModel.edmx.diagram">
       <DependentUpon>LaboratoryBaseModel.edmx</DependentUpon>
     </None>
