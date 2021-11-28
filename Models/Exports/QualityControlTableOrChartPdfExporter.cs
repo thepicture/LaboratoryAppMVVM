@@ -19,7 +19,7 @@ namespace LaboratoryAppMVVM.Models.Exports
 
         public override void ExportAsChart()
         {
-            Chart.SaveImage(Buffer, ChartImageFormat.Png);
+            App.Current.Dispatcher.Invoke(() => Chart.SaveImage(Buffer, ChartImageFormat.Png));
             WordDrawingContext wordDrawingContext = new WordDrawingContext();
             Drawer
                 = new QualityControlChartDrawer(

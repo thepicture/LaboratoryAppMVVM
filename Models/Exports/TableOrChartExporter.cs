@@ -22,8 +22,8 @@ namespace LaboratoryAppMVVM.Modelss.Exports
 
         public Report Report { get; }
         public string FolderPath { get; }
-        public ContentDrawer Drawer { get; set; }
         public Chart Chart { get; }
+        public ContentDrawer Drawer { get; set; }
 
         public void Dispose()
         {

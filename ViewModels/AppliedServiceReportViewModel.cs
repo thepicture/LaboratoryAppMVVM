@@ -8,6 +8,8 @@ using LaboratoryAppMVVM.Stores;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms.DataVisualization.Charting;
 using System.Windows.Input;
 
@@ -131,7 +133,7 @@ namespace LaboratoryAppMVVM.ViewModels
                 : string.Empty;
         }
 
-        private RelayCommand generateReportCommand;
+        private RelayCommand _generateReportCommand;
         private Chart _chart;
         private AppliedServiceReport _report;
         private AppliedServicePresentationExporter _exporter;
@@ -140,16 +142,16 @@ namespace LaboratoryAppMVVM.ViewModels
         {
             get
             {
-                if (generateReportCommand == null)
+                if (_generateReportCommand == null)
                 {
-                    generateReportCommand = new RelayCommand(GenerateReport);
+                    _generateReportCommand = new RelayCommand((param) => Task.Run(() => GenerateReport()));
                 }
 
-                return generateReportCommand;
+                return _generateReportCommand;
             }
         }
 
-        private void GenerateReport(object commandParameter)
+        private void GenerateReport()
         {
             _report = new AppliedServiceReport(_context,
                 _fromPeriod,
@@ -199,7 +201,16 @@ namespace LaboratoryAppMVVM.ViewModels
                                                           _chart,
                                                           CurrentExportType,
                                                           new SimpleFolderDialog());
-            _exporter.Export();
+            Thread thread = new Thread(new ThreadStart(() =>
+            {
+                _exporter.Export();
+            }));
+
+            thread.SetApartmentState(ApartmentState.STA);
+            ValidationErrors = " ";
+            thread.Start();
+            thread.Join();
+            ValidationErrors = string.Empty;
         }
     }
 }

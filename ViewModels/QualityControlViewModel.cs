@@ -5,9 +5,9 @@ using LaboratoryAppMVVM.Models.LaboratoryIO;
 using LaboratoryAppMVVM.Services;
 using LaboratoryAppMVVM.Stores;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Windows.Forms;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms.DataVisualization.Charting;
 using System.Windows.Forms.Integration;
 using System.Windows.Input;
@@ -280,17 +280,30 @@ namespace LaboratoryAppMVVM.ViewModels
                 {
                     _exportCommand = new RelayCommand(param =>
                     {
-                        PresentationExporter exporter = new QualityControlPresentationExporter(
-                            _qualityControl,
-                            Chart,
-                            CurrentExportType,
-                            CurrentService,
-                            new SimpleFolderDialog());
-                        exporter.Export();
+                        _ = Task.Run(ExportPresentation);
                     });
                 }
                 return _exportCommand;
             }
+        }
+
+        private void ExportPresentation()
+        {
+            Thread thread = new Thread(new ThreadStart(() =>
+             {
+                 PresentationExporter exporter = new QualityControlPresentationExporter(
+                    _qualityControl,
+                    chart,
+                    CurrentExportType,
+                    CurrentService,
+                    new SimpleFolderDialog());
+                 exporter.Export();
+             }));
+            thread.SetApartmentState(ApartmentState.STA);
+            IsNotCreatingReport = false;
+            thread.Start();
+            thread.Join();
+            IsNotCreatingReport = true;
         }
 
         public ICollection<KeyValuePair> KeyValues
@@ -412,6 +425,17 @@ namespace LaboratoryAppMVVM.ViewModels
             get => _selectedSavePath; set
             {
                 _selectedSavePath = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool _isNotCreatingReport = true;
+
+        public bool IsNotCreatingReport
+        {
+            get => _isNotCreatingReport; set
+            {
+                _isNotCreatingReport = value;
                 OnPropertyChanged();
             }
         }

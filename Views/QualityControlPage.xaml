@@ -41,7 +41,8 @@
             </WrapPanel>
             <WrapPanel Orientation="Horizontal">
                 <Button Content="Выгрузить данные как"
-                        Command="{Binding ExportCommand}"></Button>
+                        Command="{Binding ExportCommand}"
+                        IsEnabled="{Binding IsNotCreatingReport}"></Button>
                 <ComboBox SelectedItem="{Binding CurrentExportType}"
                       ItemsSource="{Binding ExportTypes}"></ComboBox>
             </WrapPanel>
