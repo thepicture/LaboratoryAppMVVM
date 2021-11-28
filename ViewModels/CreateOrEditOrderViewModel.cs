@@ -4,6 +4,7 @@ using LaboratoryAppMVVM.Models.Entities;
 using LaboratoryAppMVVM.Models.Exceptions;
 using LaboratoryAppMVVM.Models.Exports;
 using LaboratoryAppMVVM.Models.Generators;
+using LaboratoryAppMVVM.Models.LaboratoryIO;
 using LaboratoryAppMVVM.Services;
 using LaboratoryAppMVVM.Stores;
 using System;
@@ -44,11 +45,11 @@ namespace LaboratoryAppMVVM.ViewModels
         private string _searchServiceText = "";
         private readonly ICalculator _levenshteinDistanceCalculator;
         private RelayCommand _createOrderCommand;
-        private string barcodeText;
-        private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog;
-        private NameValueCollection orderBase64String;
-        private DeviceInfo scanner;
-        private DeviceManager deviceManager;
+        private string _barcodeText;
+        private readonly IBrowserDialog _dialog;
+        private NameValueCollection _orderBase64String;
+        private DeviceInfo _scanner;
+        private DeviceManager _deviceManager;
 
         public CreateOrEditOrderViewModel(ViewModelNavigationStore navigationStore,
                                           User user,
@@ -62,6 +63,7 @@ namespace LaboratoryAppMVVM.ViewModels
             _laboratoryAssistantViewModel = laboratoryAssistantViewModel;
             MessageService = messageBoxService;
             _levenshteinDistanceCalculator = new LevenshteinDistanceCalculator();
+            _dialog = new SimpleFolderDialog();
         }
 
         public Order Order
@@ -191,7 +193,7 @@ namespace LaboratoryAppMVVM.ViewModels
             string tempBarCodePath = Path.Combine(AppDomain
             .CurrentDomain
             .BaseDirectory, "tempBarcode.png");
-            barcodeText = $"{TubeId}" +
+            _barcodeText = $"{TubeId}" +
                                 $"{DateTime.Now:ddMMyyyy}" +
                                 $"{new Random().Next(100000, 999999 + 1)}";
             return tempBarCodePath;
@@ -200,11 +202,7 @@ namespace LaboratoryAppMVVM.ViewModels
         private void SaveBarcodeToPdfFile(string tempBarCodePath)
         {
             GenerateBarcodeBitmap(tempBarCodePath);
-            folderBrowserDialog
-                = new System.Windows.Forms.FolderBrowserDialog();
-            bool isPathSelected = folderBrowserDialog.ShowDialog()
-                                  == System.Windows.Forms.DialogResult.OK;
-            if (!isPathSelected)
+            if (!_dialog.ShowDialog())
             {
                 return;
             }
@@ -217,7 +215,7 @@ namespace LaboratoryAppMVVM.ViewModels
 
         private void SetClipboard()
         {
-            Clipboard.SetText(folderBrowserDialog.SelectedPath);
+            Clipboard.SetText(_dialog.GetSelectedItem() as string);
         }
 
         private void SaveBarcodeToSystem(string tempBarCodePath)
@@ -227,7 +225,7 @@ namespace LaboratoryAppMVVM.ViewModels
 
             MessageService.ShowInformation("Документ " +
                 "успешно сохранён по пути " +
-                folderBrowserDialog.SelectedPath +
+                _dialog.GetSelectedItem() as string +
                 "Путь скопирован в буфер обмена");
         }
 
@@ -236,14 +234,14 @@ namespace LaboratoryAppMVVM.ViewModels
             IDrawingContext drawingContext = new WordDrawingContext();
             BarcodeContentDrawer contentDrawer =
                 new BarcodeContentDrawer(drawingContext,
-                                         folderBrowserDialog.SelectedPath,
+                                         _dialog.GetSelectedItem() as string,
                                          new Barcode(tempBarCodePath));
             return contentDrawer;
         }
 
         private void GenerateBarcodeBitmap(string tempBarCodePath)
         {
-            BarcodeBitmap = new BarcodeImageGenerator(barcodeText)
+            BarcodeBitmap = new BarcodeImageGenerator(_barcodeText)
                             .Generate(new Size(200, 40));
             PngBitmapEncoder encoder = new PngBitmapEncoder();
             encoder.Frames.Add(BitmapFrame.Create(BarcodeBitmap));
@@ -510,44 +508,42 @@ namespace LaboratoryAppMVVM.ViewModels
                 _ = Context.SaveChanges();
                 string nameOfOrder = $"Заказ_{Order.Date:yyyy_MM_dd_hh_mm_ss}";
 
-                folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
-                bool isPathSelected = folderBrowserDialog.ShowDialog()
-                                      == System.Windows.Forms.DialogResult.OK;
-                SaveOrderInfoIfPathIsSelected(isPathSelected);
+                if (_dialog.ShowDialog())
+                {
+                    SaveOrderInfo();
+                }
+                else
+                {
+                    MessageService.ShowInformation("Заказ успешно "
+                        + "сохранён в базу данных "
+                        + "без отчётности!");
+                }
             }
             catch (Exception ex)
             {
-                MessageService.ShowError("Не удалось сформировать " +
-                    "заказ. Пожалуйста, попробуйте ещё раз. " +
-                  "Ошибка: " + ex.Message);
+                MessageService.ShowError("Не удалось сформировать "
+                    + "заказ. Пожалуйста, попробуйте ещё раз. "
+                    + "Ошибка: "
+                    + ex.Message);
             }
         }
 
-        private void SaveOrderInfoIfPathIsSelected(bool isPathSelected)
+        private void SaveOrderInfo()
         {
-            if (isPathSelected)
-            {
-                ExportOrderPdf();
-                ExportOrderBase64();
-                MessageService.ShowInformation("Информация о заказе " +
-                    "успешно сохранена в базу данных, а также " +
-                    $"по пути {folderBrowserDialog.SelectedPath} " +
-                    $"в формате .pdf и .txt!");
-            }
-            else
-            {
-                MessageService.ShowInformation("Заказ успешно " +
-                  "сохранён в базу данных " +
-                  "без отчётности!");
-            }
+            ExportOrderPdf();
+            ExportOrderBase64();
+            MessageService.ShowInformation("Информация о заказе "
+                + "успешно сохранена в базу данных, а также "
+                + $"по пути {_dialog.GetSelectedItem() as string} "
+                + $"в формате .pdf и .txt!");
         }
 
         private void ExportOrderBase64()
         {
             string urlEncodeText = $"https://wsrussia.ru/" +
-                $"?data=base64({orderBase64String})";
+                $"?data=base64({_orderBase64String})";
             File.WriteAllText(Path.Combine(
-                folderBrowserDialog.SelectedPath,
+                _dialog.GetSelectedItem() as string,
                 "заказ" + ".txt"),
                 urlEncodeText,
                 encoding: System.Text.Encoding.UTF8);
@@ -558,34 +554,34 @@ namespace LaboratoryAppMVVM.ViewModels
             IDrawingContext drawingContext = new WordDrawingContext();
             OrderContentDrawer contentDrawer =
                 new OrderContentDrawer(drawingContext,
-                                       folderBrowserDialog.SelectedPath,
+                                       _dialog.GetSelectedItem() as string,
                                        Order);
             new Exporter(contentDrawer).Export();
         }
 
         private void CreateNameValueCollectionOfOrder()
         {
-            orderBase64String = System.Web.HttpUtility.ParseQueryString(string.Empty);
+            _orderBase64String = System.Web.HttpUtility.ParseQueryString(string.Empty);
             foreach (System.Reflection.PropertyInfo property in Order.GetType()
                 .GetProperties())
             {
-                orderBase64String.Add("дата_заказа",
+                _orderBase64String.Add("дата_заказа",
                                       _order.Date.ToString("yyyy-MM-dd_hh:mm:ss"));
-                orderBase64String.Add("номер_заказа",
+                _orderBase64String.Add("номер_заказа",
                                       _order.Id.ToString());
-                orderBase64String.Add("номер_пробирки",
+                _orderBase64String.Add("номер_пробирки",
                                       _order.BarcodeOfPatient.Barcode);
-                orderBase64String.Add("номер_страхового полиса",
+                _orderBase64String.Add("номер_страхового полиса",
                                       _order.Patient.InsurancePolicyNumber
                                       ?? "Не указан");
-                orderBase64String.Add("фио",
+                _orderBase64String.Add("фио",
                                       _order.Patient.FullName);
-                orderBase64String.Add("дата_рождения",
+                _orderBase64String.Add("дата_рождения",
                                       _order.Patient.BirthDate.ToString("yyyy-MM-dd"));
-                orderBase64String.Add("перечень_услуг",
+                _orderBase64String.Add("перечень_услуг",
                                       string.Join(", ", _order.AppliedService.ToList()
                                       .Select(s => s.Service.Name)));
-                orderBase64String.Add("стоимость",
+                _orderBase64String.Add("стоимость",
                                       _order.AppliedService.Sum(s => s.Service.Price)
                                       .ToString("N2"));
             }
@@ -718,9 +714,9 @@ namespace LaboratoryAppMVVM.ViewModels
 
         private void GetBarcodeForScanner()
         {
-            deviceManager = new DeviceManager();
+            _deviceManager = new DeviceManager();
             FindFirstAvailableScanner();
-            if (scanner == null)
+            if (_scanner == null)
             {
                 MessageService.ShowError("Сканеры " +
                     "не обнаружены " +
@@ -736,7 +732,7 @@ namespace LaboratoryAppMVVM.ViewModels
 
         private void ParseTubeIdFromScanner()
         {
-            Device device = scanner.Connect();
+            Device device = _scanner.Connect();
             Item item = device.Items[1];
             ImageFile imageFile = (ImageFile)item
                 .Transfer(FormatID.wiaFormatPNG);
@@ -746,13 +742,13 @@ namespace LaboratoryAppMVVM.ViewModels
 
         private void FindFirstAvailableScanner()
         {
-            for (int i = 1; i < deviceManager.DeviceInfos.Count; i++)
+            for (int i = 1; i < _deviceManager.DeviceInfos.Count; i++)
             {
-                if (deviceManager.DeviceInfos[i].Type != WiaDeviceType.ScannerDeviceType)
+                if (_deviceManager.DeviceInfos[i].Type != WiaDeviceType.ScannerDeviceType)
                 {
                     continue;
                 }
-                scanner = deviceManager.DeviceInfos[i];
+                _scanner = _deviceManager.DeviceInfos[i];
             }
         }
 

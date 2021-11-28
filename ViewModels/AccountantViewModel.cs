@@ -2,6 +2,7 @@
 using LaboratoryAppMVVM.Models;
 using LaboratoryAppMVVM.Models.Entities;
 using LaboratoryAppMVVM.Models.Exports;
+using LaboratoryAppMVVM.Models.LaboratoryIO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,10 +20,10 @@ namespace LaboratoryAppMVVM.ViewModels
         private string _dateValidationErrors = "";
         private LaboratoryDatabaseEntities _context;
         private bool _isCorrectPeriod = false;
-        private FolderBrowserDialog _folderBrowserDialog;
+        private readonly IBrowserDialog _dialog;
         private List<InsuranceCompany> _reportInsuranceCompanies;
-        private IValidator _dateTimeValidator;
-        private IValidator _dateTimeIsInPeriodValidator;
+        private readonly IValidator _dateTimeValidator;
+        private readonly IValidator _dateTimeIsInPeriodValidator;
 
         public AccountantViewModel(User user)
         {
@@ -30,6 +31,7 @@ namespace LaboratoryAppMVVM.ViewModels
             User = user;
             _dateTimeValidator = new DateTimeValidator();
             _dateTimeIsInPeriodValidator = new DateTimeIsInPeriodValidator();
+            _dialog = new SimpleFolderDialog();
         }
 
         public ICollection<AppliedService> AppliedServices
@@ -139,7 +141,7 @@ namespace LaboratoryAppMVVM.ViewModels
                 DateValidationErrors = "За указанный период компаний не найдено";
                 return;
             }
-            if (_folderBrowserDialog.ShowDialog() == DialogResult.OK)
+            if (_dialog.ShowDialog())
             {
                 ExportInsuranceCompanyReport();
             }
@@ -147,7 +149,6 @@ namespace LaboratoryAppMVVM.ViewModels
 
         private void PrepareInsuranceCompaniesInPeriod()
         {
-            _folderBrowserDialog = new FolderBrowserDialog();
             ICollection<InsuranceCompany> allCompanies = Context
                 .InsuranceCompany
                 .ToList();
@@ -160,13 +161,13 @@ namespace LaboratoryAppMVVM.ViewModels
         {
             ExcelDrawingContext drawingContext = new ExcelDrawingContext();
             var drawer = new InsuranceCompanyContentDrawer(drawingContext,
-                _folderBrowserDialog.SelectedPath,
+                _dialog.GetSelectedItem() as string,
                 _reportInsuranceCompanies,
                 FromPeriod,
                 ToPeriod);
             new Exporter(drawer).Export();
             DateValidationErrors = "Отчёт успешно сформирован по пути " +
-                _folderBrowserDialog.SelectedPath + "!";
+                _dialog.GetSelectedItem() as string + "!";
         }
 
         private Func<Patient, bool> PatientsWithServicesInPeriod()

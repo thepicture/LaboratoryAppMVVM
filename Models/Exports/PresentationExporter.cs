@@ -1,6 +1,6 @@
 ﻿using LaboratoryAppMVVM.Models.Entities;
+using LaboratoryAppMVVM.Models.LaboratoryIO;
 using System;
-using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 
 namespace LaboratoryAppMVVM.Models.Exports
@@ -11,6 +11,7 @@ namespace LaboratoryAppMVVM.Models.Exports
         private readonly Chart _chart;
         private readonly string _exportType;
         protected string _selectedSavePath;
+        private readonly IBrowserDialog _dialog;
 
         public string SelectedSavePath { get => _selectedSavePath; set => _selectedSavePath = value; }
 
@@ -18,21 +19,25 @@ namespace LaboratoryAppMVVM.Models.Exports
 
         public Chart Chart => _chart;
 
-        public PresentationExporter(Report report, Chart chart, string exportType)
+        public PresentationExporter(
+            Report report,
+            Chart chart,
+            string exportType,
+            IBrowserDialog dialog)
         {
             _report = report;
             _chart = chart;
             _exportType = exportType;
+            _dialog = dialog;
         }
 
         public void Export()
         {
-            FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
-            if (folderBrowserDialog.ShowDialog() != DialogResult.OK)
+            if (!_dialog.ShowDialog())
             {
                 return;
             }
-            SelectedSavePath = folderBrowserDialog.SelectedPath;
+            SelectedSavePath = _dialog.GetSelectedItem() as string;
             if (Chart == null)
             {
                 throw new NullReferenceException("Экспорт неуспешен, потому что "

@@ -1,4 +1,5 @@
 ﻿using LaboratoryAppMVVM.Models.Entities;
+using LaboratoryAppMVVM.Models.LaboratoryIO;
 using System.Windows.Forms.DataVisualization.Charting;
 
 namespace LaboratoryAppMVVM.Models.Exports
@@ -11,7 +12,8 @@ namespace LaboratoryAppMVVM.Models.Exports
             Report report,
             Chart chart,
             string exportType,
-            Service service) : base(report, chart, exportType)
+            Service service,
+            IBrowserDialog dialog) : base(report, chart, exportType, dialog)
         {
             _service = service;
         }

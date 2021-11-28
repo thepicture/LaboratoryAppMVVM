@@ -2,6 +2,7 @@
 using LaboratoryAppMVVM.Models;
 using LaboratoryAppMVVM.Models.Entities;
 using LaboratoryAppMVVM.Models.Exports;
+using LaboratoryAppMVVM.Models.LaboratoryIO;
 using LaboratoryAppMVVM.Services;
 using LaboratoryAppMVVM.Stores;
 using System;
@@ -196,7 +197,8 @@ namespace LaboratoryAppMVVM.ViewModels
             _chart.Series.Add(seriesMeanResultOfServices);
             _exporter = new AppliedServicePresentationExporter(_report,
                                                           _chart,
-                                                          CurrentExportType);
+                                                          CurrentExportType,
+                                                          new SimpleFolderDialog());
             _exporter.Export();
         }
     }

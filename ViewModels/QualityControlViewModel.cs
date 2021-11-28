@@ -1,6 +1,7 @@
 ﻿using LaboratoryAppMVVM.Commands;
 using LaboratoryAppMVVM.Models.Entities;
 using LaboratoryAppMVVM.Models.Exports;
+using LaboratoryAppMVVM.Models.LaboratoryIO;
 using LaboratoryAppMVVM.Services;
 using LaboratoryAppMVVM.Stores;
 using System.Collections.Generic;
@@ -283,7 +284,8 @@ namespace LaboratoryAppMVVM.ViewModels
                             _qualityControl,
                             Chart,
                             CurrentExportType,
-                            CurrentService);
+                            CurrentService,
+                            new SimpleFolderDialog());
                         exporter.Export();
                     });
                 }

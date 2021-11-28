@@ -102,6 +102,8 @@
     <Compile Include="Models\Exports\ITableExporter.cs" />
     <Compile Include="Models\Exports\QualityControlChartDrawer.cs" />
     <Compile Include="Models\Exports\QualityControlTableDrawer.cs" />
+    <Compile Include="Models\LaboratoryIO\IBrowserDialog.cs" />
+    <Compile Include="Models\LaboratoryIO\SimpleFolderDialog.cs" />
     <Compile Include="ViewModels\AppliedServiceReportViewModel.cs" />
     <Compile Include="Views\AppliedServiceReportView.xaml.cs">
       <DependentUpon>AppliedServiceReportView.xaml</DependentUpon>

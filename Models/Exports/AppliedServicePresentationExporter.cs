@@ -1,4 +1,5 @@
 ﻿using LaboratoryAppMVVM.Models.Entities;
+using LaboratoryAppMVVM.Models.LaboratoryIO;
 using System;
 using System.Windows.Forms.DataVisualization.Charting;
 
@@ -9,7 +10,8 @@ namespace LaboratoryAppMVVM.Models.Exports
         public AppliedServicePresentationExporter(
             Report report,
             Chart chart,
-            string exportType) : base(report, chart, exportType)
+            string exportType,
+            IBrowserDialog dialog) : base(report, chart, exportType, dialog)
         {
         }
 
