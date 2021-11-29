@@ -326,6 +326,7 @@
       <LastGenOutput>LaboratoryBaseModel.Designer.cs</LastGenOutput>
     </EntityDeploy>
     <None Include=".editorconfig" />
+    <None Include="Diagrams\PharmacyBaseDiagram.vsdx" />
     <None Include="Models\Entities\LaboratoryBaseModel.edmx.diagram">
       <DependentUpon>LaboratoryBaseModel.edmx</DependentUpon>
     </None>
@@ -407,6 +408,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Diagrams\PharmacyBaseDiagram.png" />
     <Content Include="Models\Entities\LaboratoryBaseModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>LaboratoryBaseModel.edmx</DependentUpon>
@@ -419,5 +421,6 @@
     </Content>
     <Resource Include="Resources\loader.gif" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
