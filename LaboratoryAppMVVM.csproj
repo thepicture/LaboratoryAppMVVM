@@ -326,6 +326,7 @@
       <LastGenOutput>LaboratoryBaseModel.Designer.cs</LastGenOutput>
     </EntityDeploy>
     <None Include=".editorconfig" />
+    <None Include="Diagrams\LaboratorySystemArchitecture.vsdx" />
     <None Include="Diagrams\LaboratoryUseCaseDiagram.vsdx" />
     <None Include="Diagrams\PharmacyBaseDiagram.vsdx" />
     <None Include="Models\Entities\LaboratoryBaseModel.edmx.diagram">
@@ -410,6 +411,8 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Diagrams\PharmacyBaseDiagram.png" />
+    <Resource Include="Diagrams\LaboratoryUseCaseDiagram.png" />
+    <Resource Include="Diagrams\LaboratorySystemArchitecture.png" />
     <Content Include="Models\Entities\LaboratoryBaseModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>LaboratoryBaseModel.edmx</DependentUpon>
