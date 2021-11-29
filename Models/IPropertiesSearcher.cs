@@ -14,6 +14,6 @@ namespace LaboratoryAppMVVM.Models
         /// and returns bool which determines 
         /// if a property of the object 
         /// satisfies the search text.</returns>
-        Func<T, bool> Search<T>() where T: class;
+        Func<T, bool> Search<T>() where T : class;
     }
 }

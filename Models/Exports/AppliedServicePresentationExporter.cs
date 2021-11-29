@@ -1,6 +1,5 @@
 ﻿using LaboratoryAppMVVM.Models.Entities;
 using LaboratoryAppMVVM.Models.LaboratoryIO;
-using System;
 using System.Windows.Forms.DataVisualization.Charting;
 
 namespace LaboratoryAppMVVM.Models.Exports
@@ -17,7 +16,8 @@ namespace LaboratoryAppMVVM.Models.Exports
 
         public override void ExportChartToPdf()
         {
-            using (var exporter = new AppliedServiceTableOrChartPdfExporter(_report,
+            using (AppliedServiceTableOrChartPdfExporter exporter
+                = new AppliedServiceTableOrChartPdfExporter(_report,
                  _selectedSavePath,
                  Chart))
             {
@@ -27,7 +27,8 @@ namespace LaboratoryAppMVVM.Models.Exports
 
         public override void ExportTableToPdf()
         {
-            using (var exporter = new AppliedServiceTableOrChartPdfExporter(_report,
+            using (AppliedServiceTableOrChartPdfExporter exporter =
+                new AppliedServiceTableOrChartPdfExporter(_report,
                  _selectedSavePath,
                  Chart))
             {

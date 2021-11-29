@@ -17,12 +17,14 @@ namespace LaboratoryAppMVVM.Models.Entities
 
         public IEnumerable<Tuple<Service, double>> GetMeanResultOfServicesPerPeriod()
         {
-            IEnumerable<Tuple<Service, double>> MeanResultOfServicePerPeriod = new List<Tuple<Service, double>>();
+            IEnumerable<Tuple<Service, double>> MeanResultOfServicePerPeriod =
+                new List<Tuple<Service, double>>();
             foreach (Service service in _context.Service.ToList())
             {
                 if (service.AppliedService.Count == 0)
                 {
-                    MeanResultOfServicePerPeriod = MeanResultOfServicePerPeriod.Append(Tuple.Create(service, .0));
+                    MeanResultOfServicePerPeriod = MeanResultOfServicePerPeriod
+                        .Append(Tuple.Create(service, default(double)));
                 }
                 else
                 {
@@ -34,7 +36,8 @@ namespace LaboratoryAppMVVM.Models.Entities
                                             s.FinishedDateTime);
                     }).Select(s => s.Result).Sum() /
                             (ToPeriod - FromPeriod).Days;
-                    MeanResultOfServicePerPeriod = MeanResultOfServicePerPeriod.Append(Tuple.Create(service, meanResult));
+                    MeanResultOfServicePerPeriod = MeanResultOfServicePerPeriod
+                        .Append(Tuple.Create(service, meanResult));
                 }
             }
             return MeanResultOfServicePerPeriod;
@@ -48,14 +51,16 @@ namespace LaboratoryAppMVVM.Models.Entities
             {
                 if (service.AppliedService.Count == 0)
                 {
-                    MeanPatientsPerDayOfServices = MeanPatientsPerDayOfServices.Append(Tuple.Create(service, 0));
+                    MeanPatientsPerDayOfServices = MeanPatientsPerDayOfServices
+                        .Append(Tuple.Create(service, 0));
                 }
                 else
                 {
 
                     int meanResult = Convert.ToInt32(Math.Floor(GetPatientsCount() /
                             (ToPeriod - FromPeriod).TotalDays));
-                    MeanPatientsPerDayOfServices = MeanPatientsPerDayOfServices.Append(Tuple.Create(service,
+                    MeanPatientsPerDayOfServices = MeanPatientsPerDayOfServices
+                        .Append(Tuple.Create(service,
                         meanResult));
                 }
             }

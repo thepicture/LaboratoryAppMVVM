@@ -36,10 +36,11 @@ namespace LaboratoryAppMVVM.Models
             };
         }
 
-        private static bool IsAnyPropertyInObjectContainsValue<T>(string searchText,
-                                                        T instance,
-                                                        PropertyInfo[] properties,
-                                                        bool isPropertySatisfiesSearchText)
+        private static bool IsAnyPropertyInObjectContainsValue<T>(
+            string searchText,
+            T instance,
+            PropertyInfo[] properties,
+            bool isPropertySatisfiesSearchText)
         {
             foreach (PropertyInfo property in properties)
             {
@@ -52,7 +53,9 @@ namespace LaboratoryAppMVVM.Models
                 {
                     continue;
                 }
-                isPropertySatisfiesSearchText = IsValueContainsSearchText(searchText, valueOfProperty);
+                isPropertySatisfiesSearchText = IsValueContainsSearchText(
+                    searchText,
+                    valueOfProperty);
             }
 
             return isPropertySatisfiesSearchText;

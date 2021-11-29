@@ -10,7 +10,10 @@ namespace LaboratoryAppMVVM.Services
         private readonly string _jsonData;
         private readonly int _timeoutInSeconds;
 
-        public JsonServicePoster(string url, string jsonData, int timeoutInSeconds = 30)
+        public JsonServicePoster(
+            string url,
+            string jsonData,
+            int timeoutInSeconds = 30)
         {
             _url = url;
             _jsonData = jsonData;

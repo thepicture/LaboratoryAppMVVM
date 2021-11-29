@@ -2,7 +2,7 @@
 
 namespace LaboratoryAppMVVM.Models.Entities
 {
-    public class ListViewCaptchaLetter : CaptchaLetterBase
+    public class ListViewCaptchaLetter : CaptchaLetter
     {
         public SolidColorBrush Color { get; set; }
         public int FontSize { get; set; }

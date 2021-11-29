@@ -10,30 +10,11 @@ namespace LaboratoryAppMVVM.Models
         /// <summary>
         /// Calculates a not concrete distance between two given strings.
         /// </summary>
-        /// <param name="firstString">The first string.</param>
-        /// <param name="secondString">The second string.</param>
-        /// <returns>The not concrete distance between two given strings.</returns>
-        public int Calculate(string firstString, string secondString)
-        {
-            if (secondString.Length == 0) return firstString.Length;
-            if (firstString.Length == 0) return secondString.Length;
-            if (firstString[0] == secondString[0])
-            {
-                return Calculate(firstString.Substring(1), secondString.Substring(1));
-            }
-            else
-            {
-                return 1 + Math.Min
-                    (
-                        Calculate(firstString.Substring(1), secondString),
-                        Math.Min(Calculate(firstString,
-                                           secondString.Substring(1)), Calculate(
-                                               firstString.Substring(1),
-                                               secondString.Substring(1)))
-                    );
-            }
-        }
-
+        /// <param name="firstStringAndSecondStringArray">
+        /// A first and a second strings.
+        /// </param>
+        /// <returns>The not concrete distance 
+        /// between two given strings as the integer.</returns>
         public object Calculate(params object[] firstStringAndSecondStringArray)
         {
             if (firstStringAndSecondStringArray == null
@@ -46,22 +27,47 @@ namespace LaboratoryAppMVVM.Models
             }
             string firstSentence = (string)firstStringAndSecondStringArray[0];
             string secondSentence = (string)firstStringAndSecondStringArray[1];
-            if (secondSentence.Length == 0) return firstSentence.Length;
-            if (firstSentence.Length == 0) return secondSentence.Length;
+            if (secondSentence.Length == 0)
+            {
+                return firstSentence.Length;
+            }
+
+            if (firstSentence.Length == 0)
+            {
+                return secondSentence.Length;
+            }
+
             if (firstSentence[0] == secondSentence[0])
             {
-                return Calculate(firstSentence.Substring(1),
-                                 secondSentence.Substring(1));
+                return Calculate(new string[]{ firstSentence.Substring(1),
+                                 secondSentence.Substring(1) });
             }
             else
             {
                 return 1 + Math.Min
                     (
-                        Calculate(firstSentence.Substring(1), secondSentence),
-                        Math.Min(Calculate(firstSentence,
-                                           secondSentence.Substring(1)), Calculate(
-                                               firstSentence.Substring(1),
-                                               secondSentence.Substring(1)))
+                        (int)Calculate
+                        (
+                            new string[] { firstSentence.Substring(1), secondSentence }
+                        ),
+                        Math.Min
+                        (
+                            (int)Calculate
+                            (
+                                new string[]
+                                {
+                                    firstSentence,
+                                    secondSentence.Substring(1)
+                                }
+                            ), (int)Calculate
+                            (
+                                new string[]
+                                {
+                                    firstSentence.Substring(1),
+                                    secondSentence.Substring(1)
+                                }
+                            )
+                        )
                     );
             }
         }

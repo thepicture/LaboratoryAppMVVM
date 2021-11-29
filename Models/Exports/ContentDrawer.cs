@@ -13,7 +13,9 @@
         protected readonly IDrawingContext _drawingContext;
         protected readonly string _saveFolderPath;
 
-        protected ContentDrawer(IDrawingContext drawingContext, string saveFolderPath)
+        protected ContentDrawer(
+            IDrawingContext drawingContext,
+            string saveFolderPath)
         {
             _drawingContext = drawingContext;
             _saveFolderPath = saveFolderPath;

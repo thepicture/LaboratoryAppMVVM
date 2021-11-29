@@ -11,7 +11,7 @@ namespace LaboratoryAppMVVM.Models.HttpClasses
     /// </summary>
     public class CustomTimeoutWebClient : WebClient
     {
-        private int _responseWaitTimeoutInSeconds;
+        private readonly int _responseWaitTimeoutInSeconds;
 
         /// <summary>
         /// Initializes a new instance of the System.Net.WebClient class 
@@ -33,7 +33,12 @@ namespace LaboratoryAppMVVM.Models.HttpClasses
         protected override WebRequest GetWebRequest(Uri address)
         {
             WebRequest webRequest = base.GetWebRequest(address);
-            webRequest.Timeout = Convert.ToInt32(TimeSpan.FromSeconds(_responseWaitTimeoutInSeconds).TotalMilliseconds);
+            webRequest.Timeout = Convert.ToInt32
+                (
+                    TimeSpan
+                    .FromSeconds(_responseWaitTimeoutInSeconds)
+                    .TotalMilliseconds
+                );
             return webRequest;
         }
     }

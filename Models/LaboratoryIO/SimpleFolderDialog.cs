@@ -1,6 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 
 namespace LaboratoryAppMVVM.Models.LaboratoryIO
 {
@@ -11,14 +9,7 @@ namespace LaboratoryAppMVVM.Models.LaboratoryIO
 
         public object GetSelectedItem()
         {
-            if (!_result)
-            {
-                return null;
-            }
-            else
-            {
-                return _dialog.SelectedPath;
-            }
+            return !_result ? null : (object)_dialog.SelectedPath;
         }
 
         public bool ShowDialog()

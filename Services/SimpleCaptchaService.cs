@@ -19,7 +19,7 @@ namespace LaboratoryAppMVVM.Services
             _random = new Random();
         }
 
-        public IEnumerable<CaptchaLetterBase> GetCaptchaList(int minLettersCount,
+        public IEnumerable<CaptchaLetter> GetCaptchaList(int minLettersCount,
                                                              int maxLettersCount)
         {
             int lettersCount = _random.Next(minLettersCount, maxLettersCount + 1);

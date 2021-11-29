@@ -31,7 +31,7 @@ namespace LaboratoryAppMVVM.Models.Exports
             int startRowIndex = 1;
             table.Cell(startRowIndex, 1).Range.Text = "Дата и время исследования";
             table.Cell(startRowIndex++, 2).Range.Text = "Предел значений";
-            foreach (var service in _qualityControl.GetServices())
+            foreach (AppliedService service in _qualityControl.GetServices())
             {
                 table.Cell(startRowIndex, 1).Range.Text = service.FinishedDateTime
                     .ToString("yyyy-MM-dd hh:mm:ss");
@@ -39,7 +39,7 @@ namespace LaboratoryAppMVVM.Models.Exports
                     .ToString("N2");
             }
             range.InsertParagraphAfter();
-            document.Paragraphs.Add();
+            _ = document.Paragraphs.Add();
             paragraph = document.Paragraphs.Last;
             range = paragraph.Range;
 

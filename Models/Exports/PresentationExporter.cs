@@ -5,19 +5,28 @@ using System.Windows.Forms.DataVisualization.Charting;
 
 namespace LaboratoryAppMVVM.Models.Exports
 {
+    /// <summary>
+    /// Implements methods to export a presentation 
+    /// as a chart or table. 
+    /// <br></br>
+    /// <br></br>
+    /// This class cannot be instantiated.
+    /// </summary>
     public abstract class PresentationExporter : IExporter
     {
         protected readonly Report _report;
-        private readonly Chart _chart;
         private readonly string _exportType;
         protected string _selectedSavePath;
         private readonly IBrowserDialog _dialog;
 
-        public string SelectedSavePath { get => _selectedSavePath; set => _selectedSavePath = value; }
+        public string SelectedSavePath
+        {
+            get => _selectedSavePath; set => _selectedSavePath = value;
+        }
 
         public Report Report => _report;
 
-        public Chart Chart => _chart;
+        public Chart Chart { get; }
 
         public PresentationExporter(
             Report report,
@@ -26,7 +35,7 @@ namespace LaboratoryAppMVVM.Models.Exports
             IBrowserDialog dialog)
         {
             _report = report;
-            _chart = chart;
+            Chart = chart;
             _exportType = exportType;
             _dialog = dialog;
         }

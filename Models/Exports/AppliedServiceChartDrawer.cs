@@ -32,13 +32,17 @@ namespace LaboratoryAppMVVM.Models.Exports
                 Range range = paragraph.Range;
 
                 _ = range.InlineShapes.AddPicture(GetTempFileName());
-                range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
+                range.ParagraphFormat.Alignment =
+                    WdParagraphAlignment.wdAlignParagraphCenter;
                 range.InsertParagraphAfter();
 
                 range = document.Paragraphs.Last.Range;
                 Table table = range.Tables.Add(range, 3, 2);
-                table.Borders.InsideLineStyle = table.Borders.OutsideLineStyle = WdLineStyle.wdLineStyleSingle;
-                table.Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
+                table.Borders.InsideLineStyle =
+                    table.Borders.OutsideLineStyle =
+                    WdLineStyle.wdLineStyleSingle;
+                table.Range.ParagraphFormat.Alignment =
+                    WdParagraphAlignment.wdAlignParagraphCenter;
                 Cell cell = table.Cell(1, 1);
                 cell.Range.Text = "Количество оказанных услуг за период времени";
                 cell = table.Cell(1, 2);
@@ -47,7 +51,8 @@ namespace LaboratoryAppMVVM.Models.Exports
                 cell = table.Cell(2, 1);
                 cell.Range.Text = "Перечень услуг за период времени";
                 cell = table.Cell(2, 2);
-                cell.Range.Text = string.Join(", ", _report.GetSetOfServicesPerPeriod()
+                cell.Range.Text = string.Join(", ",
+                    _report.GetSetOfServicesPerPeriod()
                     .ToList()
                     .Select(s => s.Name));
 
@@ -71,14 +76,17 @@ namespace LaboratoryAppMVVM.Models.Exports
 
         private static string GetTempFileName()
         {
-            return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "tempImage.png");
+            return Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
+                                "tempImage.png");
         }
 
         public override void Save()
         {
             try
             {
-                string nameOfFile = "График_" + DateTime.Now.ToString("yyyy-MM-dd_hh-mm-ss") + ".pdf";
+                string nameOfFile = "График_"
+                    + DateTime.Now.ToString("yyyy-MM-dd_hh-mm-ss")
+                    + ".pdf";
                 string fullPathToPdf = Path.Combine(_saveFolderPath, nameOfFile);
                 (_drawingContext.GetContext() as Document)
                     .SaveAs(fullPathToPdf, WdSaveFormat.wdFormatPDF);

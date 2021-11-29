@@ -9,7 +9,7 @@ namespace LaboratoryAppMVVM.Services
         /// Generates the captcha and returns the list of captcha letters.
         /// </summary>
         /// <returns>The list of captcha letters.</returns>
-        IEnumerable<CaptchaLetterBase> GetCaptchaList(int minLetters, int maxLetters);
+        IEnumerable<CaptchaLetter> GetCaptchaList(int minLetters, int maxLetters);
 
     }
 }

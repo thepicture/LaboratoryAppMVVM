@@ -2,7 +2,7 @@
 {
     /// <summary>
     /// Defines a method to show a dialog 
-    /// which allows an user to interact with to
+    /// which allows an user to interact with it to
     /// select an item, which can be used later.
     /// </summary>
     public interface IBrowserDialog
@@ -11,7 +11,7 @@
         /// Shows a dialog to select an item.
         /// </summary>
         /// <returns>Returns true if actions done in the dialog 
-        /// lend to the successful selection of an item. 
+        /// led to the successful selection of an item. 
         /// Otherwise returns false.</returns>
         bool ShowDialog();
         /// <summary>

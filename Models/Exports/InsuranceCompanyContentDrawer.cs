@@ -10,6 +10,7 @@ namespace LaboratoryAppMVVM.Models.Exports
 {
     public class InsuranceCompanyContentDrawer : ContentDrawer
     {
+        private const int fontSize = 8;
         private readonly ICollection<InsuranceCompany> _insuranceCompanies;
         private readonly DateTime _from;
         private readonly DateTime _to;
@@ -53,11 +54,13 @@ namespace LaboratoryAppMVVM.Models.Exports
                     patientsServicesHeader.Merge();
                     patientsServicesHeader.Value = $"Услуги пациента "
                                                    + patient.FullName;
-                    patientsServicesHeader.HorizontalAlignment = XlHAlign.xlHAlignCenter;
+                    patientsServicesHeader.HorizontalAlignment = XlHAlign
+                        .xlHAlignCenter;
                     startRowIndex++;
                     foreach (AppliedService appliedService in patient.AppliedService)
                     {
-                        worksheet.Cells[1][startRowIndex] = appliedService.Service.Name;
+                        worksheet.Cells[1][startRowIndex] = appliedService
+                            .Service.Name;
                         worksheet.Cells[2][startRowIndex++] = appliedService.Service
                             .Price + " руб.";
                     }
@@ -72,10 +75,13 @@ namespace LaboratoryAppMVVM.Models.Exports
                 worksheet.Cells[2][startRowIndex] = company.Patient
                     .Sum(p => p.AppliedService.Sum(s => s.Service.Price)) + " руб.";
                 Range rangeBorders = worksheet
-                    .Range[worksheet.Cells[1][newCompanyStartIndex],
-                                                     worksheet.Cells[2][startRowIndex]];
+                    .Range
+                    [
+                        worksheet.Cells[1][newCompanyStartIndex],
+                        worksheet.Cells[2][startRowIndex]
+                    ];
                 rangeBorders.Cells.Borders.LineStyle = XlLineStyle.xlContinuous;
-                rangeBorders.Font.Size = 8;
+                rangeBorders.Font.Size = fontSize;
                 worksheet.Columns.AutoFit();
                 startRowIndex += 2;
                 newCompanyStartIndex = startRowIndex;

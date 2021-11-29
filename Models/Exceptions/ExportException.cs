@@ -13,11 +13,15 @@ namespace LaboratoryAppMVVM.Models.Exceptions
         {
         }
 
-        public ExportException(string message, Exception innerException) : base(message, innerException)
+        public ExportException(
+            string message,
+            Exception innerException) : base(message, innerException)
         {
         }
 
-        protected ExportException(SerializationInfo info, StreamingContext context) : base(info, context)
+        protected ExportException(
+            SerializationInfo info,
+            StreamingContext context) : base(info, context)
         {
         }
     }

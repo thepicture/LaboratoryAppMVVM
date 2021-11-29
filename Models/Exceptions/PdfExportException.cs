@@ -13,11 +13,15 @@ namespace LaboratoryAppMVVM.Models.Exceptions
         {
         }
 
-        public PdfExportException(string message, Exception innerException) : base(message, innerException)
+        public PdfExportException(
+            string message,
+            Exception innerException) : base(message, innerException)
         {
         }
 
-        protected PdfExportException(SerializationInfo info, StreamingContext context) : base(info, context)
+        protected PdfExportException(
+            SerializationInfo info,
+            StreamingContext context) : base(info, context)
         {
         }
     }

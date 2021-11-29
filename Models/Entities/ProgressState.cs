@@ -1,7 +1,7 @@
 ﻿namespace LaboratoryAppMVVM.Models.Entities
 {
     /// <summary>
-    /// Describes the progress state of the research status of analyzer.
+    /// Describes the progress state of the research status of an analyzer.
     /// </summary>
     public class ProgressState
     {

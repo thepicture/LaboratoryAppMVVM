@@ -1,10 +1,9 @@
 ﻿namespace LaboratoryAppMVVM.Models.Entities
 {
     /// <summary>
-    /// The base class of captcha letters representation. 
-    /// Cannot be instantiated.
+    /// Defines a letter of the captcha. 
     /// </summary>
-    public class CaptchaLetterBase
+    public class CaptchaLetter
     {
         public string Letter { get; set; }
     }

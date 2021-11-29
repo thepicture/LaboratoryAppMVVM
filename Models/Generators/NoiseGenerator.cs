@@ -25,11 +25,14 @@ namespace LaboratoryAppMVVM.Models.Generators
                                      drawingContext);
             }
 
-            RenderTargetBitmap renderTargetBitmap = new RenderTargetBitmap(Convert.ToInt32(size.Width),
-                                                                           Convert.ToInt32(size.Height),
-                                                                           dpiX: dpiX,
-                                                                           dpiY: dpiY,
-                                                                           pixelFormat: PixelFormats.Pbgra32);
+            RenderTargetBitmap renderTargetBitmap = new RenderTargetBitmap
+                (
+                    Convert.ToInt32(size.Width),
+                    Convert.ToInt32(size.Height),
+                    dpiX: dpiX,
+                    dpiY: dpiY,
+                    pixelFormat: PixelFormats.Pbgra32
+                );
             renderTargetBitmap.Render(drawingVisual);
             return renderTargetBitmap;
         }

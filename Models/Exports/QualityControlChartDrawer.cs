@@ -26,7 +26,8 @@ namespace LaboratoryAppMVVM.Models.Exports
                 Paragraph paragraph = document.Paragraphs.Add();
                 Range range = paragraph.Range;
                 _ = range.InlineShapes.AddPicture(GetTempFileName());
-                range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
+                range.ParagraphFormat.Alignment = WdParagraphAlignment
+                    .wdAlignParagraphCenter;
             }
             catch (Exception ex)
             {
@@ -43,14 +44,18 @@ namespace LaboratoryAppMVVM.Models.Exports
 
         private static string GetTempFileName()
         {
-            return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "tempImage.png");
+            return Path.Combine(
+                AppDomain.CurrentDomain.BaseDirectory,
+                "tempImage.png");
         }
 
         public override void Save()
         {
             try
             {
-                string nameOfFile = "График_" + DateTime.Now.ToString("yyyy-MM-dd_hh-mm-ss") + ".pdf";
+                string nameOfFile = "График_"
+                    + DateTime.Now.ToString("yyyy-MM-dd_hh-mm-ss")
+                    + ".pdf";
                 string fullPathToPdf = Path.Combine(_saveFolderPath, nameOfFile);
                 (_drawingContext.GetContext() as Document)
                     .SaveAs(fullPathToPdf, WdSaveFormat.wdFormatPDF);

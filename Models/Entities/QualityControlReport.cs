@@ -6,6 +6,8 @@ namespace LaboratoryAppMVVM.Models.Entities
 {
     public class QualityControlReport : Report
     {
+        private const int toPercentCoefficient = 100;
+        private const int secondPowerOfNumber = 2;
         private readonly Service _service;
 
         public QualityControlReport(Service service)
@@ -15,27 +17,27 @@ namespace LaboratoryAppMVVM.Models.Entities
 
         public ICollection<AppliedService> GetServices()
         {
-            if (_service.AppliedService.Count == 0)
-            {
-                return new List<AppliedService>();
-            }
-            return _service.AppliedService.ToList();
+            return _service.AppliedService.Count == 0
+                ? new List<AppliedService>()
+                : _service.AppliedService.ToList();
         }
 
         public double GetVariationCoefficient()
         {
-            return GetMeanQuadrantDeviation() / GetMeanValueOfService() * 100;
+            return GetMeanQuadrantDeviation()
+                / GetMeanValueOfService()
+                * toPercentCoefficient;
         }
 
         public double GetMeanQuadrantDeviation()
         {
             double meanValueOfService = GetMeanValueOfService();
-            double meanQuadrantDeviation = 0;
+            double meanQuadrantDeviation = default;
             foreach (AppliedService appliedService in _service.AppliedService)
             {
                 meanQuadrantDeviation += Math.Pow(
                     meanValueOfService - appliedService.Result,
-                    2);
+                    secondPowerOfNumber);
             }
             meanQuadrantDeviation /= _service.AppliedService.Count;
             return meanQuadrantDeviation;

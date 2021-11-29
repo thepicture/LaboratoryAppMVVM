@@ -13,11 +13,15 @@ namespace LaboratoryAppMVVM.Models.Exceptions
         {
         }
 
-        public SessionIsAlreadyEnabledException(string message, Exception innerException) : base(message, innerException)
+        public SessionIsAlreadyEnabledException(
+            string message,
+            Exception innerException) : base(message, innerException)
         {
         }
 
-        protected SessionIsAlreadyEnabledException(SerializationInfo info, StreamingContext context) : base(info, context)
+        protected SessionIsAlreadyEnabledException(
+            SerializationInfo info,
+            StreamingContext context) : base(info, context)
         {
         }
     }

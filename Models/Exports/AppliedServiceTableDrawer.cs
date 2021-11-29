@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace LaboratoryAppMVVM.Models.Exports
 {
-    class AppliedServiceTableDrawer : ContentDrawer
+    public class AppliedServiceTableDrawer : ContentDrawer
     {
         private readonly AppliedServiceReport _report;
 
@@ -28,42 +28,55 @@ namespace LaboratoryAppMVVM.Models.Exports
             table.Borders.InsideLineStyle =
                 table.Borders.OutsideLineStyle =
                 WdLineStyle.wdLineStyleSingle;
-            table.Cell(table.Rows.Last.Index, 1).Range.Text = "Количество оказанных услуг за период времени";
-            table.Cell(table.Rows.Last.Index, 2).Range.Text = _report.GetAppliedServicesCount().ToString();
-            table.Rows.Add();
-            table.Cell(table.Rows.Last.Index, 1).Range.Text = "Перечень услуг за период времени";
-            table.Cell(table.Rows.Last.Index, 2).Range.Text = string.Join(", ", _report.GetSetOfServicesPerPeriod()
+            table.Cell(table.Rows.Last.Index, 1).Range.Text = "Количество " +
+                "оказанных услуг за период времени";
+            table.Cell(table.Rows.Last.Index, 2).Range.Text = _report
+                .GetAppliedServicesCount().ToString();
+            _ = table.Rows.Add();
+            table.Cell(table.Rows.Last.Index, 1).Range.Text = "Перечень " +
+                "услуг за период времени";
+            table.Cell(table.Rows.Last.Index, 2).Range.Text = string
+                .Join(", ", _report.GetSetOfServicesPerPeriod()
                 .Select(s => s.Name));
-            table.Rows.Add();
+            _ = table.Rows.Add();
             table.Cell(table.Rows.Last.Index, 1).Range.Text = "Количество пациентов";
             table.Cell(table.Rows.Last.Index, 2).Range.Text = string.Join(
                 ", ",
                 _report.GetPatientsCount().ToString());
-            table.Rows.Add();
-            table.Cell(table.Rows.Last.Index, 1).Merge(table.Cell(table.Rows.Last.Index, 2));
-            table.Cell(table.Rows.Last.Index, 1).Range.Text = "Количество пациентов в день по каждой услуге";
-            table.Rows.Add();
+            _ = table.Rows.Add();
+            table.Cell(table.Rows.Last.Index, 1).Merge(table.Cell(
+                table.Rows.Last.Index,
+                2));
+            table.Cell(table.Rows.Last.Index, 1).Range.Text = "Количество " +
+                "пациентов в день по каждой услуге";
+            _ = table.Rows.Add();
             table.Rows.Last.Cells.Split(1, 2);
-            foreach (Tuple<Service, int> service in _report.GetPatientsPerDayOfServices())
+            foreach (Tuple<Service, int> service
+                in _report.GetPatientsPerDayOfServices())
             {
                 table.Cell(table.Rows.Last.Index, 1).Range.Text = service.Item1.Name;
-                table.Cell(table.Rows.Last.Index, 2).Range.Text = service.Item2.ToString();
-                table.Rows.Add();
+                table.Cell(table.Rows.Last.Index, 2).Range.Text = service.Item2
+                    .ToString();
+                _ = table.Rows.Add();
             }
-            table.Cell(table.Rows.Last.Index, 1).Merge(table.Cell(table.Rows.Last.Index, 2));
+            table.Cell(table.Rows.Last.Index, 1).Merge(table.Cell(
+                table.Rows.Last.Index,
+                2));
             table.Cell(table.Rows.Last.Index, 1).Range.Text = $"Средний результат " +
                 $"каждого исследования в день с " +
                 $"{_report.FromPeriod:yyyy-MM-dd} " +
                 $"по {_report.ToPeriod:yyyy-MM-dd}";
-            foreach (Tuple<Service, double> service in _report.GetMeanResultOfServicesPerPeriod())
+            foreach (Tuple<Service, double> service
+                in _report.GetMeanResultOfServicesPerPeriod())
             {
-                table.Rows.Add();
+                _ = table.Rows.Add();
                 if (table.Rows.Last.Cells.Count < 2)
                 {
                     table.Rows.Last.Cells.Split(1, 2);
                 }
                 table.Cell(table.Rows.Last.Index, 1).Range.Text = service.Item1.Name;
-                table.Cell(table.Rows.Last.Index, 2).Range.Text = service.Item2.ToString();
+                table.Cell(table.Rows.Last.Index, 2).Range.Text = service.Item2
+                    .ToString();
             }
         }
 

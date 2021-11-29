@@ -166,7 +166,7 @@
     <Compile Include="Models\Exports\ExcelDrawingContext.cs" />
     <Compile Include="Models\Exports\InsuranceCompanyContentDrawer.cs" />
     <Compile Include="Models\Generators\BarcodeImageGenerator.cs" />
-    <Compile Include="Models\Entities\CaptchaLetterBase.cs" />
+    <Compile Include="Models\Entities\CaptchaLetter.cs" />
     <Compile Include="Models\Entities\Analyzer.cs">
       <DependentUpon>LaboratoryBaseModel.tt</DependentUpon>
     </Compile>
