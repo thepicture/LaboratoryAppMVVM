@@ -14,6 +14,7 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using WIA;
 
@@ -772,6 +773,29 @@ namespace LaboratoryAppMVVM.ViewModels
             return $"{new Random().Next(maxValueForBarcodeId)}"
                 + $"{DateTime.Now:ddMMyyyy}"
                 + $"{new Random().Next(GetBarcodeNumber())}";
+        }
+
+        private RelayCommand editPatientCommand;
+
+        public ICommand EditPatientCommand
+        {
+            get
+            {
+                if (editPatientCommand == null)
+                {
+                    editPatientCommand = new RelayCommand(EditPatient, () => SelectedPatient != null);
+                }
+
+                return editPatientCommand;
+            }
+        }
+
+        private void EditPatient(object commandParameter)
+        {
+            _navigationStore.CurrentViewModel = new AddPatientViewModel(_navigationStore,
+                MessageService,
+                this,
+                SelectedPatient);
         }
     }
 }

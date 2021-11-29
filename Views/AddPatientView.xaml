@@ -13,7 +13,7 @@
         <StackPanel HorizontalAlignment="Center"
                     VerticalAlignment="Center">
             <TextBlock HorizontalAlignment="Center"
-                       Text="Добавление нового пациента"
+                       Text="Редактирование пациента"
                        FontWeight="Bold"
                        Style="{StaticResource CommonBlock}"></TextBlock>
             <StackPanel Orientation="Horizontal"
@@ -85,7 +85,7 @@
             </StackPanel>
             <StackPanel Orientation="Horizontal"
                         HorizontalAlignment="Right">
-                <TextBlock Text="Тип страхового полиса: "
+                <TextBlock Text="Страховая компания: "
                            Style="{StaticResource CommonBlock}"
                            VerticalAlignment="Center"></TextBlock>
                 <ComboBox ItemsSource="{Binding InsuranceCompanies}"

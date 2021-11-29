@@ -73,6 +73,9 @@
                               DisplayMemberPath="FullName"
                               Name="ComboPatient"></ComboBox>
                 </StackPanel>
+                    <Button Content="Отредактировать пациента"
+                            Command="{Binding EditPatientCommand}"
+                            HorizontalAlignment="Right"></Button>
                 <StackPanel Orientation="Horizontal"
                             HorizontalAlignment="Right">
                     <TextBlock Text="Поиск пациента в выпадающем списке выше"

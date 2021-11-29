@@ -24,11 +24,20 @@ namespace LaboratoryAppMVVM.ViewModels
         public AddPatientViewModel(
             ViewModelNavigationStore navigationStore,
             IMessageService messageBoxService,
-            CreateOrEditOrderViewModel createOrEditOrderViewModel)
+            CreateOrEditOrderViewModel createOrEditOrderViewModel,
+            Patient patient = null)
         {
+            _createOrEditOrderViewModel = createOrEditOrderViewModel;
+            if (patient != null)
+            {
+                CurrentPatient = patient;
+                SelectedInsuranceCompany = InsuranceCompanies
+                    .First(c => c.Id == patient.InsuranceCompanyId);
+                SelectedPolicyType = PolicyTypes
+                    .First(t => t.Id == patient.TypeOfInsurancePolicyId);
+            }
             _navigationStore = navigationStore;
             MessageService = messageBoxService;
-            _createOrEditOrderViewModel = createOrEditOrderViewModel;
             Title = "Добавление нового пациента";
         }
 
@@ -58,8 +67,13 @@ namespace LaboratoryAppMVVM.ViewModels
                 {
                     _returnToEditOrderViewModelCommand =
                         new RelayCommand(param =>
-                        _navigationStore.CurrentViewModel = _createOrEditOrderViewModel
-                    );
+                        {
+                            _createOrEditOrderViewModel.Context.ChangeTracker.Entries()
+                            .ToList()
+                            .ForEach(e => e.Reload());
+                            _navigationStore.CurrentViewModel =
+                            _createOrEditOrderViewModel;
+                        });
                 }
                 return _returnToEditOrderViewModelCommand;
             }
@@ -100,15 +114,18 @@ namespace LaboratoryAppMVVM.ViewModels
 
         private void SavePatient()
         {
-            InsertValuesIntoPatientEntity();
+            InsertValuesIntoPatientEntityAndAddPatientIfNew();
             TryToSavePatient();
         }
 
-        private void InsertValuesIntoPatientEntity()
+        private void InsertValuesIntoPatientEntityAndAddPatientIfNew()
         {
             CurrentPatient.InsuranceCompany = SelectedInsuranceCompany;
             CurrentPatient.TypeOfInsurancePolicy = SelectedPolicyType;
-            _ = Context.Patient.Add(CurrentPatient);
+            if (CurrentPatient.Id == 0)
+            {
+                _ = Context.Patient.Add(CurrentPatient);
+            }
         }
 
         private void TryToSavePatient()
@@ -121,7 +138,7 @@ namespace LaboratoryAppMVVM.ViewModels
             }
             catch (Exception ex)
             {
-                MessageService.ShowError("Не удалось сохранить " +
+                MessageService.ShowError("Не удалось сохранить данные" +
                     "пациента. Пожалуйста, попробуйте ещё раз. " +
                     "Ошибка: " + ex.Message);
             }
@@ -133,7 +150,7 @@ namespace LaboratoryAppMVVM.ViewModels
             {
                 if (_context == null)
                 {
-                    _context = new LaboratoryDatabaseEntities();
+                    _context = _createOrEditOrderViewModel.Context;
                 }
                 return _context;
             }

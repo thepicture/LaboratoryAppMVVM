@@ -21,7 +21,7 @@ namespace LaboratoryAppMVVM.ViewModels
         private const int captchaHeight = 40;
         private readonly ViewModelNavigationStore _navigationStore;
         private readonly ILoginService<User, ViewModelNavigationStore> _loginService;
-        private string _loginText = "admin";
+        private string _loginText = "chacking0";
         private string _passwordText = "123";
         private ICommand _authorizeCommand;
         private ICommand _exitAppCommand;
