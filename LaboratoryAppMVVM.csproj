@@ -413,6 +413,7 @@
     <Resource Include="Diagrams\PharmacyBaseDiagram.png" />
     <Resource Include="Diagrams\LaboratoryUseCaseDiagram.png" />
     <Resource Include="Diagrams\LaboratorySystemArchitecture.png" />
+    <Content Include="DatabaseBackups\LaboratoryDatabaseScript.sql" />
     <Content Include="Models\Entities\LaboratoryBaseModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>LaboratoryBaseModel.edmx</DependentUpon>
