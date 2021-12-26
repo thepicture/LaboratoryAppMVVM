@@ -7,3 +7,9 @@ The app is intended to be used by laboratory researchers, laboratory assistants,
 - ADO.NET
 - Entity Framework
 - LINQ
+### Architecture
+- MVVM
+### Functions of the app
+- Asynchronous view of services
+- Adding services and patients to it
+- Viewing of applied services
